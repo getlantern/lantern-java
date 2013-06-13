@@ -115,17 +115,69 @@
             <preActivation />
             <postActivation />
             <actions>
-              <action name="" id="13" customizedId="" beanClass="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction" enabled="true" commentSet="false" comment="" actionElevationType="none" rollbackBarrier="false" multiExec="false" failureStrategy="2" errorMessage="">
+              <action name="" id="13" customizedId="" beanClass="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction" enabled="true" commentSet="false" comment="" actionElevationType="none" rollbackBarrier="false" multiExec="false" failureStrategy="3" errorMessage="Could not obtain the necessary privileges to install Lantern!">
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
                     <object class="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction">
                       <void property="failIfNotRootUnix">
                         <boolean>true</boolean>
                       </void>
+                      <void property="obtainIfAdminMac">
+                        <boolean>true</boolean>
+                      </void>
+                      <void property="obtainIfNormalWin">
+                        <boolean>true</boolean>
+                      </void>
                     </object>
                   </java>
                 </serializedBean>
                 <condition />
+              </action>
+              <action name="" id="261" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" multiExec="false" failureStrategy="3" errorMessage="Could not configure Lantern!">
+                <serializedBean>
+                  <java class="java.beans.XMLDecoder">
+                    <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
+                      <void property="script">
+                        <object class="com.install4j.api.beans.ScriptProperty">
+                          <void property="value">
+                            <string>context.setInstallationDirectory(new File(System.getenv("APPDATA"), "Lantern"));
+return true;</string>
+                          </void>
+                        </object>
+                      </void>
+                    </object>
+                  </java>
+                </serializedBean>
+                <condition>return Util.isWindows() &amp;&amp; !context.hasBeenElevated();</condition>
+              </action>
+              <action name="" id="262" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" multiExec="false" failureStrategy="3" errorMessage="Could not configure Lantern!">
+                <serializedBean>
+                  <java class="java.beans.XMLDecoder">
+                    <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
+                      <void property="script">
+                        <object class="com.install4j.api.beans.ScriptProperty">
+                          <void property="value">
+                            <string>if (!context.hasBeenElevated()) {
+    final File apps = new File(Util.getUserHome(), "Applications");
+    if (apps.isDirectory() &amp;&amp; !apps.mkdirs()) {
+        Util.logError(this, "Could not create dir at "+apps.getAbsolutePath());
+    }
+    final File lantern = new File(apps, "Lantern");
+    if (lantern.isDirectory() &amp;&amp; ! lantern.mkdirs()) {
+        Util.logError(this, "Could not create dir at "+lantern.getAbsolutePath());
+    }
+    
+    
+    context.setInstallationDirectory(lantern);
+}
+return true;</string>
+                          </void>
+                        </object>
+                      </void>
+                    </object>
+                  </java>
+                </serializedBean>
+                <condition>return Util.isWindows() &amp;&amp; !context.hasBeenElevated();</condition>
               </action>
             </actions>
             <formComponents />
@@ -276,7 +328,7 @@
                         <boolean>false</boolean>
                       </void>
                       <void property="targetFile">
-                        <string>lantern.dmg</string>
+                        <string>${installer:sys.workingDir}/lantern.dmg</string>
                       </void>
                       <void property="url">
                         <string>https://s3.amazonaws.com/lantern/latest.dmg</string>
@@ -292,7 +344,7 @@
                     <object class="com.install4j.runtime.beans.actions.misc.RunExecutableAction">
                       <void property="executable">
                         <object class="java.io.File">
-                          <string>lantern.dmg</string>
+                          <string>${installer:sys.workingDir}/lantern.dmg</string>
                         </object>
                       </void>
                       <void property="workingDirectory">
