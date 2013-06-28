@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,7 +38,6 @@ import org.lantern.state.Friend;
 import org.lantern.state.Friend.Status;
 import org.lantern.state.Friends;
 import org.lantern.state.InternalState;
-import org.lantern.state.InviteQueue;
 import org.lantern.state.JsonModelModifier;
 import org.lantern.state.LocationChangedEvent;
 import org.lantern.state.Modal;
@@ -121,8 +119,6 @@ public class InteractionServlet extends HttpServlet {
 
     private final LanternFeedback lanternFeedback;
 
-    private final InviteQueue inviteQueue;
-
     /* only open external urls to these hosts: */
     private static final Set<String> allowedDomains = new HashSet<String>(
         Arrays.asList("google.com", "github.com", "getlantern.org"));
@@ -133,7 +129,7 @@ public class InteractionServlet extends HttpServlet {
         final InternalState internalState,
         final ModelIo modelIo, final XmppHandler xmppHandler,
         final Censored censored, final LanternFeedback lanternFeedback,
-        final InviteQueue inviteQueue, final ModelUtils modelUtils) {
+        final ModelUtils modelUtils) {
         this.model = model;
         this.modelService = modelService;
         this.internalState = internalState;
@@ -141,7 +137,6 @@ public class InteractionServlet extends HttpServlet {
         this.xmppHandler = xmppHandler;
         this.censored = censored;
         this.lanternFeedback = lanternFeedback;
-        this.inviteQueue = inviteQueue;
         this.modelUtils = modelUtils;
         Events.register(this);
     }
@@ -349,10 +344,6 @@ public class InteractionServlet extends HttpServlet {
                 break;
             case REJECT:
                 removeFriend(json);
-                break;
-            case INVITE:
-                invite(json);
-                Events.sync(SyncPath.NOTIFICATIONS, model.getNotifications());
                 break;
             case CONTINUE:
                 // This dialog always passes continue as of this writing and
@@ -744,19 +735,6 @@ public class InteractionServlet extends HttpServlet {
             log.warn("Exception closing notifications {}", e);
         }
         return false;
-    }
-
-    private void invite(String json) {
-        ObjectMapper om = new ObjectMapper();
-        try {
-            if (json.length() == 0) {
-                return;//nobody to invite
-            }
-            ArrayList<String> invites = om.readValue(json, ArrayList.class);
-            inviteQueue.invite(invites);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void handleSetModeWelcome(final Mode mode) {

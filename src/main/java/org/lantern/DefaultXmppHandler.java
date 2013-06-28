@@ -980,6 +980,12 @@ public class DefaultXmppHandler implements XmppHandler {
 
         Friends friends = model.getFriends();
         if (friends.needsSync()) {
+            forHub.setProperty(LanternConstants.INVITER_REFRESH_TOKEN,
+                    this.model.getSettings().getRefreshToken());
+
+            forHub.setProperty(LanternConstants.INVITER_NAME,
+                    this.model.getProfile().getName());
+
             String friendsJson = JsonUtils.jsonify(friends);
             forHub.setProperty(LanternConstants.FRIENDS, friendsJson);
             friends.setNeedsSync(false);
@@ -1162,70 +1168,6 @@ public class DefaultXmppHandler implements XmppHandler {
             return false;
         }
         return conn.isAuthenticated();
-    }
-
-    @Override
-    public boolean sendInvite(final Friend friend, boolean redo) {
-        LOG.info("Sending invite");
-
-        String email = friend.getEmail();
-
-        if (StringUtils.isBlank(this.hubAddress)) {
-            LOG.info("Blank hub address when sending invite?");
-            return true;
-        }
-
-        final Set<String> invited = roster.getInvited();
-        if ((!redo) && invited.contains(email)) {
-            LOG.info("Already invited");
-            return false;
-        }
-        final XMPPConnection conn = this.client.get().getXmppConnection();
-
-        final Roster rost = conn.getRoster();
-
-        final Presence pres = new Presence(Presence.Type.available);
-        pres.setTo(LanternClientConstants.LANTERN_JID);
-
-        // "emails" of the form xxx@public.talk.google.com aren't really
-        // e-mail addresses at all, so don't send 'em.
-        // In theory we might be able to use the Google Plus API to get
-        // actual e-mail addresses -- see:
-        // https://github.com/getlantern/lantern/issues/432
-        if (LanternUtils.isNotJid(email)) {
-            pres.setProperty(LanternConstants.INVITED_EMAIL, email);
-        } else {
-            pres.setProperty(LanternConstants.INVITED_EMAIL, "");
-        }
-
-        pres.setProperty(LanternConstants.INVITER_REFRESH_TOKEN,
-                         this.model.getSettings().getRefreshToken());
-
-        final RosterEntry entry = rost.getEntry(email);
-        if (entry != null) {
-            final String name = entry.getName();
-            if (StringUtils.isNotBlank(name)) {
-                pres.setProperty(LanternConstants.INVITEE_NAME, name);
-            }
-        }
-
-        pres.setProperty(LanternConstants.FRIEND, JsonUtils.jsonify(friend));
-
-        invited.add(email);
-
-        final Runnable runner = new Runnable() {
-
-            @Override
-            public void run() {
-                conn.sendPacket(pres);
-            }
-        };
-        final Thread t = new Thread(runner, "Invite-Thread");
-        t.setDaemon(true);
-        t.start();
-
-        addToRoster(email);
-        return true;
     }
 
     /** Try to reconnect to the xmpp server */
