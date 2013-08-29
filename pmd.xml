@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd version="4.3" timestamp="2013-08-29T13:07:16.937">
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/freedesktop/Secret/Collection.java">
+<violation beginline="6" endline="6" begincolumn="1" endcolumn="42" rule="UnusedImports" ruleset="Import Statement Rules" package="org.freedesktop.Secret" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.freedesktop.dbus.DBusInterface'
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/freedesktop/Secret/Item.java">
+<violation beginline="4" endline="4" begincolumn="1" endcolumn="42" rule="UnusedImports" ruleset="Import Statement Rules" package="org.freedesktop.Secret" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.freedesktop.dbus.DBusInterface'
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/freedesktop/Secret/Prompt.java">
+<violation beginline="3" endline="3" begincolumn="1" endcolumn="21" rule="UnusedImports" ruleset="Import Statement Rules" package="org.freedesktop.Secret" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.util.Map'
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/freedesktop/Secret/Secret.java">
+<violation beginline="4" endline="4" begincolumn="1" endcolumn="42" rule="UnusedImports" ruleset="Import Statement Rules" package="org.freedesktop.Secret" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.freedesktop.dbus.DBusInterface'
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/AppIndicatorTray.java">
+<violation beginline="39" endline="39" begincolumn="33" endcolumn="51" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="AppIndicatorTray" variable="LABEL_DISCONNECTING" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'LABEL_DISCONNECTING'.
+</violation>
+<violation beginline="45" endline="45" begincolumn="33" endcolumn="50" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="AppIndicatorTray" variable="ICON_DISCONNECTING" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'ICON_DISCONNECTING'.
+</violation>
+<violation beginline="87" endline="87" begincolumn="31" endcolumn="58" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="AppIndicatorTray" variable="connectionStatusItemCallback" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'connectionStatusItemCallback'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/CertTrackingSslHandlerFactory.java">
+<violation beginline="207" endline="207" begincolumn="52" endcolumn="65" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="CertTrackingSslHandlerFactory$SslHandlerInterceptor" variable="trafficCounter" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'trafficCounter'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/CommandLine.java">
+<violation beginline="259" endline="261" begincolumn="9" endcolumn="7" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern" class="CommandLine" method="postRunCleanup" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="274" endline="276" begincolumn="9" endcolumn="7" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern" class="CommandLine" method="canExecute" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="276" endline="278" begincolumn="9" endcolumn="7" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern" class="CommandLine" method="canExecute" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="334" endline="337" begincolumn="9" endcolumn="7" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern" class="CommandLine$StreamDrainer" method="run" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/DefaultCensored.java">
+<violation beginline="25" endline="25" begincolumn="33" endcolumn="35" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="DefaultCensored" variable="LOG" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'LOG'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/DefaultProxyTracker.java">
+<violation beginline="100" endline="100" begincolumn="57" endcolumn="71" rule="AvoidThreadGroup" ruleset="Basic Rules" package="org.lantern" class="DefaultProxyTracker" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/DefaultXmppHandler.java">
+<violation beginline="377" endline="380" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern" class="DefaultXmppHandler" method="connect" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+<violation beginline="454" endline="454" begincolumn="30" endcolumn="40" rule="AvoidUsingHardCodedIP" ruleset="Basic Rules" package="org.lantern" class="DefaultXmppHandler" method="connect" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP" priority="3">
+Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !
+</violation>
+<violation beginline="1098" endline="1118" begincolumn="13" endcolumn="5" rule="UnusedFormalParameter" ruleset="Unused Code Rules" package="org.lantern" class="DefaultXmppHandler" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter" priority="3">
+Avoid unused method parameters such as 'from'.
+</violation>
+<violation beginline="1367" endline="1367" begincolumn="18" endcolumn="27" rule="UnusedPrivateMethod" ruleset="Unused Code Rules" package="org.lantern" class="DefaultXmppHandler" method="setupJmx" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateMethod" priority="3">
+Avoid unused private methods such as 'setupJmx()'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/Diagnostics.java">
+<violation beginline="10" endline="10" begincolumn="1" endcolumn="28" rule="UnusedImports" ruleset="Import Statement Rules" package="org.lantern" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.net.InetAddress'
+</violation>
+<violation beginline="13" endline="13" begincolumn="1" endcolumn="37" rule="UnusedImports" ruleset="Import Statement Rules" package="org.lantern" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.net.UnknownHostException'
+</violation>
+<violation beginline="78" endline="78" begincolumn="26" endcolumn="28" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="org.lantern" class="Diagnostics" method="main" variable="raw" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
+Avoid unused local variables such as 'raw'.
+</violation>
+<violation beginline="98" endline="98" begincolumn="37" endcolumn="64" rule="AvoidThreadGroup" ruleset="Basic Rules" package="org.lantern" class="Diagnostics" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="286" endline="288" begincolumn="11" endcolumn="9" rule="EmptyFinallyBlock" ruleset="Basic Rules" package="org.lantern" class="Diagnostics" method="testProxy" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyFinallyBlock" priority="3">
+Avoid empty finally blocks
+</violation>
+<violation beginline="303" endline="305" begincolumn="11" endcolumn="9" rule="EmptyFinallyBlock" ruleset="Basic Rules" package="org.lantern" class="Diagnostics" method="testProxy" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyFinallyBlock" priority="3">
+Avoid empty finally blocks
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/DispatchingProxyRelayHandler.java">
+<violation beginline="114" endline="114" begincolumn="21" endcolumn="40" rule="UnusedPrivateMethod" ruleset="Unused Code Rules" package="org.lantern" class="DispatchingProxyRelayHandler" method="useStandardProxies" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateMethod" priority="3">
+Avoid unused private methods such as 'useStandardProxies()'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternClientConstants.java">
+<violation beginline="112" endline="115" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern" class="LanternClientConstants" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+<violation beginline="118" endline="120" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern" class="LanternClientConstants" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+<violation beginline="123" endline="126" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern" class="LanternClientConstants" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+<violation beginline="131" endline="131" begincolumn="44" endcolumn="54" rule="AvoidUsingHardCodedIP" ruleset="Basic Rules" package="org.lantern" class="LanternClientConstants" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP" priority="3">
+Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternFeedback.java">
+<violation beginline="64" endline="65" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern" class="LanternFeedback" method="systemInfo" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternHttpProxyServer.java">
+<violation beginline="138" endline="138" begincolumn="50" endcolumn="60" rule="AvoidUsingHardCodedIP" ruleset="Basic Rules" package="org.lantern" class="LanternHttpProxyServer" method="newServerBootstrap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP" priority="3">
+Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternHttpRequestRetryHandler.java">
+<violation beginline="25" endline="25" begincolumn="30" endcolumn="39" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="LanternHttpRequestRetryHandler" variable="httpClient" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'httpClient'.
+</violation>
+<violation beginline="59" endline="59" begincolumn="21" endcolumn="68" rule="UnusedPrivateMethod" ruleset="Unused Code Rules" package="org.lantern" class="LanternHttpRequestRetryHandler" method="isBlockingException" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateMethod" priority="3">
+Avoid unused private methods such as 'isBlockingException(IOException)'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternKeyStoreManager.java">
+<violation beginline="75" endline="77" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern" class="LanternKeyStoreManager" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternMappedTcpAnswererServer.java">
+<violation beginline="3" endline="3" begincolumn="1" endcolumn="27" rule="UnusedImports" ruleset="Import Statement Rules" package="org.lantern" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.io.IOException'
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternModule.java">
+<violation beginline="28" endline="28" begincolumn="1" endcolumn="51" rule="UnusedImports" ruleset="Import Statement Rules" package="org.lantern" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.lantern.httpseverywhere.HttpsEverywhere'
+</violation>
+<violation beginline="58" endline="58" begincolumn="1" endcolumn="45" rule="UnusedImports" ruleset="Import Statement Rules" package="org.lantern" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.littleshoot.proxy.KeyStoreManager'
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternRosterEntry.java">
+<violation beginline="16" endline="16" begincolumn="26" endcolumn="28" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="LanternRosterEntry" variable="log" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'log'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternUtils.java">
+<violation beginline="314" endline="314" begincolumn="21" endcolumn="53" rule="AvoidThreadGroup" ruleset="Basic Rules" package="org.lantern" class="LanternUtils" method="toHttpsCandidates" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="379" endline="379" begincolumn="49" endcolumn="59" rule="AvoidUsingHardCodedIP" ruleset="Basic Rules" package="org.lantern" class="LanternUtils" method="randomPort" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP" priority="3">
+Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !
+</violation>
+<violation beginline="388" endline="389" begincolumn="23" endcolumn="21" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern" class="LanternUtils" method="randomPort" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="415" endline="416" begincolumn="19" endcolumn="17" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern" class="LanternUtils" method="randomPort" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="746" endline="746" begincolumn="43" endcolumn="53" rule="AvoidUsingHardCodedIP" ruleset="Basic Rules" package="org.lantern" class="LanternUtils" method="waitForServer" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP" priority="3">
+Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !
+</violation>
+<violation beginline="750" endline="751" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern" class="LanternUtils" method="waitForServer" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternXmppUtil.java">
+<violation beginline="27" endline="27" begincolumn="38" endcolumn="48" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="LanternXmppUtil" variable="socketsUtil" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'socketsUtil'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/Launcher.java">
+<violation beginline="274" endline="284" begincolumn="27" endcolumn="13" rule="EmptyIfStmt" ruleset="Basic Rules" package="org.lantern" class="Launcher" method="launch" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
+Avoid empty if statements
+</violation>
+<violation beginline="507" endline="510" begincolumn="21" endcolumn="21" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern" class="Launcher" method="gnomeAutoStart" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/PacFileGenerator.java">
+<violation beginline="57" endline="59" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern" class="PacFileGenerator" method="loadTemplate" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/PeerSocketChannel.java">
+<violation beginline="119" endline="121" begincolumn="15" endcolumn="5" rule="UselessOverridingMethod" ruleset="Basic Rules" package="org.lantern" class="PeerSocketChannel" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOverridingMethod" priority="3">
+Overriding method merely calls super
+</violation>
+<violation beginline="124" endline="126" begincolumn="15" endcolumn="5" rule="UselessOverridingMethod" ruleset="Basic Rules" package="org.lantern" class="PeerSocketChannel" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOverridingMethod" priority="3">
+Overriding method merely calls super
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/Proxifier.java">
+<violation beginline="546" endline="546" begincolumn="10" endcolumn="10" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.lantern" class="Proxifier" method="onModeChangedEvent" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/Roster.java">
+<violation beginline="188" endline="188" begincolumn="10" endcolumn="10" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.lantern" class="Roster" method="onModeChangedEvent" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="257" endline="270" begincolumn="13" endcolumn="5" rule="UnusedFormalParameter" ruleset="Unused Code Rules" package="org.lantern" class="Roster" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter" priority="3">
+Avoid unused method parameters such as 'updateIndex'.
+</violation>
+<violation beginline="303" endline="305" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern" class="Roster" method="putNewElement" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/SplashScreen.java">
+<violation beginline="23" endline="23" begincolumn="1" endcolumn="35" rule="UnusedImports" ruleset="Import Statement Rules" package="org.lantern" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'com.google.inject.Singleton'
+</violation>
+<violation beginline="88" endline="88" begincolumn="17" endcolumn="17" rule="EmptyWhileStmt" ruleset="Basic Rules" package="org.lantern" class="SplashScreen" method="init" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt" priority="3">
+Avoid empty while statements
+</violation>
+<violation beginline="113" endline="113" begincolumn="25" endcolumn="25" rule="EmptyWhileStmt" ruleset="Basic Rules" package="org.lantern" class="SplashScreen" method="run" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt" priority="3">
+Avoid empty while statements
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/StatsTracker.java">
+<violation beginline="56" endline="56" begincolumn="31" endcolumn="37" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="StatsTracker" variable="ONE_DAY" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'ONE_DAY'.
+</violation>
+<violation beginline="402" endline="402" begincolumn="40" endcolumn="48" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="StatsTracker$CountryData" variable="addresses" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'addresses'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/StatsTrackingDefaultHttpProxyServer.java">
+<violation beginline="142" endline="142" begincolumn="41" endcolumn="51" rule="AvoidUsingHardCodedIP" ruleset="Basic Rules" package="org.lantern" class="StatsTrackingDefaultHttpProxyServer" method="start" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP" priority="3">
+Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/StatsUpdater.java">
+<violation beginline="126" endline="129" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern" class="StatsUpdater" method="updateModel" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/SystemTrayImpl.java">
+<violation beginline="56" endline="56" begincolumn="33" endcolumn="51" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="SystemTrayImpl" variable="LABEL_DISCONNECTING" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'LABEL_DISCONNECTING'.
+</violation>
+<violation beginline="62" endline="62" begincolumn="33" endcolumn="50" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="SystemTrayImpl" variable="ICON_DISCONNECTING" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'ICON_DISCONNECTING'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/UdtHttpRequestProcessor.java">
+<violation beginline="48" endline="48" begincolumn="35" endcolumn="48" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern" class="UdtHttpRequestProcessor" variable="trafficHandler" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'trafficHandler'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/cookie/StoredCookie.java">
+<violation beginline="118" endline="120" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.cookie" class="StoredCookie" method="fromSetCookie" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/geoip/GeoIpCompressor.java">
+<violation beginline="433" endline="436" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.geoip" class="GeoIpCompressor" method="writeCompressedBlocks" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/geoip/GeoIpCompressorRunner.java">
+<violation beginline="6" endline="6" begincolumn="1" endcolumn="41" rule="ImportFromSamePackage" ruleset="Import Statement Rules" package="org.lantern.geoip" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#ImportFromSamePackage" priority="3">
+No need to import a type that lives in the same package
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/http/GoogleOauth2CallbackServer.java">
+<violation beginline="87" endline="87" begincolumn="27" endcolumn="37" rule="AvoidUsingHardCodedIP" ruleset="Basic Rules" package="org.lantern.http" class="GoogleOauth2CallbackServer" method="start" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP" priority="3">
+Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/http/GoogleOauth2CallbackServlet.java">
+<violation beginline="215" endline="218" begincolumn="16" endcolumn="9" rule="EmptyIfStmt" ruleset="Basic Rules" package="org.lantern.http" class="GoogleOauth2CallbackServlet" method="connectToGoogleTalk" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
+Avoid empty if statements
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/http/InteractionServlet.java">
+<violation beginline="201" endline="203" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="processRequest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+<violation beginline="208" endline="208" begincolumn="23" endcolumn="26" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="org.lantern.http" class="InteractionServlet" method="processRequest" variable="url_" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
+Avoid unused local variables such as 'url_'.
+</violation>
+<violation beginline="269" endline="269" begincolumn="11" endcolumn="48" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="processRequest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="661" endline="698" begincolumn="13" endcolumn="5" rule="UnusedFormalParameter" ruleset="Unused Code Rules" package="org.lantern.http" class="InteractionServlet" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter" priority="3">
+Avoid unused method parameters such as 'modal'.
+</violation>
+<violation beginline="798" endline="803" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="onLocationChanged" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+<violation beginline="800" endline="802" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="onLocationChanged" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/http/JettyLauncher.java">
+<violation beginline="120" endline="120" begincolumn="31" endcolumn="41" rule="AvoidUsingHardCodedIP" ruleset="Basic Rules" package="org.lantern.http" class="JettyLauncher" method="start" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP" priority="3">
+Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/kscope/DefaultKscopeAdHandler.java">
+<violation beginline="86" endline="89" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.kscope" class="DefaultKscopeAdHandler" method="handleAd" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/kscope/LanternTrustGraphNode.java">
+<violation beginline="8" endline="8" begincolumn="1" endcolumn="53" rule="ImportFromSamePackage" ruleset="Import Statement Rules" package="org.lantern.kscope" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#ImportFromSamePackage" priority="3">
+No need to import a type that lives in the same package
+</violation>
+<violation beginline="9" endline="9" begincolumn="1" endcolumn="48" rule="UnusedImports" ruleset="Import Statement Rules" package="org.lantern.kscope" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.lantern.kscope.LanternTrustGraphNode'
+</violation>
+<violation beginline="9" endline="9" begincolumn="1" endcolumn="48" rule="ImportFromSamePackage" ruleset="Import Statement Rules" package="org.lantern.kscope" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#ImportFromSamePackage" priority="3">
+No need to import a type that lives in the same package
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/privacy/AbstractAESLocalCipherProvider.java">
+<violation beginline="29" endline="29" begincolumn="26" endcolumn="28" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern.privacy" class="AbstractAESLocalCipherProvider" variable="log" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'log'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/privacy/WindowsLocalCipherProvider.java">
+<violation beginline="36" endline="36" begincolumn="26" endcolumn="28" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern.privacy" class="WindowsLocalCipherProvider" variable="log" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'log'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/state/DefaultModelUtils.java">
+<violation beginline="201" endline="202" begincolumn="19" endcolumn="17" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern.state" class="DefaultModelUtils" method="newGoogleOauthCreds" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/state/InternalState.java">
+<violation beginline="113" endline="113" begincolumn="9" endcolumn="15" rule="UnnecessaryReturn" ruleset="Basic Rules" package="org.lantern.state" class="InternalState" method="setCompletedTo" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryReturn" priority="3">
+Avoid unnecessary return statements
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/state/JsonModelModifier.java">
+<violation beginline="15" endline="15" begincolumn="1" endcolumn="38" rule="ImportFromSamePackage" ruleset="Import Statement Rules" package="org.lantern.state" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#ImportFromSamePackage" priority="3">
+No need to import a type that lives in the same package
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/state/Model.java">
+<violation beginline="40" endline="40" begincolumn="26" endcolumn="28" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern.state" class="Model" variable="log" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'log'.
+</violation>
+<violation beginline="113" endline="113" begincolumn="23" endcolumn="36" rule="UnusedPrivateMethod" ruleset="Unused Code Rules" package="org.lantern.state" class="Model" method="getTransfers" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateMethod" priority="3">
+Avoid unused private methods such as 'getTransfers()'.
+</violation>
+<violation beginline="230" endline="230" begincolumn="9" endcolumn="15" rule="UnnecessaryReturn" ruleset="Basic Rules" package="org.lantern.state" class="Model" method="setCountries" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryReturn" priority="3">
+Avoid unnecessary return statements
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/state/ModelIo.java">
+<violation beginline="61" endline="63" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.state" class="ModelIo" method="read" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/state/Profile.java">
+<violation beginline="19" endline="19" begincolumn="20" endcolumn="26" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.lantern.state" class="Profile" variable="picture" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+Avoid unused private fields such as 'picture'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/state/SyncService.java">
+<violation beginline="94" endline="94" begincolumn="18" endcolumn="71" rule="UnusedPrivateMethod" ruleset="Unused Code Rules" package="org.lantern.state" class="SyncService" method="configureSync" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateMethod" priority="3">
+Avoid unused private methods such as 'configureSync(ConfigurableServerChannel)'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/udtrelay/UdtRelayServerIncomingHandler.java">
+<violation beginline="87" endline="107" begincolumn="13" endcolumn="5" rule="UnusedFormalParameter" ruleset="Unused Code Rules" package="org.lantern.udtrelay" class="UdtRelayServerIncomingHandler" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter" priority="3">
+Avoid unused method parameters such as 'in'.
+</violation>
+<violation beginline="87" endline="88" begincolumn="18" endcolumn="29" rule="UnusedPrivateMethod" ruleset="Unused Code Rules" package="org.lantern.udtrelay" class="UdtRelayServerIncomingHandler" method="netty4InboundBufferUpdated" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateMethod" priority="3">
+Avoid unused private methods such as 'netty4InboundBufferUpdated(ChannelHandlerContext,ByteBuf)'.
+</violation>
+<violation beginline="198" endline="198" begincolumn="18" endcolumn="65" rule="UnusedPrivateMethod" ruleset="Unused Code Rules" package="org.lantern.udtrelay" class="UdtRelayServerIncomingHandler" method="netty4ProxyConnect" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateMethod" priority="3">
+Avoid unused private methods such as 'netty4ProxyConnect(Channel)'.
+</violation>
+</file>
+<file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/win/WindowsRegCommand.java">
+<violation beginline="123" endline="123" begincolumn="56" endcolumn="56" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.lantern.win" class="WindowsRegCommand" method="write" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="177" endline="177" begincolumn="56" endcolumn="56" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.lantern.win" class="WindowsRegCommand" method="read" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+</file>
+</pmd>

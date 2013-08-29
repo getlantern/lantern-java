@@ -1,0 +1,446 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>CookieUtils xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../apidocs/org/lantern/cookie/CookieUtils.html">View Javadoc</a></div><pre>
+
+<a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.lantern.cookie; 
+<a class="jxr_linenumber" name="2" href="#2">2</a>   
+<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> com.google.common.net.InetAddresses;
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> com.google.common.net.InternetDomainName;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> java.net.IDN;
+<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> java.net.MalformedURLException;
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> java.net.URI;
+<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> java.net.URISyntaxException;
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> java.net.URL;
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.jboss.netty.handler.codec.http.Cookie; 
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.jboss.netty.handler.codec.http.DefaultHttpRequest;
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> org.jboss.netty.handler.codec.http.HttpRequest;
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.jboss.netty.handler.codec.http.HttpVersion;
+<a class="jxr_linenumber" name="14" href="#14">14</a>  
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment"> * Utilities related to browser-like cookie logic</em>
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment"> * mostly derived from RFC 6265</em>
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../org/lantern/cookie/CookieUtils.html">CookieUtils</a> {
+<a class="jxr_linenumber" name="20" href="#20">20</a>  
+<a class="jxr_linenumber" name="21" href="#21">21</a>      
+<a class="jxr_linenumber" name="22" href="#22">22</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment">     * @return true if and only if it is legitimate to send the </em>
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     * StoredCookie given to the requestUri given according to </em>
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment">     * RFC 6265 Section 5.4.1</em>
+<a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="27" href="#27">27</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> canBeSent(<strong class="jxr_keyword">final</strong> <a href="../../../org/lantern/cookie/StoredCookie.html">StoredCookie</a> cookie, <strong class="jxr_keyword">final</strong> URI requestUri) {
+<a class="jxr_linenumber" name="28" href="#28">28</a>  
+<a class="jxr_linenumber" name="29" href="#29">29</a>          <strong class="jxr_keyword">final</strong> String canonicalHost = canonicalizeHost(requestUri.getHost());
+<a class="jxr_linenumber" name="30" href="#30">30</a>          <strong class="jxr_keyword">final</strong> String canonicalDomain = canonicalizeHost(cookie.getDomain());
+<a class="jxr_linenumber" name="31" href="#31">31</a>  
+<a class="jxr_linenumber" name="32" href="#32">32</a>          <em class="jxr_comment">// RFC 6265 requires ALL of the following be true: </em>
+<a class="jxr_linenumber" name="33" href="#33">33</a>          
+<a class="jxr_linenumber" name="34" href="#34">34</a>          <em class="jxr_comment">// *  Either:</em>
+<a class="jxr_linenumber" name="35" href="#35">35</a>          <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="36" href="#36">36</a>          <em class="jxr_comment">//       The cookie's host-only-flag is true and the canonicalized</em>
+<a class="jxr_linenumber" name="37" href="#37">37</a>          <em class="jxr_comment">//       request-host is identical to the cookie's domain.</em>
+<a class="jxr_linenumber" name="38" href="#38">38</a>          <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="39" href="#39">39</a>          <strong class="jxr_keyword">if</strong> (cookie.isHostOnly()) {
+<a class="jxr_linenumber" name="40" href="#40">40</a>              <strong class="jxr_keyword">if</strong> (!canonicalHost.equals(canonicalDomain)) {
+<a class="jxr_linenumber" name="41" href="#41">41</a>                  <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="42" href="#42">42</a>              }
+<a class="jxr_linenumber" name="43" href="#43">43</a>          }
+<a class="jxr_linenumber" name="44" href="#44">44</a>          <em class="jxr_comment">//    Or:</em>
+<a class="jxr_linenumber" name="45" href="#45">45</a>          <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="46" href="#46">46</a>          <em class="jxr_comment">//       The cookie's host-only-flag is false and the canonicalized</em>
+<a class="jxr_linenumber" name="47" href="#47">47</a>          <em class="jxr_comment">//       request-host domain-matches the cookie's domain.</em>
+<a class="jxr_linenumber" name="48" href="#48">48</a>          <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="49" href="#49">49</a>          <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="50" href="#50">50</a>              <strong class="jxr_keyword">if</strong> (!domainMatches(canonicalDomain, canonicalHost)) {
+<a class="jxr_linenumber" name="51" href="#51">51</a>                  <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="52" href="#52">52</a>              }
+<a class="jxr_linenumber" name="53" href="#53">53</a>          }
+<a class="jxr_linenumber" name="54" href="#54">54</a>  
+<a class="jxr_linenumber" name="55" href="#55">55</a>          <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="56" href="#56">56</a>          <em class="jxr_comment">// *  The request-uri's path path-matches the cookie's path.</em>
+<a class="jxr_linenumber" name="57" href="#57">57</a>          <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="58" href="#58">58</a>          <strong class="jxr_keyword">if</strong> (!pathMatches(cookie.getPath(), requestUri.getPath())) {
+<a class="jxr_linenumber" name="59" href="#59">59</a>              <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="60" href="#60">60</a>          }
+<a class="jxr_linenumber" name="61" href="#61">61</a>  
+<a class="jxr_linenumber" name="62" href="#62">62</a>          <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="63" href="#63">63</a>          <em class="jxr_comment">// *  If the cookie's secure-only-flag is true, then the request-</em>
+<a class="jxr_linenumber" name="64" href="#64">64</a>          <em class="jxr_comment">//    uri's scheme must denote a "secure" protocol (as defined by</em>
+<a class="jxr_linenumber" name="65" href="#65">65</a>          <em class="jxr_comment">//    the user agent).</em>
+<a class="jxr_linenumber" name="66" href="#66">66</a>          <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="67" href="#67">67</a>          <strong class="jxr_keyword">if</strong> (cookie.isSecure()) {
+<a class="jxr_linenumber" name="68" href="#68">68</a>              <em class="jxr_comment">// [ possibly there is something else to think about here, </em>
+<a class="jxr_linenumber" name="69" href="#69">69</a>              <em class="jxr_comment">// but in general, if we're able to consider it, </em>
+<a class="jxr_linenumber" name="70" href="#70">70</a>              <em class="jxr_comment">// we're doing so on an "insecure" channel. So anything</em>
+<a class="jxr_linenumber" name="71" href="#71">71</a>              <em class="jxr_comment">// that was marked as secure by whatever means should not be</em>
+<a class="jxr_linenumber" name="72" href="#72">72</a>              <em class="jxr_comment">// sent by lantern. Actual secure cookies will be invisible to us</em>
+<a class="jxr_linenumber" name="73" href="#73">73</a>              <em class="jxr_comment">// end-to-end. ] </em>
+<a class="jxr_linenumber" name="74" href="#74">74</a>              <strong class="jxr_keyword">return</strong> false; 
+<a class="jxr_linenumber" name="75" href="#75">75</a>          }
+<a class="jxr_linenumber" name="76" href="#76">76</a>  
+<a class="jxr_linenumber" name="77" href="#77">77</a>          <em class="jxr_comment">// *  If the cookie's http-only-flag is true, then exclude the</em>
+<a class="jxr_linenumber" name="78" href="#78">78</a>          <em class="jxr_comment">//    cookie if the cookie-string is being generated for a "non-</em>
+<a class="jxr_linenumber" name="79" href="#79">79</a>          <em class="jxr_comment">//    HTTP" API (as defined by the user agent).</em>
+<a class="jxr_linenumber" name="80" href="#80">80</a>          
+<a class="jxr_linenumber" name="81" href="#81">81</a>          <em class="jxr_comment">// [ not sure there is anything to consider here ]</em>
+<a class="jxr_linenumber" name="82" href="#82">82</a>  
+<a class="jxr_linenumber" name="83" href="#83">83</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>; 
+<a class="jxr_linenumber" name="84" href="#84">84</a>      
+<a class="jxr_linenumber" name="85" href="#85">85</a>      }
+<a class="jxr_linenumber" name="86" href="#86">86</a>  
+<a class="jxr_linenumber" name="87" href="#87">87</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="88" href="#88">88</a>  <em class="jxr_javadoccomment">     * @return true if and only if the cookie Domain setting </em>
+<a class="jxr_linenumber" name="89" href="#89">89</a>  <em class="jxr_javadoccomment">     * matches the given hostname according to RFC 6265 Section 5.1.3</em>
+<a class="jxr_linenumber" name="90" href="#90">90</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="91" href="#91">91</a>  <em class="jxr_javadoccomment">     * @param cookieDomain canonical cookie domain</em>
+<a class="jxr_linenumber" name="92" href="#92">92</a>  <em class="jxr_javadoccomment">     * @param hostname canonical hostname to path match against cookieDomain</em>
+<a class="jxr_linenumber" name="93" href="#93">93</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="94" href="#94">94</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> domainMatches(<strong class="jxr_keyword">final</strong> String cookieDomain, <strong class="jxr_keyword">final</strong> String hostname) {
+<a class="jxr_linenumber" name="95" href="#95">95</a>          
+<a class="jxr_linenumber" name="96" href="#96">96</a>          <em class="jxr_comment">// A string domain-matches a given domain string if at least one of the</em>
+<a class="jxr_linenumber" name="97" href="#97">97</a>          <em class="jxr_comment">// following conditions hold:</em>
+<a class="jxr_linenumber" name="98" href="#98">98</a>          <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="99" href="#99">99</a>          <em class="jxr_comment">// o  The domain string and the string are identical.  (Note that both</em>
+<a class="jxr_linenumber" name="100" href="#100">100</a>         <em class="jxr_comment">//    the domain string and the string will have been canonicalized to</em>
+<a class="jxr_linenumber" name="101" href="#101">101</a>         <em class="jxr_comment">//    lower case at this point.)        </em>
+<a class="jxr_linenumber" name="102" href="#102">102</a>         <strong class="jxr_keyword">if</strong> (cookieDomain.equals(hostname)) {
+<a class="jxr_linenumber" name="103" href="#103">103</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="104" href="#104">104</a>         }
+<a class="jxr_linenumber" name="105" href="#105">105</a> 
+<a class="jxr_linenumber" name="106" href="#106">106</a>         <em class="jxr_comment">// o  All of the following conditions hold:</em>
+<a class="jxr_linenumber" name="107" href="#107">107</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="108" href="#108">108</a>         <em class="jxr_comment">//    *  The domain string is a suffix of the string.</em>
+<a class="jxr_linenumber" name="109" href="#109">109</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="110" href="#110">110</a>         <em class="jxr_comment">//    *  The last character of the string that is not included in the</em>
+<a class="jxr_linenumber" name="111" href="#111">111</a>         <em class="jxr_comment">//       domain string is a %x2E (".") character.</em>
+<a class="jxr_linenumber" name="112" href="#112">112</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="113" href="#113">113</a>         <em class="jxr_comment">//    *  The string is a host name (i.e., not an IP address).</em>
+<a class="jxr_linenumber" name="114" href="#114">114</a>         <strong class="jxr_keyword">if</strong> (!hostname.endsWith(cookieDomain) ||
+<a class="jxr_linenumber" name="115" href="#115">115</a>             hostname.charAt(hostname.length() - cookieDomain.length() - 1) != '.' ||
+<a class="jxr_linenumber" name="116" href="#116">116</a>             InetAddresses.isInetAddress(hostname)) {
+<a class="jxr_linenumber" name="117" href="#117">117</a>             <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="118" href="#118">118</a>         }
+<a class="jxr_linenumber" name="119" href="#119">119</a> 
+<a class="jxr_linenumber" name="120" href="#120">120</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;    
+<a class="jxr_linenumber" name="121" href="#121">121</a>     }
+<a class="jxr_linenumber" name="122" href="#122">122</a>     
+<a class="jxr_linenumber" name="123" href="#123">123</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="124" href="#124">124</a> <em class="jxr_javadoccomment">     * return a canonical form of the hostname given </em>
+<a class="jxr_linenumber" name="125" href="#125">125</a> <em class="jxr_javadoccomment">     * suitable for matching and domain matching in </em>
+<a class="jxr_linenumber" name="126" href="#126">126</a> <em class="jxr_javadoccomment">     * RFC6265 as described in Section 5.1.2</em>
+<a class="jxr_linenumber" name="127" href="#127">127</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="128" href="#128">128</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="129" href="#129">129</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String canonicalizeHost(<strong class="jxr_keyword">final</strong> String host) {
+<a class="jxr_linenumber" name="130" href="#130">130</a> 
+<a class="jxr_linenumber" name="131" href="#131">131</a>         <em class="jxr_comment">// TODO RFC6265 Section 5.1.2 </em>
+<a class="jxr_linenumber" name="132" href="#132">132</a>         <em class="jxr_comment">//        </em>
+<a class="jxr_linenumber" name="133" href="#133">133</a>         <em class="jxr_comment">// A canonicalized host name is the string generated by the following</em>
+<a class="jxr_linenumber" name="134" href="#134">134</a>         <em class="jxr_comment">// algorithm:</em>
+<a class="jxr_linenumber" name="135" href="#135">135</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="136" href="#136">136</a>         <em class="jxr_comment">//   1.  Convert the host name to a sequence of individual domain name</em>
+<a class="jxr_linenumber" name="137" href="#137">137</a>         <em class="jxr_comment">//       labels.</em>
+<a class="jxr_linenumber" name="138" href="#138">138</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="139" href="#139">139</a>         <em class="jxr_comment">//   2.  Convert each label that is not a Non-Reserved LDH (NR-LDH) label,</em>
+<a class="jxr_linenumber" name="140" href="#140">140</a>         <em class="jxr_comment">//       to an A-label (see Section 2.3.2.1 of [RFC5890] for the former</em>
+<a class="jxr_linenumber" name="141" href="#141">141</a>         <em class="jxr_comment">//       and latter), or to a "punycode label" (a label resulting from the</em>
+<a class="jxr_linenumber" name="142" href="#142">142</a>         <em class="jxr_comment">//       "ToASCII" conversion in Section 4 of [RFC3490]), as appropriate</em>
+<a class="jxr_linenumber" name="143" href="#143">143</a>         <em class="jxr_comment">//       (see Section 6.3 of this specification).</em>
+<a class="jxr_linenumber" name="144" href="#144">144</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="145" href="#145">145</a>         <em class="jxr_comment">//   3.  Concatenate the resulting labels, separated by a %x2E (".")</em>
+<a class="jxr_linenumber" name="146" href="#146">146</a>         <em class="jxr_comment">//       character.</em>
+<a class="jxr_linenumber" name="147" href="#147">147</a> 
+<a class="jxr_linenumber" name="148" href="#148">148</a>         <em class="jxr_comment">// [ java.net.IDN.toASCII supports full hostnames and RFC3490 ]</em>
+<a class="jxr_linenumber" name="149" href="#149">149</a>         <strong class="jxr_keyword">return</strong> IDN.toASCII(host).toLowerCase();
+<a class="jxr_linenumber" name="150" href="#150">150</a>     }
+<a class="jxr_linenumber" name="151" href="#151">151</a> 
+<a class="jxr_linenumber" name="152" href="#152">152</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="153" href="#153">153</a> <em class="jxr_javadoccomment">     * @return true if and only if the Path setting of the given cookie</em>
+<a class="jxr_linenumber" name="154" href="#154">154</a> <em class="jxr_javadoccomment">     * matches the given request path according to RFC 6265 Section 5.1.4</em>
+<a class="jxr_linenumber" name="155" href="#155">155</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="156" href="#156">156</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="157" href="#157">157</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> pathMatches(<strong class="jxr_keyword">final</strong> String cookiePath, <strong class="jxr_keyword">final</strong> String requestPath) {
+<a class="jxr_linenumber" name="158" href="#158">158</a>         <em class="jxr_comment">// A request-path path-matches a given cookie-path if at least one of</em>
+<a class="jxr_linenumber" name="159" href="#159">159</a>         <em class="jxr_comment">// the following conditions holds:</em>
+<a class="jxr_linenumber" name="160" href="#160">160</a> 
+<a class="jxr_linenumber" name="161" href="#161">161</a>         <em class="jxr_comment">// o  The cookie-path and the request-path are identical.</em>
+<a class="jxr_linenumber" name="162" href="#162">162</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="163" href="#163">163</a>         <em class="jxr_comment">// [ also considering empty requestPath to be equal to "/" -- it is required to be treated as such </em>
+<a class="jxr_linenumber" name="164" href="#164">164</a>         <em class="jxr_comment">//   elswhere in standards, but our pipeline does not enforce this literally ]</em>
+<a class="jxr_linenumber" name="165" href="#165">165</a>         <strong class="jxr_keyword">if</strong> (cookiePath.equals(requestPath) || (cookiePath.equals(<span class="jxr_string">"/"</span>) &amp;&amp; requestPath.equals(<span class="jxr_string">""</span>))) {
+<a class="jxr_linenumber" name="166" href="#166">166</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>; 
+<a class="jxr_linenumber" name="167" href="#167">167</a>         }
+<a class="jxr_linenumber" name="168" href="#168">168</a> 
+<a class="jxr_linenumber" name="169" href="#169">169</a>         <em class="jxr_comment">// o  The cookie-path is a prefix of the request-path, and the last</em>
+<a class="jxr_linenumber" name="170" href="#170">170</a>         <em class="jxr_comment">//    character of the cookie-path is %x2F ("/").</em>
+<a class="jxr_linenumber" name="171" href="#171">171</a>         <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="172" href="#172">172</a>         <em class="jxr_comment">// o  The cookie-path is a prefix of the request-path, and the first</em>
+<a class="jxr_linenumber" name="173" href="#173">173</a>         <em class="jxr_comment">//    character of the request-path that is not included in the cookie-</em>
+<a class="jxr_linenumber" name="174" href="#174">174</a>         <em class="jxr_comment">//    path is a %x2F ("/") character.            </em>
+<a class="jxr_linenumber" name="175" href="#175">175</a>         <strong class="jxr_keyword">if</strong> (requestPath.startsWith(cookiePath) &amp;&amp; 
+<a class="jxr_linenumber" name="176" href="#176">176</a>             (cookiePath.endsWith(<span class="jxr_string">"/"</span>) || requestPath.charAt(cookiePath.length()) == '/')) {
+<a class="jxr_linenumber" name="177" href="#177">177</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="178" href="#178">178</a>         }
+<a class="jxr_linenumber" name="179" href="#179">179</a> 
+<a class="jxr_linenumber" name="180" href="#180">180</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="181" href="#181">181</a>     }
+<a class="jxr_linenumber" name="182" href="#182">182</a> 
+<a class="jxr_linenumber" name="183" href="#183">183</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="184" href="#184">184</a> <em class="jxr_javadoccomment">     * @return true if and only if the domain given consititues a "public suffix" such as .com .co.uk etc.</em>
+<a class="jxr_linenumber" name="185" href="#185">185</a> <em class="jxr_javadoccomment">     * @see <a href="http://publicsuffix.org" target="alexandria_uri">http://publicsuffix.org</a> </em>
+<a class="jxr_linenumber" name="186" href="#186">186</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="187" href="#187">187</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="188" href="#188">188</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> isPublicSuffix(<strong class="jxr_keyword">final</strong> String domain) {
+<a class="jxr_linenumber" name="189" href="#189">189</a>         <em class="jxr_comment">// consult guava's implementation of the public suffix list</em>
+<a class="jxr_linenumber" name="190" href="#190">190</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="191" href="#191">191</a>             <strong class="jxr_keyword">return</strong> InternetDomainName.fromLenient(domain).isPublicSuffix();
+<a class="jxr_linenumber" name="192" href="#192">192</a>         }
+<a class="jxr_linenumber" name="193" href="#193">193</a>         <strong class="jxr_keyword">catch</strong> (IllegalArgumentException e) {
+<a class="jxr_linenumber" name="194" href="#194">194</a>             <em class="jxr_comment">// not a valid hostname</em>
+<a class="jxr_linenumber" name="195" href="#195">195</a>             <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="196" href="#196">196</a>         }
+<a class="jxr_linenumber" name="197" href="#197">197</a>     }
+<a class="jxr_linenumber" name="198" href="#198">198</a> 
+<a class="jxr_linenumber" name="199" href="#199">199</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String normalizedSetCookieDomain(<strong class="jxr_keyword">final</strong> String domain) {
+<a class="jxr_linenumber" name="200" href="#200">200</a>         
+<a class="jxr_linenumber" name="201" href="#201">201</a>         <em class="jxr_comment">// RFC 6265 Section 5.2.3</em>
+<a class="jxr_linenumber" name="202" href="#202">202</a> 
+<a class="jxr_linenumber" name="203" href="#203">203</a>         <em class="jxr_comment">// If the attribute-value is empty, the behavior is undefined.  However,</em>
+<a class="jxr_linenumber" name="204" href="#204">204</a>         <em class="jxr_comment">// the user agent SHOULD ignore the cookie-av entirely.</em>
+<a class="jxr_linenumber" name="205" href="#205">205</a>         <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="206" href="#206">206</a>         <strong class="jxr_keyword">if</strong> (domain == <strong class="jxr_keyword">null</strong> || domain.equals(<span class="jxr_string">""</span>)) {
+<a class="jxr_linenumber" name="207" href="#207">207</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="208" href="#208">208</a>         }
+<a class="jxr_linenumber" name="209" href="#209">209</a>         
+<a class="jxr_linenumber" name="210" href="#210">210</a>         <em class="jxr_comment">// If the first character of the attribute-value string is %x2E ("."):</em>
+<a class="jxr_linenumber" name="211" href="#211">211</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="212" href="#212">212</a>         <em class="jxr_comment">//    Let cookie-domain be the attribute-value without the leading %x2E</em>
+<a class="jxr_linenumber" name="213" href="#213">213</a>         <em class="jxr_comment">//    (".") character.</em>
+<a class="jxr_linenumber" name="214" href="#214">214</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="215" href="#215">215</a>         <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (domain.startsWith(<span class="jxr_string">"."</span>)) {
+<a class="jxr_linenumber" name="216" href="#216">216</a>             <strong class="jxr_keyword">return</strong> domain.substring(1).toLowerCase();
+<a class="jxr_linenumber" name="217" href="#217">217</a>         }
+<a class="jxr_linenumber" name="218" href="#218">218</a> 
+<a class="jxr_linenumber" name="219" href="#219">219</a>         <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="220" href="#220">220</a>         <em class="jxr_comment">// Otherwise:</em>
+<a class="jxr_linenumber" name="221" href="#221">221</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="222" href="#222">222</a>         <em class="jxr_comment">//    Let cookie-domain be the entire attribute-value.</em>
+<a class="jxr_linenumber" name="223" href="#223">223</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="224" href="#224">224</a>         <em class="jxr_comment">// Convert the cookie-domain to lower case.</em>
+<a class="jxr_linenumber" name="225" href="#225">225</a> 
+<a class="jxr_linenumber" name="226" href="#226">226</a>         <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="227" href="#227">227</a>             <strong class="jxr_keyword">return</strong> domain.toLowerCase();
+<a class="jxr_linenumber" name="228" href="#228">228</a>         }
+<a class="jxr_linenumber" name="229" href="#229">229</a>     }
+<a class="jxr_linenumber" name="230" href="#230">230</a> 
+<a class="jxr_linenumber" name="231" href="#231">231</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String normalizedSetCookiePath(<strong class="jxr_keyword">final</strong> String path, <strong class="jxr_keyword">final</strong> URI originUri) {
+<a class="jxr_linenumber" name="232" href="#232">232</a>         <em class="jxr_comment">// RFC 6265 Section 5.2.4</em>
+<a class="jxr_linenumber" name="233" href="#233">233</a> 
+<a class="jxr_linenumber" name="234" href="#234">234</a>         <em class="jxr_comment">// If the attribute-value is empty or if the first character of the</em>
+<a class="jxr_linenumber" name="235" href="#235">235</a>         <em class="jxr_comment">// attribute-value is not %x2F ("/"):</em>
+<a class="jxr_linenumber" name="236" href="#236">236</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="237" href="#237">237</a>         <em class="jxr_comment">//    Let cookie-path be the default-path.</em>
+<a class="jxr_linenumber" name="238" href="#238">238</a>         <strong class="jxr_keyword">if</strong> (path == <strong class="jxr_keyword">null</strong> || path.equals(<span class="jxr_string">""</span>) || path.charAt(0) != '/') {
+<a class="jxr_linenumber" name="239" href="#239">239</a>             <strong class="jxr_keyword">return</strong> defaultSetCookiePath(originUri);
+<a class="jxr_linenumber" name="240" href="#240">240</a>         }
+<a class="jxr_linenumber" name="241" href="#241">241</a> 
+<a class="jxr_linenumber" name="242" href="#242">242</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="243" href="#243">243</a>         <em class="jxr_comment">// Otherwise:</em>
+<a class="jxr_linenumber" name="244" href="#244">244</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="245" href="#245">245</a>         <em class="jxr_comment">//    Let cookie-path be the attribute-value.</em>
+<a class="jxr_linenumber" name="246" href="#246">246</a>         <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="247" href="#247">247</a>         <strong class="jxr_keyword">return</strong> path;
+<a class="jxr_linenumber" name="248" href="#248">248</a>     }
+<a class="jxr_linenumber" name="249" href="#249">249</a>     
+<a class="jxr_linenumber" name="250" href="#250">250</a> 
+<a class="jxr_linenumber" name="251" href="#251">251</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="252" href="#252">252</a> <em class="jxr_javadoccomment">     * Compute the default Path for a cookie sent from the given originUri </em>
+<a class="jxr_linenumber" name="253" href="#253">253</a> <em class="jxr_javadoccomment">     * according to RFC 6265 Section 5.1.4</em>
+<a class="jxr_linenumber" name="254" href="#254">254</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="255" href="#255">255</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="256" href="#256">256</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String defaultSetCookiePath(<strong class="jxr_keyword">final</strong> URI requestUri) {
+<a class="jxr_linenumber" name="257" href="#257">257</a> 
+<a class="jxr_linenumber" name="258" href="#258">258</a>         <em class="jxr_comment">// 1.  Let uri-path be the path portion of the request-uri if such a</em>
+<a class="jxr_linenumber" name="259" href="#259">259</a>         <em class="jxr_comment">//     portion exists (and empty otherwise).  For example, if the</em>
+<a class="jxr_linenumber" name="260" href="#260">260</a>         <em class="jxr_comment">//     request-uri contains just a path (and optional query string),</em>
+<a class="jxr_linenumber" name="261" href="#261">261</a>         <em class="jxr_comment">//     then the uri-path is that path (without the %x3F ("?") character</em>
+<a class="jxr_linenumber" name="262" href="#262">262</a>         <em class="jxr_comment">//     or query string), and if the request-uri contains a full</em>
+<a class="jxr_linenumber" name="263" href="#263">263</a>         <em class="jxr_comment">//     absoluteURI, the uri-path is the path component of that URI.</em>
+<a class="jxr_linenumber" name="264" href="#264">264</a>         <strong class="jxr_keyword">final</strong> String uriPath = requestUri.getPath();
+<a class="jxr_linenumber" name="265" href="#265">265</a> 
+<a class="jxr_linenumber" name="266" href="#266">266</a>         <em class="jxr_comment">// 2.  If the uri-path is empty or if the first character of the uri-</em>
+<a class="jxr_linenumber" name="267" href="#267">267</a>         <em class="jxr_comment">//     path is not a %x2F ("/") character, output %x2F ("/") and skip</em>
+<a class="jxr_linenumber" name="268" href="#268">268</a>         <em class="jxr_comment">//     the remaining steps.</em>
+<a class="jxr_linenumber" name="269" href="#269">269</a>         <strong class="jxr_keyword">if</strong> (uriPath == <strong class="jxr_keyword">null</strong> || uriPath.equals(<span class="jxr_string">""</span>) || uriPath.charAt(0) != '/') {
+<a class="jxr_linenumber" name="270" href="#270">270</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"/"</span>;
+<a class="jxr_linenumber" name="271" href="#271">271</a>         }
+<a class="jxr_linenumber" name="272" href="#272">272</a> 
+<a class="jxr_linenumber" name="273" href="#273">273</a>         <em class="jxr_comment">// 3.  If the uri-path contains no more than one %x2F ("/") character,</em>
+<a class="jxr_linenumber" name="274" href="#274">274</a>         <em class="jxr_comment">//     output %x2F ("/") and skip the remaining step.</em>
+<a class="jxr_linenumber" name="275" href="#275">275</a>         <strong class="jxr_keyword">int</strong> lastSlash = uriPath.lastIndexOf('/');
+<a class="jxr_linenumber" name="276" href="#276">276</a>         <strong class="jxr_keyword">if</strong> (lastSlash &lt;= 0) { <em class="jxr_comment">// already verified it starts with "/" so this indicates 1 / only. </em>
+<a class="jxr_linenumber" name="277" href="#277">277</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"/"</span>;
+<a class="jxr_linenumber" name="278" href="#278">278</a>         }
+<a class="jxr_linenumber" name="279" href="#279">279</a> 
+<a class="jxr_linenumber" name="280" href="#280">280</a>         <em class="jxr_comment">// 4.  Output the characters of the uri-path from the first character up</em>
+<a class="jxr_linenumber" name="281" href="#281">281</a>         <em class="jxr_comment">//     to, but not including, the right-most %x2F ("/").</em>
+<a class="jxr_linenumber" name="282" href="#282">282</a>         <strong class="jxr_keyword">return</strong> uriPath.substring(0, lastSlash);        
+<a class="jxr_linenumber" name="283" href="#283">283</a>     }
+<a class="jxr_linenumber" name="284" href="#284">284</a>     
+<a class="jxr_linenumber" name="285" href="#285">285</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="286" href="#286">286</a> <em class="jxr_javadoccomment">     * create a URI that may be a URL with unicode in the hostname. </em>
+<a class="jxr_linenumber" name="287" href="#287">287</a> <em class="jxr_javadoccomment">     * If so, first convert the hostname to A-Labels via RFC 3490.</em>
+<a class="jxr_linenumber" name="288" href="#288">288</a> <em class="jxr_javadoccomment">     * Works around an issue with constructing URIs with urls </em>
+<a class="jxr_linenumber" name="289" href="#289">289</a> <em class="jxr_javadoccomment">     * containing unicode hostnames.</em>
+<a class="jxr_linenumber" name="290" href="#290">290</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="291" href="#291">291</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> URI makeSafeURI(<strong class="jxr_keyword">final</strong> String uri) <strong class="jxr_keyword">throws</strong> URISyntaxException {
+<a class="jxr_linenumber" name="292" href="#292">292</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="293" href="#293">293</a>             <strong class="jxr_keyword">final</strong> URL url = <strong class="jxr_keyword">new</strong> URL(uri);
+<a class="jxr_linenumber" name="294" href="#294">294</a>             <strong class="jxr_keyword">final</strong> String safeHost = IDN.toASCII(url.getHost());
+<a class="jxr_linenumber" name="295" href="#295">295</a>             <strong class="jxr_keyword">if</strong> (safeHost.equals(url.getHost())) {
+<a class="jxr_linenumber" name="296" href="#296">296</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> URI(uri);
+<a class="jxr_linenumber" name="297" href="#297">297</a>             }
+<a class="jxr_linenumber" name="298" href="#298">298</a>             <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="299" href="#299">299</a>                 <em class="jxr_comment">// construct a URL String with the IDN.toASCII version </em>
+<a class="jxr_linenumber" name="300" href="#300">300</a>                 <em class="jxr_comment">// of the host (A-Labels)</em>
+<a class="jxr_linenumber" name="301" href="#301">301</a>                 
+<a class="jxr_linenumber" name="302" href="#302">302</a>                 <em class="jxr_comment">// there is no general way to re-construct or modify </em>
+<a class="jxr_linenumber" name="303" href="#303">303</a>                 <em class="jxr_comment">// a URL or URI other than by completely re-represeting it a</em>
+<a class="jxr_linenumber" name="304" href="#304">304</a>                 <em class="jxr_comment">// String and calling the single String constructor.</em>
+<a class="jxr_linenumber" name="305" href="#305">305</a>                 <em class="jxr_comment">// All other constructors are mainly intended to test the </em>
+<a class="jxr_linenumber" name="306" href="#306">306</a>                 <em class="jxr_comment">// patience of developers. </em>
+<a class="jxr_linenumber" name="307" href="#307">307</a>                 <strong class="jxr_keyword">final</strong> StringBuffer newURL = <strong class="jxr_keyword">new</strong> StringBuffer();
+<a class="jxr_linenumber" name="308" href="#308">308</a>                 newURL.append(url.getProtocol());
+<a class="jxr_linenumber" name="309" href="#309">309</a>                 newURL.append(<span class="jxr_string">"://"</span>);
+<a class="jxr_linenumber" name="310" href="#310">310</a>                 <strong class="jxr_keyword">if</strong> (url.getUserInfo() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="311" href="#311">311</a>                     newURL.append(url.getUserInfo());
+<a class="jxr_linenumber" name="312" href="#312">312</a>                     newURL.append(<span class="jxr_string">"@"</span>); 
+<a class="jxr_linenumber" name="313" href="#313">313</a>                 }
+<a class="jxr_linenumber" name="314" href="#314">314</a>                 newURL.append(safeHost);
+<a class="jxr_linenumber" name="315" href="#315">315</a>                 <strong class="jxr_keyword">if</strong> (url.getPort() != -1) {
+<a class="jxr_linenumber" name="316" href="#316">316</a>                     newURL.append(<span class="jxr_string">":"</span> + url.getPort());
+<a class="jxr_linenumber" name="317" href="#317">317</a>                 }
+<a class="jxr_linenumber" name="318" href="#318">318</a>                 newURL.append(url.getFile());
+<a class="jxr_linenumber" name="319" href="#319">319</a>                 <strong class="jxr_keyword">if</strong> (url.getRef() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="320" href="#320">320</a>                     newURL.append(<span class="jxr_string">"#"</span>);
+<a class="jxr_linenumber" name="321" href="#321">321</a>                     newURL.append(url.getRef());
+<a class="jxr_linenumber" name="322" href="#322">322</a>                 }
+<a class="jxr_linenumber" name="323" href="#323">323</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> URI(newURL.toString());
+<a class="jxr_linenumber" name="324" href="#324">324</a>             }
+<a class="jxr_linenumber" name="325" href="#325">325</a>         }
+<a class="jxr_linenumber" name="326" href="#326">326</a>         <strong class="jxr_keyword">catch</strong> (MalformedURLException e) {
+<a class="jxr_linenumber" name="327" href="#327">327</a>             <em class="jxr_comment">// not a url.. who knows maybe we're making a request to </em>
+<a class="jxr_linenumber" name="328" href="#328">328</a>             <em class="jxr_comment">// an isbn number, just do our best...</em>
+<a class="jxr_linenumber" name="329" href="#329">329</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> URI(uri);
+<a class="jxr_linenumber" name="330" href="#330">330</a>         }
+<a class="jxr_linenumber" name="331" href="#331">331</a>     }
+<a class="jxr_linenumber" name="332" href="#332">332</a>     
+<a class="jxr_linenumber" name="333" href="#333">333</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="334" href="#334">334</a> <em class="jxr_javadoccomment">     * @return a new HttpRequest with the same basic info as the given request.</em>
+<a class="jxr_linenumber" name="335" href="#335">335</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="336" href="#336">336</a> <em class="jxr_javadoccomment">     * includes version, method uri and headers. *This does not copy content* </em>
+<a class="jxr_linenumber" name="337" href="#337">337</a> <em class="jxr_javadoccomment">     */</em> 
+<a class="jxr_linenumber" name="338" href="#338">338</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> HttpRequest copyHttpRequestInfo(HttpRequest toCopy) {
+<a class="jxr_linenumber" name="339" href="#339">339</a>         <strong class="jxr_keyword">final</strong> HttpVersion ver = toCopy.getProtocolVersion();
+<a class="jxr_linenumber" name="340" href="#340">340</a>         <strong class="jxr_keyword">final</strong> HttpVersion verCopy = <strong class="jxr_keyword">new</strong> HttpVersion(ver.getText(), ver.isKeepAliveDefault());
+<a class="jxr_linenumber" name="341" href="#341">341</a>         <strong class="jxr_keyword">final</strong> DefaultHttpRequest request = <strong class="jxr_keyword">new</strong> DefaultHttpRequest(verCopy, toCopy.getMethod(), toCopy.getUri());
+<a class="jxr_linenumber" name="342" href="#342">342</a>         
+<a class="jxr_linenumber" name="343" href="#343">343</a>         <em class="jxr_comment">// copy request headers</em>
+<a class="jxr_linenumber" name="344" href="#344">344</a>         <strong class="jxr_keyword">for</strong> (String headerName : toCopy.getHeaderNames()) {
+<a class="jxr_linenumber" name="345" href="#345">345</a>             request.setHeader(headerName, toCopy.getHeaders(headerName));
+<a class="jxr_linenumber" name="346" href="#346">346</a>         }
+<a class="jxr_linenumber" name="347" href="#347">347</a> 
+<a class="jxr_linenumber" name="348" href="#348">348</a>         <strong class="jxr_keyword">return</strong> request;
+<a class="jxr_linenumber" name="349" href="#349">349</a>     }
+<a class="jxr_linenumber" name="350" href="#350">350</a> 
+<a class="jxr_linenumber" name="351" href="#351">351</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../org/lantern/cookie/CookieUtils.html">RFC6265SetCookieFilter</a> <strong class="jxr_keyword">implements</strong> <a href="../../../org/lantern/cookie/CookieFilter.html">CookieFilter</a> {
+<a class="jxr_linenumber" name="352" href="#352">352</a>         
+<a class="jxr_linenumber" name="353" href="#353">353</a>         String canonicalHostname;
+<a class="jxr_linenumber" name="354" href="#354">354</a>         
+<a class="jxr_linenumber" name="355" href="#355">355</a>         <strong class="jxr_keyword">public</strong> <a href="../../../org/lantern/cookie/CookieUtils.html">RFC6265SetCookieFilter</a>(HttpRequest context) {
+<a class="jxr_linenumber" name="356" href="#356">356</a>             <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="357" href="#357">357</a>                 <strong class="jxr_keyword">final</strong> URI requestUri = makeSafeURI(context.getUri());
+<a class="jxr_linenumber" name="358" href="#358">358</a>                 canonicalHostname = canonicalizeHost(requestUri.getHost());
+<a class="jxr_linenumber" name="359" href="#359">359</a>             }
+<a class="jxr_linenumber" name="360" href="#360">360</a>             <strong class="jxr_keyword">catch</strong> (URISyntaxException e) {
+<a class="jxr_linenumber" name="361" href="#361">361</a>                 canonicalHostname = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="362" href="#362">362</a>             }
+<a class="jxr_linenumber" name="363" href="#363">363</a>         }
+<a class="jxr_linenumber" name="364" href="#364">364</a> 
+<a class="jxr_linenumber" name="365" href="#365">365</a>         <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="366" href="#366">366</a> <em class="jxr_javadoccomment">         * @return true if and only if the Cookie given can be legitimately set on a request</em>
+<a class="jxr_linenumber" name="367" href="#367">367</a> <em class="jxr_javadoccomment">         * to the URI of the request context according to the Cookie's domain setting</em>
+<a class="jxr_linenumber" name="368" href="#368">368</a> <em class="jxr_javadoccomment">         * and RFC 6265 Section 5.3</em>
+<a class="jxr_linenumber" name="369" href="#369">369</a> <em class="jxr_javadoccomment">         * </em>
+<a class="jxr_linenumber" name="370" href="#370">370</a> <em class="jxr_javadoccomment">         * eg you cannot set a Cookie on facebook.com when making a </em>
+<a class="jxr_linenumber" name="371" href="#371">371</a> <em class="jxr_javadoccomment">         * request to <a href="http://malicious.example.com/" target="alexandria_uri">http://malicious.example.com/</a> etc.</em>
+<a class="jxr_linenumber" name="372" href="#372">372</a> <em class="jxr_javadoccomment">         *</em>
+<a class="jxr_linenumber" name="373" href="#373">373</a> <em class="jxr_javadoccomment">         */</em>
+<a class="jxr_linenumber" name="374" href="#374">374</a>         @Override
+<a class="jxr_linenumber" name="375" href="#375">375</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> accepts(<strong class="jxr_keyword">final</strong> Cookie cookie) {
+<a class="jxr_linenumber" name="376" href="#376">376</a> 
+<a class="jxr_linenumber" name="377" href="#377">377</a>             <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="378" href="#378">378</a>             <em class="jxr_comment">// Rejection steps from RFC 6265 Sections 5.3.5-5.3.6</em>
+<a class="jxr_linenumber" name="379" href="#379">379</a>             <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="380" href="#380">380</a>             <em class="jxr_comment">// netty / lantern does not exactly follow the parsing and processing model </em>
+<a class="jxr_linenumber" name="381" href="#381">381</a>             <em class="jxr_comment">// of RFC 6265, which requires rejecting cookies on certain bases during </em>
+<a class="jxr_linenumber" name="382" href="#382">382</a>             <em class="jxr_comment">// parsing.  Instead, those considerations are collected here and make</em>
+<a class="jxr_linenumber" name="383" href="#383">383</a>             <em class="jxr_comment">// certain equivalent rejections.</em>
+<a class="jxr_linenumber" name="384" href="#384">384</a>             <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="385" href="#385">385</a>             <em class="jxr_comment">// Other normalization is expected to have been carried out, minus </em>
+<a class="jxr_linenumber" name="386" href="#386">386</a>             <em class="jxr_comment">// the immediate rejection steps, @see StoredCookie.fromSetCookie</em>
+<a class="jxr_linenumber" name="387" href="#387">387</a>             <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="388" href="#388">388</a>             <strong class="jxr_keyword">if</strong> (!(cookie instanceof StoredCookie) || canonicalHostname == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="389" href="#389">389</a>                 <strong class="jxr_keyword">return</strong> false; 
+<a class="jxr_linenumber" name="390" href="#390">390</a>             }
+<a class="jxr_linenumber" name="391" href="#391">391</a> 
+<a class="jxr_linenumber" name="392" href="#392">392</a>             <strong class="jxr_keyword">final</strong> <a href="../../../org/lantern/cookie/StoredCookie.html">StoredCookie</a> storedCookie = (StoredCookie) cookie;
+<a class="jxr_linenumber" name="393" href="#393">393</a> 
+<a class="jxr_linenumber" name="394" href="#394">394</a>             <strong class="jxr_keyword">final</strong> String canonicalDomain = canonicalizeHost(storedCookie.getDomain());
+<a class="jxr_linenumber" name="395" href="#395">395</a> 
+<a class="jxr_linenumber" name="396" href="#396">396</a>             <em class="jxr_comment">// if the cookie is host-only, only exact matches are permitted </em>
+<a class="jxr_linenumber" name="397" href="#397">397</a>             <em class="jxr_comment">// between the host. Interestingly, it is allowed to be a public suffix </em>
+<a class="jxr_linenumber" name="398" href="#398">398</a>             <em class="jxr_comment">// in this exact match case as, strangely, some are also websites. X_x</em>
+<a class="jxr_linenumber" name="399" href="#399">399</a>             <strong class="jxr_keyword">if</strong> (storedCookie.isHostOnly()) {
+<a class="jxr_linenumber" name="400" href="#400">400</a>                 <strong class="jxr_keyword">return</strong> canonicalDomain.equals(canonicalHostname);
+<a class="jxr_linenumber" name="401" href="#401">401</a>             }
+<a class="jxr_linenumber" name="402" href="#402">402</a> 
+<a class="jxr_linenumber" name="403" href="#403">403</a>             <em class="jxr_comment">// if it is not host-only, it must domain match.</em>
+<a class="jxr_linenumber" name="404" href="#404">404</a>             <strong class="jxr_keyword">if</strong> (!domainMatches(canonicalDomain, canonicalHostname)) {
+<a class="jxr_linenumber" name="405" href="#405">405</a>                 <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="406" href="#406">406</a>             }
+<a class="jxr_linenumber" name="407" href="#407">407</a> 
+<a class="jxr_linenumber" name="408" href="#408">408</a>             <em class="jxr_comment">// cannot be a public suffix unless host-only.</em>
+<a class="jxr_linenumber" name="409" href="#409">409</a>             <strong class="jxr_keyword">if</strong> (isPublicSuffix(canonicalDomain)) {
+<a class="jxr_linenumber" name="410" href="#410">410</a>                 <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="411" href="#411">411</a>             }
+<a class="jxr_linenumber" name="412" href="#412">412</a> 
+<a class="jxr_linenumber" name="413" href="#413">413</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="414" href="#414">414</a>         }
+<a class="jxr_linenumber" name="415" href="#415">415</a>                 
+<a class="jxr_linenumber" name="416" href="#416">416</a>     }
+<a class="jxr_linenumber" name="417" href="#417">417</a> 
+<a class="jxr_linenumber" name="418" href="#418">418</a>     
+<a class="jxr_linenumber" name="419" href="#419">419</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="420" href="#420">420</a> <em class="jxr_javadoccomment">     * creates a cookie filter factory that always returns the same</em>
+<a class="jxr_linenumber" name="421" href="#421">421</a> <em class="jxr_javadoccomment">     * object.</em>
+<a class="jxr_linenumber" name="422" href="#422">422</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="423" href="#423">423</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> CookieFilter.Factory dummyCookieFilterFactory(<strong class="jxr_keyword">final</strong> <a href="../../../org/lantern/cookie/CookieFilter.html">CookieFilter</a> f) {
+<a class="jxr_linenumber" name="424" href="#424">424</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> CookieFilter.Factory() {
+<a class="jxr_linenumber" name="425" href="#425">425</a>             @Override
+<a class="jxr_linenumber" name="426" href="#426">426</a>             <strong class="jxr_keyword">public</strong> <a href="../../../org/lantern/cookie/CookieFilter.html">CookieFilter</a> createCookieFilter(<strong class="jxr_keyword">final</strong> HttpRequest req) {
+<a class="jxr_linenumber" name="427" href="#427">427</a>                 <strong class="jxr_keyword">return</strong> f;
+<a class="jxr_linenumber" name="428" href="#428">428</a>             }
+<a class="jxr_linenumber" name="429" href="#429">429</a>         };
+<a class="jxr_linenumber" name="430" href="#430">430</a>     }
+<a class="jxr_linenumber" name="431" href="#431">431</a>     
+<a class="jxr_linenumber" name="432" href="#432">432</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+<duplication lines="59" tokens="291">
+<file line="130" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/ui/SwtPasswordCreationDialog.java"/>
+<file line="103" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/ui/SwtPasswordDialog.java"/>
+<codefragment>
+<![CDATA[
+            }
+        });
+
+        buttonCancel.addListener(SWT.Selection, new Listener() {
+            @Override
+            public void handleEvent(final Event event) {
+                shell.dispose();
+            }
+        });
+        
+        shell.addListener(SWT.Traverse, new Listener() {
+            @Override
+            public void handleEvent(final Event event) {
+                if (event.detail == SWT.TRAVERSE_ESCAPE) {
+                    event.doit = false;
+                }
+            }
+        });
+
+        shell.pack();
+        final Rectangle rect = shell.getBounds();
+        final Point center = 
+            LanternUtils.getScreenCenter(rect.width, rect.height);
+        shell.setLocation((int)center.getX(), (int)center.getY());
+        
+        passwordField.setText("");
+        
+        shell.pack();
+        shell.open();
+        shell.forceActive();
+
+        final Display display = parent.getDisplay();
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) {
+                display.sleep();
+            }
+        }
+
+        final String text = passwordText.get();
+        if (StringUtils.isEmpty(text)) {
+            throw new UserInputRequiredException();
+        }
+        //shell.close();
+        //shell.getDisplay().dispose();
+        shell.dispose();
+        display.dispose();
+        return text;
+    }
+
+   private Composite newMarginComposite(final Shell shell, final int marginBottom) {
+       final Composite comp = new Composite(shell, SWT.NONE);
+       final RowLayout layout = new RowLayout();
+       layout.marginBottom = marginBottom;
+       layout.center = true;
+       layout.pack = true;
+       layout.type = SWT.HORIZONTAL;
+       comp.setLayout(layout);
+       return comp;
+    }
+]]>
+</codefragment>
+</duplication>
+<duplication lines="28" tokens="145">
+<file line="88" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/ui/SwtPasswordCreationDialog.java"/>
+<file line="74" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/ui/SwtPasswordDialog.java"/>
+<codefragment>
+<![CDATA[
+        password2Field.setLayoutData(new RowData(180, 22));
+        //password2Field.setFocus();
+        
+        final Button buttonCancel = new Button(buttonComposite, SWT.PUSH);
+        buttonCancel.setText("Cancel");
+        
+        final Button buttonOK = new Button(buttonComposite, SWT.PUSH);
+        buttonOK.setText("OK");
+        buttonOK.setEnabled(false);
+
+        final AtomicReference<String> passwordText = 
+            new AtomicReference<String>();
+        
+        passwordField.addListener(SWT.Modify, new Listener() {
+            @Override
+            public void handleEvent(final Event event) {
+                 final String text = passwordField.getText();
+                 if (StringUtils.isNotEmpty(text)) {
+                     buttonOK.setEnabled(true);
+                 } else {
+                     buttonOK.setEnabled(false);
+                 }
+            }
+        });
+
+        buttonOK.addListener(SWT.Selection, new Listener() {
+            @Override
+            public void handleEvent(final Event event) {
+]]>
+</codefragment>
+</duplication>
+<duplication lines="40" tokens="136">
+<file line="157" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternBrowser.java"/>
+<file line="275" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/LanternBrowser.java"/>
+<codefragment>
+<![CDATA[
+        startVals.put("confirm_password", "Set Password");
+        // startVals.put("set_password_title", I18n.tr("Set Password"));
+        // startVals.put("title_string", "Choose Password");
+        // startVals.put("body_string", I18n.tr("Please choose a password to protect your local information."));
+        // startVals.put("password1_label", I18n.tr("Password"));
+        // startVals.put("password2_label", I18n.tr("Confirm Password"));
+        // startVals.put("confirm_password", I18n.tr("Set Password"));
+
+        browser.addLocationListener(new LocationAdapter() {
+            @Override
+            public void changed(final LocationEvent event) {
+                final String location = event.location;
+                log.info("Got location CHANGED: {}", location);
+                if (lastEventLocation.equals(location)) {
+                    return;
+                }
+                processEvent(event);
+            }
+            @Override
+            public void changing(final LocationEvent event) {
+                final String location = event.location;
+                lastEventLocation = location;
+                log.info("Got location CHANGING: {}", location);
+                processEvent(event);
+            }
+
+            private void processEvent(final LocationEvent event) {
+                final String location = event.location;
+                log.info("Got location: {}", location);
+
+                if (location.endsWith("-copy.html")) {
+                    // This just means it's a request we've already prepared
+                    // for serving. If we don't do this check, we'll get an
+                    // infinite loop of copies.
+                    log.info("Accepting copied location");
+                    return;
+                }
+                // else if (location.contains("setLocalPassword0")) {
+                // }
+                else if (location.contains("setLocalPassword1")) {
+]]>
+</codefragment>
+</duplication>
+<duplication lines="28" tokens="132">
+<file line="581" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/DefaultProxyTracker.java"/>
+<file line="318" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/Diagnostics.java"/>
+<codefragment>
+<![CDATA[
+        }
+        if (!file.isFile()) {
+            log.error("No fallback proxy to load!");
+            return;
+        }
+
+        final ObjectMapper om = new ObjectMapper();
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            final String proxy = IOUtils.toString(is);
+            final FallbackProxy fp = om.readValue(proxy, FallbackProxy.class);
+            
+            fallbackServerHost = fp.getIp();
+            fallbackServerPort = fp.getPort();
+            log.debug("Set fallback proxy to {}", fallbackServerHost);
+        } catch (final IOException e) {
+            log.error("Could not load fallback", e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    private void copyFallback() throws IOException {
+        log.debug("Copying fallback file");
+        final File from;
+        
+        final File cur = 
+]]>
+</codefragment>
+</duplication>
+<duplication lines="22" tokens="111">
+<file line="120" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/win/WindowsRegCommand.java"/>
+<file line="174" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/win/WindowsRegCommand.java"/>
+<codefragment>
+<![CDATA[
+            final Process process = pb.start();
+            
+            final InputStream is = process.getInputStream();
+            final StringWriter sw = new StringWriter();;
+            final Runnable runner = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        int c;
+                        while ((c = is.read()) != -1) {
+                            sw.write(c);
+                        }
+                    }
+                    catch (final IOException e) { 
+                        LOG.error("Error reading reg with key '"+key+
+                            "' and val '"+ valueName+"'", e);
+                    }
+                }
+            };
+            final Thread t = new Thread(runner, "Registry-Reading-Thread");
+            t.setDaemon(true);
+            t.start();
+]]>
+</codefragment>
+</duplication>
+<duplication lines="25" tokens="103">
+<file line="31" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/ui/SwtPasswordCreationDialog.java"/>
+<file line="31" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/ui/SwtPasswordDialog.java"/>
+<codefragment>
+<![CDATA[
+    public SwtPasswordCreationDialog(final String errorMessage) {
+        super(new Shell());
+        this.errorMessage = errorMessage;
+    }
+
+    /**
+     * Makes the dialog visible.
+     * 
+     * @return The password text.
+     * @throws UserInputRequiredException If the user did not enter any input.
+     */
+    public String askForPassword() throws UserInputRequiredException {
+        final Shell parent = getParent();
+        final Shell shell = new Shell(parent, SWT.TITLE | SWT.BORDER
+                | SWT.APPLICATION_MODAL);
+        shell.setText("Lantern Password");
+
+        final RowLayout layout = new RowLayout(SWT.VERTICAL);
+        layout.marginLeft = 20;
+        layout.marginTop = 20;
+        layout.marginRight = 20;
+        layout.marginBottom = 20;
+        layout.center = true;
+        
+        shell.setLayout(layout);
+]]>
+</codefragment>
+</duplication>
+</pmd-cpd>

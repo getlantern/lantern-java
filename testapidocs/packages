@@ -1,0 +1,6 @@
+org.lantern
+org.lantern.geoip
+org.lantern.state
+org.lantern.stubs
+org.lantern.udtrelay
+org.lantern.win
