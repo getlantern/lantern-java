@@ -244,7 +244,7 @@
 <th>Missing Classes</th></tr>
 <tr class="b">
 <td>440</td>
-<td>143</td>
+<td>139</td>
 <td>0</td>
 <td>0</td></tr></table></div>
 <div class="section">
@@ -342,7 +342,7 @@
 <td>1</td></tr>
 <tr class="a">
 <td><a href="#org.lantern.geoip.GeoIpCompressor">org.lantern.geoip.GeoIpCompressor</a></td>
-<td>4</td></tr>
+<td>2</td></tr>
 <tr class="b">
 <td><a href="#org.lantern.geoip.GeoIpLookupService">org.lantern.geoip.GeoIpLookupService</a></td>
 <td>3</td></tr>
@@ -357,7 +357,7 @@
 <td>8</td></tr>
 <tr class="b">
 <td><a href="#org.lantern.http.InteractionServlet">org.lantern.http.InteractionServlet</a></td>
-<td>15</td></tr>
+<td>14</td></tr>
 <tr class="a">
 <td><a href="#org.lantern.http.PhotoServlet">org.lantern.http.PhotoServlet</a></td>
 <td>1</td></tr>
@@ -405,7 +405,7 @@
 <td>1</td></tr>
 <tr class="b">
 <td><a href="#org.lantern.util.DefaultStopwatch">org.lantern.util.DefaultStopwatch</a></td>
-<td>3</td></tr></table></div><a name="org.freedesktop.Secret.Pair"></a>
+<td>2</td></tr></table></div><a name="org.freedesktop.Secret.Pair"></a>
 <div class="section">
 <h3>org.freedesktop.Secret.Pair<a name="org.freedesktop.Secret.Pair"></a></h3>
 <table border="0" class="table table-striped">
@@ -419,7 +419,7 @@
 <td>org.freedesktop.Secret.Pair inherits equals and uses Object.hashCode()</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#HE_INHERITS_EQUALS_USE_HASHCODE">HE_INHERITS_EQUALS_USE_HASHCODE</a></td>
-<td>12</td>
+<td><a href="./xref/org/freedesktop/Secret/Pair.html#12">12-15</a></td>
 <td>Medium</td></tr></table></div><a name="org.freedesktop.Secret.Secret"></a>
 <div class="section">
 <h3>org.freedesktop.Secret.Secret<a name="org.freedesktop.Secret.Secret"></a></h3>
@@ -434,7 +434,7 @@
 <td>org.freedesktop.Secret.Secret inherits equals and uses Object.hashCode()</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#HE_INHERITS_EQUALS_USE_HASHCODE">HE_INHERITS_EQUALS_USE_HASHCODE</a></td>
-<td>23</td>
+<td><a href="./xref/org/freedesktop/Secret/Secret.html#23">23-28</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.AppIndicatorTray"></a>
 <div class="section">
 <h3>org.lantern.AppIndicatorTray<a name="org.lantern.AppIndicatorTray"></a></h3>
@@ -449,19 +449,19 @@
 <td>org.lantern.AppIndicatorTray.quit() invokes System.exit(...), which shuts down the entire virtual machine</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_EXIT">DM_EXIT</a></td>
-<td>223</td>
+<td><a href="./xref/org/lantern/AppIndicatorTray.html#223">223</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Read of unwritten public or protected field parent in org.lantern.AppIndicatorTray.createTray()</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD">NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td>174</td>
+<td><a href="./xref/org/lantern/AppIndicatorTray.html#173">173</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Read of unwritten public or protected field g_type_instance in org.lantern.AppIndicatorTray.createTray()</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD">NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td>174</td>
+<td><a href="./xref/org/lantern/AppIndicatorTray.html#173">173</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.BayeuxInitializer"></a>
 <div class="section">
 <h3>org.lantern.BayeuxInitializer<a name="org.lantern.BayeuxInitializer"></a></h3>
@@ -476,7 +476,7 @@
 <td>Class org.lantern.BayeuxInitializer defines non-transient non-serializable instance field syncer</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/BayeuxInitializer.html#">Not available</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.CertTrackingSslHandlerFactory"></a>
 <div class="section">
 <h3>org.lantern.CertTrackingSslHandlerFactory<a name="org.lantern.CertTrackingSslHandlerFactory"></a></h3>
@@ -491,13 +491,13 @@
 <td>org.lantern.CertTrackingSslHandlerFactory.fallbackProxySslEngine() may fail to clean up java.io.InputStream</td>
 <td>EXPERIMENTAL</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#OBL_UNSATISFIED_OBLIGATION">OBL_UNSATISFIED_OBLIGATION</a></td>
-<td>114</td>
+<td><a href="./xref/org/lantern/CertTrackingSslHandlerFactory.html#114">114</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>org.lantern.CertTrackingSslHandlerFactory.fallbackProxySslEngine() may fail to close stream</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#OS_OPEN_STREAM">OS_OPEN_STREAM</a></td>
-<td>114</td>
+<td><a href="./xref/org/lantern/CertTrackingSslHandlerFactory.html#114">114</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.ChromeBrowserService"></a>
 <div class="section">
 <h3>org.lantern.ChromeBrowserService<a name="org.lantern.ChromeBrowserService"></a></h3>
@@ -512,7 +512,7 @@
 <td>org.lantern.ChromeBrowserService.launchChrome(int, String) invokes System.exit(...), which shuts down the entire virtual machine</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_EXIT">DM_EXIT</a></td>
-<td>77</td>
+<td><a href="./xref/org/lantern/ChromeBrowserService.html#77">77</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.ChromeRunner"></a>
 <div class="section">
 <h3>org.lantern.ChromeRunner<a name="org.lantern.ChromeRunner"></a></h3>
@@ -527,7 +527,7 @@
 <td>Hard coded reference to an absolute pathname in org.lantern.ChromeRunner.determineExecutablePath()</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DMI_HARDCODED_ABSOLUTE_FILENAME">DMI_HARDCODED_ABSOLUTE_FILENAME</a></td>
-<td>66</td>
+<td><a href="./xref/org/lantern/ChromeRunner.html#66">66</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.CommandLine"></a>
 <div class="section">
 <h3>org.lantern.CommandLine<a name="org.lantern.CommandLine"></a></h3>
@@ -542,7 +542,7 @@
 <td>new org.lantern.CommandLine(String[]) may expose internal representation by storing an externally mutable object into CommandLine.commandAndArgs</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#EI_EXPOSE_REP2">EI_EXPOSE_REP2</a></td>
-<td>65</td>
+<td><a href="./xref/org/lantern/CommandLine.html#65">65</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.Dashboard2"></a>
 <div class="section">
 <h3>org.lantern.Dashboard$2<a name="org.lantern.Dashboard2"></a></h3>
@@ -557,7 +557,7 @@
 <td>org.lantern.Dashboard$2.handleEvent(Event) invokes System.exit(...), which shuts down the entire virtual machine</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_EXIT">DM_EXIT</a></td>
-<td>154</td>
+<td><a href="./xref/org/lantern/Dashboard.html#154">154</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.DefaultXmppHandler"></a>
 <div class="section">
 <h3>org.lantern.DefaultXmppHandler<a name="org.lantern.DefaultXmppHandler"></a></h3>
@@ -572,7 +572,7 @@
 <td>Suspicious comparison of Boolean references in org.lantern.DefaultXmppHandler.processLanternHubMessage(Message)</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#RC_REF_COMPARISON_BAD_PRACTICE_BOOLEAN">RC_REF_COMPARISON_BAD_PRACTICE_BOOLEAN</a></td>
-<td>789</td>
+<td><a href="./xref/org/lantern/DefaultXmppHandler.html#789">789</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.Diagnostics"></a>
 <div class="section">
 <h3>org.lantern.Diagnostics<a name="org.lantern.Diagnostics"></a></h3>
@@ -587,19 +587,19 @@
 <td>Dead store to raw in org.lantern.Diagnostics.main(String[])</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DLS_DEAD_LOCAL_STORE">DLS_DEAD_LOCAL_STORE</a></td>
-<td>78</td>
+<td><a href="./xref/org/lantern/Diagnostics.html#78">78</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>org.lantern.Diagnostics.runDiagnostics(String, String) invokes System.exit(...), which shuts down the entire virtual machine</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_EXIT">DM_EXIT</a></td>
-<td>233</td>
+<td><a href="./xref/org/lantern/Diagnostics.html#233">233</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Naked notify in org.lantern.Diagnostics.onProxyConnectionEvent(ProxyConnectionEvent)</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#NN_NAKED_NOTIFY">NN_NAKED_NOTIFY</a></td>
-<td>458</td>
+<td><a href="./xref/org/lantern/Diagnostics.html#458">458</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.LanternClientConstants"></a>
 <div class="section">
 <h3>org.lantern.LanternClientConstants<a name="org.lantern.LanternClientConstants"></a></h3>
@@ -614,13 +614,13 @@
 <td>org.lantern.LanternClientConstants.LANTERN_JID should be package protected</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#MS_PKGPROTECT">MS_PKGPROTECT</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/LanternClientConstants.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>org.lantern.LanternClientConstants.STATS_URL should be package protected</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#MS_PKGPROTECT">MS_PKGPROTECT</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/LanternClientConstants.html#">Not available</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.LanternRosterEntry"></a>
 <div class="section">
 <h3>org.lantern.LanternRosterEntry<a name="org.lantern.LanternRosterEntry"></a></h3>
@@ -635,7 +635,7 @@
 <td>Redundant nullcheck of subscriptionStatus, which is known to be non-null in new org.lantern.LanternRosterEntry(RosterEntry)</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE</a></td>
-<td>47</td>
+<td><a href="./xref/org/lantern/LanternRosterEntry.html#47">47</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.LanternUtils"></a>
 <div class="section">
 <h3>org.lantern.LanternUtils<a name="org.lantern.LanternUtils"></a></h3>
@@ -650,13 +650,13 @@
 <td>Hard coded reference to an absolute pathname in org.lantern.LanternUtils.findKeytoolPath()</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DMI_HARDCODED_ABSOLUTE_FILENAME">DMI_HARDCODED_ABSOLUTE_FILENAME</a></td>
-<td>450</td>
+<td><a href="./xref/org/lantern/LanternUtils.html#450">450</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Hard coded reference to an absolute pathname in org.lantern.LanternUtils.findKeytoolPath()</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DMI_HARDCODED_ABSOLUTE_FILENAME">DMI_HARDCODED_ABSOLUTE_FILENAME</a></td>
-<td>473</td>
+<td><a href="./xref/org/lantern/LanternUtils.html#473">473</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.Launcher"></a>
 <div class="section">
 <h3>org.lantern.Launcher<a name="org.lantern.Launcher"></a></h3>
@@ -671,31 +671,31 @@
 <td>org.lantern.Launcher.handleError(Throwable, boolean) invokes System.exit(...), which shuts down the entire virtual machine</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_EXIT">DM_EXIT</a></td>
-<td>855</td>
+<td><a href="./xref/org/lantern/Launcher.html#855">855</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>org.lantern.Launcher.launch(String[]) invokes System.exit(...), which shuts down the entire virtual machine</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_EXIT">DM_EXIT</a></td>
-<td>302</td>
+<td><a href="./xref/org/lantern/Launcher.html#302">302</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>org.lantern.Launcher.loadLocalPasswordFile(String) invokes System.exit(...), which shuts down the entire virtual machine</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_EXIT">DM_EXIT</a></td>
-<td>616</td>
+<td><a href="./xref/org/lantern/Launcher.html#616">616</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>new org.lantern.Launcher(Module, String[]) may expose internal representation by storing an externally mutable object into Launcher.commandLineArgs</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#EI_EXPOSE_REP2">EI_EXPOSE_REP2</a></td>
-<td>164</td>
+<td><a href="./xref/org/lantern/Launcher.html#164">164</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Write to static field org.lantern.Launcher.LOG from instance method org.lantern.Launcher.run()</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD</a></td>
-<td>175</td>
+<td><a href="./xref/org/lantern/Launcher.html#175">175</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.NativeUtils"></a>
 <div class="section">
 <h3>org.lantern.NativeUtils<a name="org.lantern.NativeUtils"></a></h3>
@@ -710,7 +710,7 @@
 <td>Dead store to trayIconArgTypes in org.lantern.NativeUtils.getTrayIconSize()</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DLS_DEAD_LOCAL_STORE">DLS_DEAD_LOCAL_STORE</a></td>
-<td>78</td>
+<td><a href="./xref/org/lantern/NativeUtils.html#78">78</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.PeerReadingWorker"></a>
 <div class="section">
 <h3>org.lantern.PeerReadingWorker<a name="org.lantern.PeerReadingWorker"></a></h3>
@@ -725,7 +725,7 @@
 <td>Mismatched wait() in org.lantern.PeerReadingWorker.run()</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#MWN_MISMATCHED_WAIT">MWN_MISMATCHED_WAIT</a></td>
-<td>42</td>
+<td><a href="./xref/org/lantern/PeerReadingWorker.html#42">42</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.Proxifier"></a>
 <div class="section">
 <h3>org.lantern.Proxifier<a name="org.lantern.Proxifier"></a></h3>
@@ -740,13 +740,13 @@
 <td>exceptional return value of java.io.File.delete() ignored in new org.lantern.Proxifier(MessageService, ModelUtils, Model, ProxyTracker)</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#RV_RETURN_VALUE_IGNORED_BAD_PRACTICE">RV_RETURN_VALUE_IGNORED_BAD_PRACTICE</a></td>
-<td>87</td>
+<td><a href="./xref/org/lantern/Proxifier.html#87">87</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>exceptional return value of java.io.File.delete() ignored in org.lantern.Proxifier.stopProxying()</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#RV_RETURN_VALUE_IGNORED_BAD_PRACTICE">RV_RETURN_VALUE_IGNORED_BAD_PRACTICE</a></td>
-<td>366</td>
+<td><a href="./xref/org/lantern/Proxifier.html#366">366</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.ProxySocketFactory"></a>
 <div class="section">
 <h3>org.lantern.ProxySocketFactory<a name="org.lantern.ProxySocketFactory"></a></h3>
@@ -761,7 +761,7 @@
 <td>org.lantern.ProxySocketFactory.httpConnectSocket(String, int) invokes inefficient new String(String) constructor</td>
 <td>PERFORMANCE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_STRING_CTOR">DM_STRING_CTOR</a></td>
-<td>83</td>
+<td><a href="./xref/org/lantern/ProxySocketFactory.html#83">83</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.Roster"></a>
 <div class="section">
 <h3>org.lantern.Roster<a name="org.lantern.Roster"></a></h3>
@@ -776,37 +776,37 @@
 <td>Synchronization performed on java.util.concurrent.atomic.AtomicReference in org.lantern.Roster.entriesDeleted(Collection)</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#JLM_JSR166_UTILCONCURRENT_MONITORENTER">JLM_JSR166_UTILCONCURRENT_MONITORENTER</a></td>
-<td>399</td>
+<td><a href="./xref/org/lantern/Roster.html#399">399</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Synchronization performed on java.util.concurrent.atomic.AtomicReference in org.lantern.Roster.getEntries()</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#JLM_JSR166_UTILCONCURRENT_MONITORENTER">JLM_JSR166_UTILCONCURRENT_MONITORENTER</a></td>
-<td>335</td>
+<td><a href="./xref/org/lantern/Roster.html#335">335</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Synchronization performed on java.util.concurrent.atomic.AtomicReference in org.lantern.Roster.putNewElement(LanternRosterEntry, boolean)</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#JLM_JSR166_UTILCONCURRENT_MONITORENTER">JLM_JSR166_UTILCONCURRENT_MONITORENTER</a></td>
-<td>297</td>
+<td><a href="./xref/org/lantern/Roster.html#297">297</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Synchronization performed on java.util.concurrent.atomic.AtomicReference in org.lantern.Roster.reset()</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#JLM_JSR166_UTILCONCURRENT_MONITORENTER">JLM_JSR166_UTILCONCURRENT_MONITORENTER</a></td>
-<td>428</td>
+<td><a href="./xref/org/lantern/Roster.html#428">428</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Synchronization performed on java.util.concurrent.atomic.AtomicReference in org.lantern.Roster.setEntries(Map)</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#JLM_JSR166_UTILCONCURRENT_MONITORENTER">JLM_JSR166_UTILCONCURRENT_MONITORENTER</a></td>
-<td>341</td>
+<td><a href="./xref/org/lantern/Roster.html#341">341</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Synchronization performed on java.util.concurrent.atomic.AtomicReference in org.lantern.Roster.updateIndex()</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#JLM_JSR166_UTILCONCURRENT_MONITORENTER">JLM_JSR166_UTILCONCURRENT_MONITORENTER</a></td>
-<td>321</td>
+<td><a href="./xref/org/lantern/Roster.html#321">321</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.StatsTrackerCountryData"></a>
 <div class="section">
 <h3>org.lantern.StatsTracker$CountryData<a name="org.lantern.StatsTrackerCountryData"></a></h3>
@@ -821,7 +821,7 @@
 <td>Should org.lantern.StatsTracker$CountryData be a _static_ inner class?</td>
 <td>PERFORMANCE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SIC_INNER_SHOULD_BE_STATIC">SIC_INNER_SHOULD_BE_STATIC</a></td>
-<td>401</td>
+<td><a href="./xref/org/lantern/StatsTracker.html#401">401-413</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.SystemTrayImpl5"></a>
 <div class="section">
 <h3>org.lantern.SystemTrayImpl$5<a name="org.lantern.SystemTrayImpl5"></a></h3>
@@ -836,7 +836,7 @@
 <td>org.lantern.SystemTrayImpl$5.handleEvent(Event) invokes System.exit(...), which shuts down the entire virtual machine</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_EXIT">DM_EXIT</a></td>
-<td>190</td>
+<td><a href="./xref/org/lantern/SystemTrayImpl.html#190">190</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.UdtHttpRequestProcessor"></a>
 <div class="section">
 <h3>org.lantern.UdtHttpRequestProcessor<a name="org.lantern.UdtHttpRequestProcessor"></a></h3>
@@ -851,7 +851,7 @@
 <td>Unread field: org.lantern.UdtHttpRequestProcessor.trafficHandler</td>
 <td>PERFORMANCE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#URF_UNREAD_FIELD">URF_UNREAD_FIELD</a></td>
-<td>73</td>
+<td><a href="./xref/org/lantern/UdtHttpRequestProcessor.html#73">73</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.Upnp"></a>
 <div class="section">
 <h3>org.lantern.Upnp<a name="org.lantern.Upnp"></a></h3>
@@ -866,7 +866,7 @@
 <td>Dead store to ret in org.lantern.Upnp.addMapping(PortMappingProtocol, int, int, PortMapListener)</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DLS_DEAD_LOCAL_STORE">DLS_DEAD_LOCAL_STORE</a></td>
-<td>189</td>
+<td><a href="./xref/org/lantern/Upnp.html#189">189</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.Utf8ResourceBundleUtf8PropertyResourceBundle"></a>
 <div class="section">
 <h3>org.lantern.Utf8ResourceBundle$Utf8PropertyResourceBundle<a name="org.lantern.Utf8ResourceBundleUtf8PropertyResourceBundle"></a></h3>
@@ -881,7 +881,7 @@
 <td>Redundant nullcheck of value, which is known to be non-null in org.lantern.Utf8ResourceBundle$Utf8PropertyResourceBundle.handleGetObject(String)</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE</a></td>
-<td>90</td>
+<td><a href="./xref/org/lantern/Utf8ResourceBundle.html#90">90</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.WebDriverException"></a>
 <div class="section">
 <h3>org.lantern.WebDriverException<a name="org.lantern.WebDriverException"></a></h3>
@@ -896,7 +896,7 @@
 <td>Format string should use %n rather than \n in org.lantern.WebDriverException.createMessage(String)</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#VA_FORMAT_STRING_USES_NEWLINE">VA_FORMAT_STRING_USES_NEWLINE</a></td>
-<td>47</td>
+<td><a href="./xref/org/lantern/WebDriverException.html#47">47</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.Whitelist"></a>
 <div class="section">
 <h3>org.lantern.Whitelist<a name="org.lantern.Whitelist"></a></h3>
@@ -911,7 +911,7 @@
 <td>org.lantern.Whitelist.SITES should be package protected</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#MS_PKGPROTECT">MS_PKGPROTECT</a></td>
-<td>24</td>
+<td><a href="./xref/org/lantern/Whitelist.html#24">24</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.cookie.InMemoryCookieTrackerCookieHolder"></a>
 <div class="section">
 <h3>org.lantern.cookie.InMemoryCookieTracker$CookieHolder<a name="org.lantern.cookie.InMemoryCookieTrackerCookieHolder"></a></h3>
@@ -926,13 +926,13 @@
 <td>org.lantern.cookie.InMemoryCookieTracker$CookieHolder defines equals and uses Object.hashCode()</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#HE_EQUALS_USE_HASHCODE">HE_EQUALS_USE_HASHCODE</a></td>
-<td>362</td>
+<td><a href="./xref/org/lantern/cookie/InMemoryCookieTracker.html#362">362-411</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Should org.lantern.cookie.InMemoryCookieTracker$CookieHolder be a _static_ inner class?</td>
 <td>PERFORMANCE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SIC_INNER_SHOULD_BE_STATIC">SIC_INNER_SHOULD_BE_STATIC</a></td>
-<td>348</td>
+<td><a href="./xref/org/lantern/cookie/InMemoryCookieTracker.html#348">348-511</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.cookie.InMemoryCookieTrackerCookieKey"></a>
 <div class="section">
 <h3>org.lantern.cookie.InMemoryCookieTracker$CookieKey<a name="org.lantern.cookie.InMemoryCookieTrackerCookieKey"></a></h3>
@@ -947,7 +947,7 @@
 <td>Should org.lantern.cookie.InMemoryCookieTracker$CookieKey be a _static_ inner class?</td>
 <td>PERFORMANCE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SIC_INNER_SHOULD_BE_STATIC">SIC_INNER_SHOULD_BE_STATIC</a></td>
-<td>253</td>
+<td><a href="./xref/org/lantern/cookie/InMemoryCookieTracker.html#253">253-319</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.geoip.GeoIpCompressor"></a>
 <div class="section">
 <h3>org.lantern.geoip.GeoIpCompressor<a name="org.lantern.geoip.GeoIpCompressor"></a></h3>
@@ -959,28 +959,16 @@
 <th>Line</th>
 <th>Priority</th></tr>
 <tr class="b">
-<td>Found reliance on default encoding in org.lantern.geoip.GeoIpCompressor.readCompressedLocations(InputStream): new String(byte[])</td>
-<td>I18N</td>
-<td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING</a></td>
-<td>287</td>
-<td>High</td></tr>
-<tr class="a">
-<td>Found reliance on default encoding in org.lantern.geoip.GeoIpCompressor.writeCompressedLocations(CountingOutputStream): String.getBytes()</td>
-<td>I18N</td>
-<td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING</a></td>
-<td>391</td>
-<td>High</td></tr>
-<tr class="b">
 <td>org.lantern.geoip.GeoIpCompressor.readCompressedBlocks(InputStream) ignores result of java.io.InputStream.read(byte[])</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#RR_NOT_CHECKED">RR_NOT_CHECKED</a></td>
-<td>181</td>
+<td><a href="./xref/org/lantern/geoip/GeoIpCompressor.html#182">182</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>org.lantern.geoip.GeoIpCompressor.readCompressedLocations(InputStream) ignores result of java.io.InputStream.read(byte[])</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#RR_NOT_CHECKED">RR_NOT_CHECKED</a></td>
-<td>270</td>
+<td><a href="./xref/org/lantern/geoip/GeoIpCompressor.html#271">271</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.geoip.GeoIpLookupService"></a>
 <div class="section">
 <h3>org.lantern.geoip.GeoIpLookupService<a name="org.lantern.geoip.GeoIpLookupService"></a></h3>
@@ -995,19 +983,19 @@
 <td>Inconsistent synchronization of org.lantern.geoip.GeoIpLookupService.lowerRanges; locked 60% of time</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#IS2_INCONSISTENT_SYNC">IS2_INCONSISTENT_SYNC</a></td>
-<td>75</td>
+<td><a href="./xref/org/lantern/geoip/GeoIpLookupService.html#75">75</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Inconsistent synchronization of org.lantern.geoip.GeoIpLookupService.upperRanges; locked 66% of time</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#IS2_INCONSISTENT_SYNC">IS2_INCONSISTENT_SYNC</a></td>
-<td>82</td>
+<td><a href="./xref/org/lantern/geoip/GeoIpLookupService.html#82">82</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Naked notify in org.lantern.geoip.GeoIpLookupService.loadData()</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#NN_NAKED_NOTIFY">NN_NAKED_NOTIFY</a></td>
-<td>117</td>
+<td><a href="./xref/org/lantern/geoip/GeoIpLookupService.html#117">117</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.http.GoogleOauth2CallbackServer"></a>
 <div class="section">
 <h3>org.lantern.http.GoogleOauth2CallbackServer<a name="org.lantern.http.GoogleOauth2CallbackServer"></a></h3>
@@ -1022,7 +1010,7 @@
 <td>Unread field: org.lantern.http.GoogleOauth2CallbackServer.port; should this field be static?</td>
 <td>PERFORMANCE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SS_SHOULD_BE_STATIC">SS_SHOULD_BE_STATIC</a></td>
-<td>35</td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2CallbackServer.html#35">35</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.http.GoogleOauth2CallbackServlet"></a>
 <div class="section">
 <h3>org.lantern.http.GoogleOauth2CallbackServlet<a name="org.lantern.http.GoogleOauth2CallbackServlet"></a></h3>
@@ -1037,49 +1025,49 @@
 <td>Class org.lantern.http.GoogleOauth2CallbackServlet defines non-transient non-serializable instance field googleOauth2CallbackServer</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2CallbackServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Class org.lantern.http.GoogleOauth2CallbackServlet defines non-transient non-serializable instance field httpClientFactory</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2CallbackServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Class org.lantern.http.GoogleOauth2CallbackServlet defines non-transient non-serializable instance field internalState</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2CallbackServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Class org.lantern.http.GoogleOauth2CallbackServlet defines non-transient non-serializable instance field model</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2CallbackServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Class org.lantern.http.GoogleOauth2CallbackServlet defines non-transient non-serializable instance field modelIo</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2CallbackServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Class org.lantern.http.GoogleOauth2CallbackServlet defines non-transient non-serializable instance field modelUtils</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2CallbackServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Class org.lantern.http.GoogleOauth2CallbackServlet defines non-transient non-serializable instance field proxifier</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2CallbackServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Class org.lantern.http.GoogleOauth2CallbackServlet defines non-transient non-serializable instance field xmppHandler</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2CallbackServlet.html#">Not available</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.http.GoogleOauth2RedirectServlet"></a>
 <div class="section">
 <h3>org.lantern.http.GoogleOauth2RedirectServlet<a name="org.lantern.http.GoogleOauth2RedirectServlet"></a></h3>
@@ -1094,49 +1082,49 @@
 <td>Class org.lantern.http.GoogleOauth2RedirectServlet defines non-transient non-serializable instance field censored</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2RedirectServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Class org.lantern.http.GoogleOauth2RedirectServlet defines non-transient non-serializable instance field handler</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2RedirectServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Class org.lantern.http.GoogleOauth2RedirectServlet defines non-transient non-serializable instance field httpClientFactory</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2RedirectServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Class org.lantern.http.GoogleOauth2RedirectServlet defines non-transient non-serializable instance field internalState</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2RedirectServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Class org.lantern.http.GoogleOauth2RedirectServlet defines non-transient non-serializable instance field model</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2RedirectServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Class org.lantern.http.GoogleOauth2RedirectServlet defines non-transient non-serializable instance field modelIo</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2RedirectServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Class org.lantern.http.GoogleOauth2RedirectServlet defines non-transient non-serializable instance field modelUtils</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2RedirectServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>Class org.lantern.http.GoogleOauth2RedirectServlet defines non-transient non-serializable instance field proxifier</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/GoogleOauth2RedirectServlet.html#">Not available</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.http.InteractionServlet"></a>
 <div class="section">
 <h3>org.lantern.http.InteractionServlet<a name="org.lantern.http.InteractionServlet"></a></h3>
@@ -1148,568 +1136,556 @@
 <th>Line</th>
 <th>Priority</th></tr>
 <tr class="a">
-<td>Dead store to url_ in org.lantern.http.InteractionServlet.processRequest(HttpServletRequest, HttpServletResponse)</td>
-<td>STYLE</td>
-<td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DLS_DEAD_LOCAL_STORE">DLS_DEAD_LOCAL_STORE</a></td>
-<td>216</td>
-<td>High</td></tr>
-<tr class="b">
 <td>Class org.lantern.http.InteractionServlet defines non-transient non-serializable instance field censored</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Class org.lantern.http.InteractionServlet defines non-transient non-serializable instance field internalState</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Class org.lantern.http.InteractionServlet defines non-transient non-serializable instance field inviteQueue</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Class org.lantern.http.InteractionServlet defines non-transient non-serializable instance field lanternFeedback</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Class org.lantern.http.InteractionServlet defines non-transient non-serializable instance field model</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Class org.lantern.http.InteractionServlet defines non-transient non-serializable instance field modelIo</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Class org.lantern.http.InteractionServlet defines non-transient non-serializable instance field modelService</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Class org.lantern.http.InteractionServlet defines non-transient non-serializable instance field modelUtils</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Class org.lantern.http.InteractionServlet defines non-transient non-serializable instance field xmppHandler</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Switch statement found in org.lantern.http.InteractionServlet.handleExceptionalInteractions(Modal, InteractionServlet$Interaction, String) where one case falls through to the next case</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SF_SWITCH_FALLTHROUGH">SF_SWITCH_FALLTHROUGH</a></td>
-<td>675</td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#674">674-678</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Switch statement found in org.lantern.http.InteractionServlet.processRequest(HttpServletRequest, HttpServletResponse) where one case falls through to the next case</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SF_SWITCH_FALLTHROUGH">SF_SWITCH_FALLTHROUGH</a></td>
-<td>577</td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#576">576-579</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Switch statement found in org.lantern.http.InteractionServlet.handleExceptionalInteractions(Modal, InteractionServlet$Interaction, String) where default case is missing</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SF_SWITCH_NO_DEFAULT">SF_SWITCH_NO_DEFAULT</a></td>
-<td>666</td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#665">665-693</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Switch statement found in org.lantern.http.InteractionServlet.processRequest(HttpServletRequest, HttpServletResponse) where default case is missing</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SF_SWITCH_NO_DEFAULT">SF_SWITCH_NO_DEFAULT</a></td>
-<td>283</td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#282">282-289</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Format string should use %n rather than \n in org.lantern.http.InteractionServlet.handleException(String)</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#VA_FORMAT_STRING_USES_NEWLINE">VA_FORMAT_STRING_USES_NEWLINE</a></td>
-<td>711</td>
+<td><a href="./xref/org/lantern/http/InteractionServlet.html#709">709</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.http.PhotoServlet"></a>
 <div class="section">
 <h3>org.lantern.http.PhotoServlet<a name="org.lantern.http.PhotoServlet"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="b">
+<tr class="a">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="a">
+<tr class="b">
 <td>Class org.lantern.http.PhotoServlet defines non-transient non-serializable instance field modelUtils</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/http/PhotoServlet.html#">Not available</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.linux.AppIndicatorAppIndicatorClassStruct"></a>
 <div class="section">
 <h3>org.lantern.linux.AppIndicator$AppIndicatorClassStruct<a name="org.lantern.linux.AppIndicatorAppIndicatorClassStruct"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="b">
+<tr class="a">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="a">
+<tr class="b">
 <td>Unread public/protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.fallback</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD">URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td>185</td>
+<td><a href="./xref/org/lantern/AppIndicatorTray.html#185">185</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.app_indicator_reserved_1</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.app_indicator_reserved_2</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.app_indicator_reserved_3</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.app_indicator_reserved_4</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.app_indicator_reserved_5</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.app_indicator_reserved_6</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.app_indicator_reserved_ats</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.connection_changed</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.new_attention_icon</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.new_icon</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.new_icon_theme</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.new_label</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.new_status</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.parent_class</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.scroll_event</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorClassStruct.unfallback</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.linux.AppIndicatorAppIndicatorInstanceStruct"></a>
 <div class="section">
 <h3>org.lantern.linux.AppIndicator$AppIndicatorInstanceStruct<a name="org.lantern.linux.AppIndicatorAppIndicatorInstanceStruct"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="b">
+<tr class="a">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.AppIndicator$AppIndicatorInstanceStruct.priv</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/AppIndicator.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unwritten public or protected field: org.lantern.linux.AppIndicator$AppIndicatorInstanceStruct.parent</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD">UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td>174</td>
+<td><a href="./xref/org/lantern/AppIndicatorTray.html#173">173</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.linux.GobjectGObjectClassStruct"></a>
 <div class="section">
 <h3>org.lantern.linux.Gobject$GObjectClassStruct<a name="org.lantern.linux.GobjectGObjectClassStruct"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.construct_properties</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.constructed</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.constructor</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.dispatch_properties_changed</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.dispose</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.dummy1</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.dummy2</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.dummy3</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.dummy4</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.dummy5</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.dummy6</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.finalize</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.flags</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.g_type_class</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.get_property</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.notify</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectClassStruct.set_property</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.linux.GobjectGObjectStruct"></a>
 <div class="section">
 <h3>org.lantern.linux.Gobject$GObjectStruct<a name="org.lantern.linux.GobjectGObjectStruct"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectStruct.qdata</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GObjectStruct.ref_count</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unwritten public or protected field: org.lantern.linux.Gobject$GObjectStruct.g_type_instance</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD">UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td>174</td>
+<td><a href="./xref/org/lantern/AppIndicatorTray.html#173">173</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.linux.GobjectGTypeClassStruct"></a>
 <div class="section">
 <h3>org.lantern.linux.Gobject$GTypeClassStruct<a name="org.lantern.linux.GobjectGTypeClassStruct"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>Unused public or protected field: org.lantern.linux.Gobject$GTypeClassStruct.g_type</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD">UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD</a></td>
-<td></td>
+<td><a href="./xref/org/lantern/linux/Gobject.html#">Not available</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.privacy.AbstractLocalCipherProvider"></a>
 <div class="section">
 <h3>org.lantern.privacy.AbstractLocalCipherProvider<a name="org.lantern.privacy.AbstractLocalCipherProvider"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>Inconsistent synchronization of org.lantern.privacy.AbstractLocalCipherProvider.localKey; locked 50% of time</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#IS2_INCONSISTENT_SYNC">IS2_INCONSISTENT_SYNC</a></td>
-<td>114</td>
+<td><a href="./xref/org/lantern/privacy/AbstractLocalCipherProvider.html#114">114</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.privacy.DefaultEncryptedFileService"></a>
 <div class="section">
 <h3>org.lantern.privacy.DefaultEncryptedFileService<a name="org.lantern.privacy.DefaultEncryptedFileService"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>org.lantern.privacy.DefaultEncryptedFileService.localDecryptInputStream(File) may fail to clean up java.io.InputStream on checked exception</td>
 <td>EXPERIMENTAL</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE">OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE</a></td>
-<td>46</td>
+<td><a href="./xref/org/lantern/privacy/DefaultEncryptedFileService.html#46">46</a></td>
 <td>Medium</td></tr>
-<tr class="a">
+<tr class="b">
 <td>org.lantern.privacy.DefaultEncryptedFileService.localEncryptOutputStream(File) may fail to clean up java.io.OutputStream on checked exception</td>
 <td>EXPERIMENTAL</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE">OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE</a></td>
-<td>61</td>
+<td><a href="./xref/org/lantern/privacy/DefaultEncryptedFileService.html#61">61</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.privacy.SecretServiceLocalCipherProviderPromptHandler"></a>
 <div class="section">
 <h3>org.lantern.privacy.SecretServiceLocalCipherProvider$PromptHandler<a name="org.lantern.privacy.SecretServiceLocalCipherProviderPromptHandler"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="b">
+<tr class="a">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="a">
+<tr class="b">
 <td>Should org.lantern.privacy.SecretServiceLocalCipherProvider$PromptHandler be a _static_ inner class?</td>
 <td>PERFORMANCE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SIC_INNER_SHOULD_BE_STATIC">SIC_INNER_SHOULD_BE_STATIC</a></td>
-<td>338</td>
+<td><a href="./xref/org/lantern/privacy/SecretServiceLocalCipherProvider.html#338">338-364</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.privacy.WindowsLocalCipherProvider"></a>
 <div class="section">
 <h3>org.lantern.privacy.WindowsLocalCipherProvider<a name="org.lantern.privacy.WindowsLocalCipherProvider"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="b">
+<tr class="a">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="a">
+<tr class="b">
 <td>Synchronization performed on java.util.concurrent.atomic.AtomicReference in org.lantern.privacy.WindowsLocalCipherProvider.initDPAPI()</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#JLM_JSR166_UTILCONCURRENT_MONITORENTER">JLM_JSR166_UTILCONCURRENT_MONITORENTER</a></td>
-<td>49</td>
+<td><a href="./xref/org/lantern/privacy/WindowsLocalCipherProvider.html#49">49</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.state.SystemData"></a>
 <div class="section">
 <h3>org.lantern.state.SystemData<a name="org.lantern.state.SystemData"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="b">
+<tr class="a">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="a">
+<tr class="b">
 <td>org.lantern.state.SystemData.getScreenSize() may expose internal representation by returning SystemData.screenSize</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#EI_EXPOSE_REP">EI_EXPOSE_REP</a></td>
-<td>84</td>
+<td><a href="./xref/org/lantern/state/SystemData.html#84">84</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.state.VersionInstalled"></a>
 <div class="section">
 <h3>org.lantern.state.Version$Installed<a name="org.lantern.state.VersionInstalled"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="b">
+<tr class="a">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="a">
+<tr class="b">
 <td>org.lantern.state.Version$Installed.getReleaseDate() may expose internal representation by returning Version$Installed.releaseDate</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#EI_EXPOSE_REP">EI_EXPOSE_REP</a></td>
-<td>146</td>
+<td><a href="./xref/org/lantern/state/Version.html#146">146</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.state.VersionSemanticVersion"></a>
 <div class="section">
 <h3>org.lantern.state.Version$SemanticVersion<a name="org.lantern.state.VersionSemanticVersion"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="b">
+<tr class="a">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="a">
+<tr class="b">
 <td>Should org.lantern.state.Version$SemanticVersion be a _static_ inner class?</td>
 <td>PERFORMANCE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SIC_INNER_SHOULD_BE_STATIC">SIC_INNER_SHOULD_BE_STATIC</a></td>
-<td>182</td>
+<td><a href="./xref/org/lantern/state/Version.html#182">182-207</a></td>
 <td>Medium</td></tr>
-<tr class="b">
+<tr class="a">
 <td>Unread field: org.lantern.state.Version$SemanticVersion.mock; should this field be static?</td>
 <td>PERFORMANCE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#SS_SHOULD_BE_STATIC">SS_SHOULD_BE_STATIC</a></td>
-<td>182</td>
+<td><a href="./xref/org/lantern/state/Version.html#182">182</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.udtrelay.ChannelAdapter"></a>
 <div class="section">
 <h3>org.lantern.udtrelay.ChannelAdapter<a name="org.lantern.udtrelay.ChannelAdapter"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>org.lantern.udtrelay.ChannelAdapter defines compareTo(Object) and uses Object.equals()</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#EQ_COMPARETO_USE_OBJECT_EQUALS">EQ_COMPARETO_USE_OBJECT_EQUALS</a></td>
-<td>12</td>
+<td><a href="./xref/org/lantern/udtrelay/ChannelAdapter.html#12">12</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.ui.FriendNotificationDialog"></a>
 <div class="section">
 <h3>org.lantern.ui.FriendNotificationDialog<a name="org.lantern.ui.FriendNotificationDialog"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>Equals method for org.lantern.ui.FriendNotificationDialog assumes the argument is of type FriendNotificationDialog</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS">BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS</a></td>
-<td>140</td>
+<td><a href="./xref/org/lantern/ui/FriendNotificationDialog.html#140">140</a></td>
 <td>Medium</td></tr></table></div><a name="org.lantern.util.DefaultStopwatch"></a>
 <div class="section">
 <h3>org.lantern.util.DefaultStopwatch<a name="org.lantern.util.DefaultStopwatch"></a></h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
-<td>Random object created and used only once in new org.lantern.util.DefaultStopwatch(String)</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#DMI_RANDOM_USED_ONLY_ONCE">DMI_RANDOM_USED_ONLY_ONCE</a></td>
-<td>38</td>
-<td>High</td></tr>
 <tr class="a">
 <td>org.lantern.util.DefaultStopwatch defines compareTo(DefaultStopwatch) and uses Object.equals()</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#EQ_COMPARETO_USE_OBJECT_EQUALS">EQ_COMPARETO_USE_OBJECT_EQUALS</a></td>
-<td>169</td>
+<td><a href="./xref/org/lantern/util/DefaultStopwatch.html#169">169</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>Increment of volatile field org.lantern.util.DefaultStopwatch.numCalls in org.lantern.util.DefaultStopwatch.stop(String)</td>
 <td>MT_CORRECTNESS</td>
 <td><a class="externalLink" href="http://findbugs.sourceforge.net/bugDescriptions.html#VO_VOLATILE_INCREMENT">VO_VOLATILE_INCREMENT</a></td>
-<td>82</td>
+<td><a href="./xref/org/lantern/util/DefaultStopwatch.html#82">82</a></td>
 <td>Medium</td></tr></table></div>
                   </div>
             </div>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.3" timestamp="2013-08-29T13:07:16.937">
+<pmd version="4.3" timestamp="2013-08-29T13:56:56.465">
 <file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/freedesktop/Secret/Collection.java">
 <violation beginline="6" endline="6" begincolumn="1" endcolumn="42" rule="UnusedImports" ruleset="Import Statement Rules" package="org.freedesktop.Secret" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
 Avoid unused imports such as 'org.freedesktop.dbus.DBusInterface'
@@ -264,7 +264,7 @@ These nested if statements could be combined
 </violation>
 </file>
 <file name="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/geoip/GeoIpCompressor.java">
-<violation beginline="433" endline="436" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.geoip" class="GeoIpCompressor" method="writeCompressedBlocks" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="434" endline="437" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.geoip" class="GeoIpCompressor" method="writeCompressedBlocks" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
 </file>
@@ -287,19 +287,16 @@ Avoid empty if statements
 <violation beginline="201" endline="203" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="processRequest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
-<violation beginline="208" endline="208" begincolumn="23" endcolumn="26" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="org.lantern.http" class="InteractionServlet" method="processRequest" variable="url_" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
-Avoid unused local variables such as 'url_'.
-</violation>
-<violation beginline="269" endline="269" begincolumn="11" endcolumn="48" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="processRequest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+<violation beginline="268" endline="268" begincolumn="11" endcolumn="48" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="processRequest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="661" endline="698" begincolumn="13" endcolumn="5" rule="UnusedFormalParameter" ruleset="Unused Code Rules" package="org.lantern.http" class="InteractionServlet" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter" priority="3">
+<violation beginline="660" endline="697" begincolumn="13" endcolumn="5" rule="UnusedFormalParameter" ruleset="Unused Code Rules" package="org.lantern.http" class="InteractionServlet" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter" priority="3">
 Avoid unused method parameters such as 'modal'.
 </violation>
-<violation beginline="798" endline="803" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="onLocationChanged" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="797" endline="802" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="onLocationChanged" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
-<violation beginline="800" endline="802" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="onLocationChanged" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="799" endline="801" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.lantern.http" class="InteractionServlet" method="onLocationChanged" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
 </file>
