@@ -10,28 +10,28 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.lantern.kscope;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.net.URI;
-<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.util.HashSet;
-<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> java.util.Set;
-<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> java.util.concurrent.ConcurrentHashMap;
-<a class="jxr_linenumber" name="7" href="#7">7</a>   
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> org.kaleidoscope.BasicTrustGraphAdvertisement;
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> org.kaleidoscope.BasicTrustGraphNodeId;
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.kaleidoscope.RandomRoutingTable;
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.kaleidoscope.TrustGraphNode;
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> org.kaleidoscope.TrustGraphNodeId;
-<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.lantern.JsonUtils;
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.lantern.LanternTrustStore;
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> org.lantern.LanternUtils;
-<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.lantern.LanternXmppUtils;
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.lantern.ProxyTracker;
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> org.lantern.XmppHandler;
-<a class="jxr_linenumber" name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.Events;
-<a class="jxr_linenumber" name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.KscopeAdEvent;
-<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Friend;
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Friend.Status;
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Friends;
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Mode;
+<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.net.InetSocketAddress;
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.net.URI;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> java.util.HashSet;
+<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> java.util.Set;
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> java.util.concurrent.ConcurrentHashMap;
+<a class="jxr_linenumber" name="8" href="#8">8</a>   
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> org.kaleidoscope.BasicTrustGraphAdvertisement;
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.kaleidoscope.BasicTrustGraphNodeId;
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.kaleidoscope.RandomRoutingTable;
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> org.kaleidoscope.TrustGraphNode;
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.kaleidoscope.TrustGraphNodeId;
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.lantern.JsonUtils;
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> org.lantern.LanternTrustStore;
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.lantern.LanternUtils;
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.lantern.LanternXmppUtils;
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> org.lantern.ProxyTracker;
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> org.lantern.XmppHandler;
+<a class="jxr_linenumber" name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.Events;
+<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.KscopeAdEvent;
+<a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Friend;
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Friend.Status;
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Friends;
 <a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Model;
 <a class="jxr_linenumber" name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
 <a class="jxr_linenumber" name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
@@ -146,39 +146,22 @@
 <a class="jxr_linenumber" name="136" href="#136">136</a>         
 <a class="jxr_linenumber" name="137" href="#137">137</a>         <strong class="jxr_keyword">final</strong> <a href="../../../org/lantern/kscope/LanternKscopeAdvertisement.html">LanternKscopeAdvertisement</a> ad = awaitingCerts.remove(jid);
 <a class="jxr_linenumber" name="138" href="#138">138</a>         <strong class="jxr_keyword">if</strong> (ad != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="139" href="#139">139</a>             log.debug(<span class="jxr_string">"Adding proxy..."</span>);
-<a class="jxr_linenumber" name="140" href="#140">140</a>             <strong class="jxr_keyword">if</strong> (ad.hasMappedEndpoint()) {
-<a class="jxr_linenumber" name="141" href="#141">141</a>                 <strong class="jxr_keyword">this</strong>.proxyTracker.addProxy(jid, 
-<a class="jxr_linenumber" name="142" href="#142">142</a>                         LanternUtils.isa(ad.getAddress(), ad.getPort()));
-<a class="jxr_linenumber" name="143" href="#143">143</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="144" href="#144">144</a>                 <strong class="jxr_keyword">this</strong>.proxyTracker.addJidProxy(LanternUtils.newURI(ad.getJid()));
-<a class="jxr_linenumber" name="145" href="#145">145</a>             }
-<a class="jxr_linenumber" name="146" href="#146">146</a>             
-<a class="jxr_linenumber" name="147" href="#147">147</a>             <em class="jxr_comment">// Also add the local network advertisement in case they're on</em>
-<a class="jxr_linenumber" name="148" href="#148">148</a>             <em class="jxr_comment">// the local network.</em>
-<a class="jxr_linenumber" name="149" href="#149">149</a>             <strong class="jxr_keyword">this</strong>.proxyTracker.addProxy(jid, 
-<a class="jxr_linenumber" name="150" href="#150">150</a>                 LanternUtils.isa(ad.getLocalAddress(), ad.getLocalPort()));
-<a class="jxr_linenumber" name="151" href="#151">151</a>             processedAds.add(ad);
-<a class="jxr_linenumber" name="152" href="#152">152</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="153" href="#153">153</a>             <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.proxyTracker.hasJidProxy(jid)) {
-<a class="jxr_linenumber" name="154" href="#154">154</a>                 log.debug(<span class="jxr_string">"Ignoring cert from peer we already have: {}"</span>, jid);
-<a class="jxr_linenumber" name="155" href="#155">155</a>                 <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="156" href="#156">156</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="157" href="#157">157</a>                 <em class="jxr_comment">// This could happen if we negotiated certs in some way other </em>
-<a class="jxr_linenumber" name="158" href="#158">158</a>                 <em class="jxr_comment">// than in response to a kscope ad, such as for peers from the </em>
-<a class="jxr_linenumber" name="159" href="#159">159</a>                 <em class="jxr_comment">// controller or just peers from the roster who we haven't </em>
-<a class="jxr_linenumber" name="160" href="#160">160</a>                 <em class="jxr_comment">// exchanged ads with yet.</em>
-<a class="jxr_linenumber" name="161" href="#161">161</a>                 <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.model.getSettings().getMode() == Mode.get) {
-<a class="jxr_linenumber" name="162" href="#162">162</a>                     log.error(<span class="jxr_string">"No associated ad for certificate!!"</span>);
-<a class="jxr_linenumber" name="163" href="#163">163</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="164" href="#164">164</a>                     log.debug(<span class="jxr_string">"No kscope ad for cert in give mode, as expected"</span>);
-<a class="jxr_linenumber" name="165" href="#165">165</a>                 }
-<a class="jxr_linenumber" name="166" href="#166">166</a>                 <strong class="jxr_keyword">this</strong>.proxyTracker.addJidProxy(jid);
-<a class="jxr_linenumber" name="167" href="#167">167</a>             }
-<a class="jxr_linenumber" name="168" href="#168">168</a>         }
-<a class="jxr_linenumber" name="169" href="#169">169</a>     }
-<a class="jxr_linenumber" name="170" href="#170">170</a> 
-<a class="jxr_linenumber" name="171" href="#171">171</a> }
+<a class="jxr_linenumber" name="139" href="#139">139</a>             log.debug(<span class="jxr_string">"Adding proxy... {}"</span>, ad);
+<a class="jxr_linenumber" name="140" href="#140">140</a>             InetSocketAddress address = ad.hasMappedEndpoint() ?
+<a class="jxr_linenumber" name="141" href="#141">141</a>                     LanternUtils.isa(ad.getAddress(), ad.getPort()) :
+<a class="jxr_linenumber" name="142" href="#142">142</a>                     <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="143" href="#143">143</a>             <strong class="jxr_keyword">this</strong>.proxyTracker.addProxy(jid, address);
+<a class="jxr_linenumber" name="144" href="#144">144</a>             <em class="jxr_comment">// Also add the local network advertisement in case they're on</em>
+<a class="jxr_linenumber" name="145" href="#145">145</a>             <em class="jxr_comment">// the local network.</em>
+<a class="jxr_linenumber" name="146" href="#146">146</a>             <strong class="jxr_keyword">this</strong>.proxyTracker.addProxy(jid, 
+<a class="jxr_linenumber" name="147" href="#147">147</a>                 LanternUtils.isa(ad.getLocalAddress(), ad.getLocalPort()));
+<a class="jxr_linenumber" name="148" href="#148">148</a>             processedAds.add(ad);
+<a class="jxr_linenumber" name="149" href="#149">149</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="150" href="#150">150</a>             <strong class="jxr_keyword">this</strong>.proxyTracker.addProxy(jid);
+<a class="jxr_linenumber" name="151" href="#151">151</a>         }
+<a class="jxr_linenumber" name="152" href="#152">152</a>     }
+<a class="jxr_linenumber" name="153" href="#153">153</a> 
+<a class="jxr_linenumber" name="154" href="#154">154</a> }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

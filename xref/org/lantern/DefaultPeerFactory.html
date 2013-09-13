@@ -13,27 +13,27 @@
 <a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.net.InetAddress;
 <a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.net.InetSocketAddress;
 <a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> java.net.URI;
-<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> java.security.cert.CertificateEncodingException;
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> java.security.cert.X509Certificate;
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> java.util.Map;
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> java.util.concurrent.ConcurrentHashMap;
-<a class="jxr_linenumber" name="10" href="#10">10</a>  
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.codec.binary.Base64;
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.StringUtils;
-<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.jboss.netty.channel.Channel;
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.jivesoftware.smack.packet.Presence;
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.Events;
-<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.IncomingPeerEvent;
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.KscopeAdEvent;
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.PeerCertEvent;
-<a class="jxr_linenumber" name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.UpdatePresenceEvent;
-<a class="jxr_linenumber" name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> org.lantern.geoip.GeoIpLookupService;
-<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.lantern.kscope.LanternKscopeAdvertisement;
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Mode;
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Model;
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Peer;
-<a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Peer.Type;
-<a class="jxr_linenumber" name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> org.lantern.util.LanternTrafficCounter;
+<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> java.util.concurrent.ConcurrentHashMap;
+<a class="jxr_linenumber" name="8" href="#8">8</a>   
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> javax.net.ssl.SSLPeerUnverifiedException;
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.SSLSession;
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> javax.security.cert.CertificateException;
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> javax.security.cert.X509Certificate;
+<a class="jxr_linenumber" name="13" href="#13">13</a>  
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.codec.binary.Base64;
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.StringUtils;
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.jivesoftware.smack.packet.Presence;
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.Events;
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.KscopeAdEvent;
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.PeerCertEvent;
+<a class="jxr_linenumber" name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.UpdatePresenceEvent;
+<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.lantern.geoip.GeoIpLookupService;
+<a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.lantern.kscope.LanternKscopeAdvertisement;
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Mode;
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Model;
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Peer;
+<a class="jxr_linenumber" name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Peer.Type;
 <a class="jxr_linenumber" name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> org.littleshoot.util.ThreadUtils;
 <a class="jxr_linenumber" name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
 <a class="jxr_linenumber" name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@
 <a class="jxr_linenumber" name="47" href="#47">47</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Model.html">Model</a> model;
 <a class="jxr_linenumber" name="48" href="#48">48</a>  
 <a class="jxr_linenumber" name="49" href="#49">49</a>      @Inject
-<a class="jxr_linenumber" name="50" href="#50">50</a>      <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/DefaultPeerFactory.html">DefaultPeerFactory</a>(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/geoip/GeoIpLookupService.html">GeoIpLookupService</a> geoIpLookupService, 
+<a class="jxr_linenumber" name="50" href="#50">50</a>      <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/DefaultPeerFactory.html">DefaultPeerFactory</a>(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/geoip/GeoIpLookupService.html">GeoIpLookupService</a> geoIpLookupService,
 <a class="jxr_linenumber" name="51" href="#51">51</a>              <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Model.html">Model</a> model,
 <a class="jxr_linenumber" name="52" href="#52">52</a>              <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/Roster.html">Roster</a> roster) {
 <a class="jxr_linenumber" name="53" href="#53">53</a>          <strong class="jxr_keyword">this</strong>.geoIpLookupService = geoIpLookupService;
@@ -66,16 +66,16 @@
 <a class="jxr_linenumber" name="56" href="#56">56</a>          Events.register(<strong class="jxr_keyword">this</strong>);
 <a class="jxr_linenumber" name="57" href="#57">57</a>      }
 <a class="jxr_linenumber" name="58" href="#58">58</a>  
-<a class="jxr_linenumber" name="59" href="#59">59</a>  
-<a class="jxr_linenumber" name="60" href="#60">60</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="61" href="#61">61</a>  <em class="jxr_javadoccomment">     * There are two ways we initially learn about new peers. The first is a</em>
-<a class="jxr_linenumber" name="62" href="#62">62</a>  <em class="jxr_javadoccomment">     * Lantern peer directly on our roster, which will produce this event. The</em>
-<a class="jxr_linenumber" name="63" href="#63">63</a>  <em class="jxr_javadoccomment">     * second is a kaleidoscope advertisement. Those Kaleidoscope</em>
-<a class="jxr_linenumber" name="64" href="#64">64</a>  <em class="jxr_javadoccomment">     * advertisements can be from peers on our roster, but they can also be</em>
-<a class="jxr_linenumber" name="65" href="#65">65</a>  <em class="jxr_javadoccomment">     * from peers we're not directly connected to. This method captures the</em>
-<a class="jxr_linenumber" name="66" href="#66">66</a>  <em class="jxr_javadoccomment">     * first case where peers on our roster are running Lantern.</em>
-<a class="jxr_linenumber" name="67" href="#67">67</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="68" href="#68">68</a>  <em class="jxr_javadoccomment">     * @param event The update presence event.</em>
+<a class="jxr_linenumber" name="59" href="#59">59</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="60" href="#60">60</a>  <em class="jxr_javadoccomment">     * There are two ways we initially learn about new peers. The first is a</em>
+<a class="jxr_linenumber" name="61" href="#61">61</a>  <em class="jxr_javadoccomment">     * Lantern peer directly on our roster, which will produce this event. The</em>
+<a class="jxr_linenumber" name="62" href="#62">62</a>  <em class="jxr_javadoccomment">     * second is a kaleidoscope advertisement. Those Kaleidoscope advertisements</em>
+<a class="jxr_linenumber" name="63" href="#63">63</a>  <em class="jxr_javadoccomment">     * can be from peers on our roster, but they can also be from peers we're</em>
+<a class="jxr_linenumber" name="64" href="#64">64</a>  <em class="jxr_javadoccomment">     * not directly connected to. This method captures the first case where</em>
+<a class="jxr_linenumber" name="65" href="#65">65</a>  <em class="jxr_javadoccomment">     * peers on our roster are running Lantern.</em>
+<a class="jxr_linenumber" name="66" href="#66">66</a>  <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="67" href="#67">67</a>  <em class="jxr_javadoccomment">     * @param event</em>
+<a class="jxr_linenumber" name="68" href="#68">68</a>  <em class="jxr_javadoccomment">     *            The update presence event.</em>
 <a class="jxr_linenumber" name="69" href="#69">69</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="70" href="#70">70</a>      @Subscribe
 <a class="jxr_linenumber" name="71" href="#71">71</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onUpdatePresenceEvent(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/event/UpdatePresenceEvent.html">UpdatePresenceEvent</a> event) {
@@ -104,7 +104,7 @@
 <a class="jxr_linenumber" name="94" href="#94">94</a>              <em class="jxr_comment">// The following can be null.</em>
 <a class="jxr_linenumber" name="95" href="#95">95</a>              <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer = <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/state/Peer.html">Peer</a>(uri, <span class="jxr_string">""</span>,
 <a class="jxr_linenumber" name="96" href="#96">96</a>                      ad.hasMappedEndpoint(), 0, 0, Type.pc, ad.getAddress(),
-<a class="jxr_linenumber" name="97" href="#97">97</a>                      ad.getPort(), Mode.give, false, <strong class="jxr_keyword">null</strong>, entry);
+<a class="jxr_linenumber" name="97" href="#97">97</a>                      ad.getPort(), Mode.give, false, entry);
 <a class="jxr_linenumber" name="98" href="#98">98</a>              <strong class="jxr_keyword">this</strong>.model.getPeerCollector().addPeer(uri, peer);
 <a class="jxr_linenumber" name="99" href="#99">99</a>              updateGeoData(peer, ad.getAddress());
 <a class="jxr_linenumber" name="100" href="#100">100</a>         } <strong class="jxr_keyword">else</strong> {
@@ -121,141 +121,148 @@
 <a class="jxr_linenumber" name="111" href="#111">111</a>         }
 <a class="jxr_linenumber" name="112" href="#112">112</a>     }
 <a class="jxr_linenumber" name="113" href="#113">113</a> 
-<a class="jxr_linenumber" name="114" href="#114">114</a> 
-<a class="jxr_linenumber" name="115" href="#115">115</a> 
-<a class="jxr_linenumber" name="116" href="#116">116</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> updateGeoData(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer, <strong class="jxr_keyword">final</strong> InetAddress address) {
-<a class="jxr_linenumber" name="117" href="#117">117</a>         updateGeoData(peer, address.getHostAddress());
-<a class="jxr_linenumber" name="118" href="#118">118</a>     }
-<a class="jxr_linenumber" name="119" href="#119">119</a> 
-<a class="jxr_linenumber" name="120" href="#120">120</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> updateGeoData(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer, <strong class="jxr_keyword">final</strong> String address) {
-<a class="jxr_linenumber" name="121" href="#121">121</a>         <strong class="jxr_keyword">if</strong> (peer.hasGeoData()) {
-<a class="jxr_linenumber" name="122" href="#122">122</a>             log.debug(<span class="jxr_string">"Peer already had geo data: {}"</span>, peer);
-<a class="jxr_linenumber" name="123" href="#123">123</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="124" href="#124">124</a>         }
-<a class="jxr_linenumber" name="125" href="#125">125</a> 
-<a class="jxr_linenumber" name="126" href="#126">126</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/GeoData.html">GeoData</a> geo = geoIpLookupService.getGeoData(address);
-<a class="jxr_linenumber" name="127" href="#127">127</a>         peer.setCountry(geo.getCountrycode());
-<a class="jxr_linenumber" name="128" href="#128">128</a>         peer.setLat(geo.getLatitude());
-<a class="jxr_linenumber" name="129" href="#129">129</a>         peer.setLon(geo.getLongitude());
-<a class="jxr_linenumber" name="130" href="#130">130</a>     }
-<a class="jxr_linenumber" name="131" href="#131">131</a> 
-<a class="jxr_linenumber" name="132" href="#132">132</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> updatePeer(<strong class="jxr_keyword">final</strong> URI fullJid, <strong class="jxr_keyword">final</strong> InetSocketAddress isa,
-<a class="jxr_linenumber" name="133" href="#133">133</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Type</a> type, <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/util/LanternTrafficCounter.html">LanternTrafficCounter</a> trafficCounter) {
-<a class="jxr_linenumber" name="134" href="#134">134</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer = <strong class="jxr_keyword">this</strong>.model.getPeerCollector().getPeer(fullJid);
-<a class="jxr_linenumber" name="135" href="#135">135</a>         <strong class="jxr_keyword">if</strong> (peer == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="136" href="#136">136</a>             log.warn(<span class="jxr_string">"No peer for {}"</span>, fullJid);
-<a class="jxr_linenumber" name="137" href="#137">137</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="138" href="#138">138</a>         }
-<a class="jxr_linenumber" name="139" href="#139">139</a>         updatePeer(peer, isa, type, trafficCounter);
-<a class="jxr_linenumber" name="140" href="#140">140</a>     }
-<a class="jxr_linenumber" name="141" href="#141">141</a> 
-<a class="jxr_linenumber" name="142" href="#142">142</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> updatePeer(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer, <strong class="jxr_keyword">final</strong> InetSocketAddress isa,
-<a class="jxr_linenumber" name="143" href="#143">143</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Type</a> type, <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/util/LanternTrafficCounter.html">LanternTrafficCounter</a> trafficCounter) {
-<a class="jxr_linenumber" name="144" href="#144">144</a>         <em class="jxr_comment">// We can get multiple notifications for the same peer, in which case</em>
-<a class="jxr_linenumber" name="145" href="#145">145</a>         <em class="jxr_comment">// they'll already have a counter.</em>
-<a class="jxr_linenumber" name="146" href="#146">146</a>         <strong class="jxr_keyword">if</strong> (peer.getTrafficCounter() == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="147" href="#147">147</a>             log.debug(<span class="jxr_string">"Setting traffic counter..."</span>);
-<a class="jxr_linenumber" name="148" href="#148">148</a>             peer.setTrafficCounter(trafficCounter);
-<a class="jxr_linenumber" name="149" href="#149">149</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="150" href="#150">150</a>             log.debug(<span class="jxr_string">"Peer already has traffic counter..."</span>);
-<a class="jxr_linenumber" name="151" href="#151">151</a>         }
-<a class="jxr_linenumber" name="152" href="#152">152</a>         <strong class="jxr_keyword">final</strong> String address = isa.getAddress().getHostAddress();
-<a class="jxr_linenumber" name="153" href="#153">153</a>         <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(peer.getIp())) {
-<a class="jxr_linenumber" name="154" href="#154">154</a>             peer.setIp(address);
-<a class="jxr_linenumber" name="155" href="#155">155</a>         }
-<a class="jxr_linenumber" name="156" href="#156">156</a>         <strong class="jxr_keyword">if</strong> (peer.getPort() == 0) {
-<a class="jxr_linenumber" name="157" href="#157">157</a>             peer.setPort(isa.getPort());
-<a class="jxr_linenumber" name="158" href="#158">158</a>         }
-<a class="jxr_linenumber" name="159" href="#159">159</a>         <strong class="jxr_keyword">if</strong> (peer.getRosterEntry() == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="160" href="#160">160</a>             log.debug(<span class="jxr_string">"Setting roster entry"</span>);
-<a class="jxr_linenumber" name="161" href="#161">161</a>             <strong class="jxr_keyword">final</strong> URI uri = LanternUtils.newURI(peer.getPeerid());
-<a class="jxr_linenumber" name="162" href="#162">162</a>             peer.setRosterEntry(rosterEntry(uri));
-<a class="jxr_linenumber" name="163" href="#163">163</a>         }
-<a class="jxr_linenumber" name="164" href="#164">164</a>         peer.setType(type.toString());
-<a class="jxr_linenumber" name="165" href="#165">165</a>         updateGeoData(peer, isa.getAddress());
-<a class="jxr_linenumber" name="166" href="#166">166</a>         <em class="jxr_comment">// Note we don't sync peers with the frontend here because the timer</em>
-<a class="jxr_linenumber" name="167" href="#167">167</a>         <em class="jxr_comment">// will do it for us</em>
-<a class="jxr_linenumber" name="168" href="#168">168</a>     }
-<a class="jxr_linenumber" name="169" href="#169">169</a> 
-<a class="jxr_linenumber" name="170" href="#170">170</a> 
-<a class="jxr_linenumber" name="171" href="#171">171</a>     @Override
-<a class="jxr_linenumber" name="172" href="#172">172</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onOutgoingConnection(<strong class="jxr_keyword">final</strong> URI fullJid,
-<a class="jxr_linenumber" name="173" href="#173">173</a>         <strong class="jxr_keyword">final</strong> InetSocketAddress isa, <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Type</a> type,
-<a class="jxr_linenumber" name="174" href="#174">174</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/util/LanternTrafficCounter.html">LanternTrafficCounter</a> trafficCounter) {
-<a class="jxr_linenumber" name="175" href="#175">175</a>         updatePeer(fullJid, isa, type, trafficCounter);
-<a class="jxr_linenumber" name="176" href="#176">176</a>     }
-<a class="jxr_linenumber" name="177" href="#177">177</a> 
-<a class="jxr_linenumber" name="178" href="#178">178</a>     @Override
-<a class="jxr_linenumber" name="179" href="#179">179</a>     <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> addPeer(<strong class="jxr_keyword">final</strong> URI fullJid, <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Type</a> type) {
+<a class="jxr_linenumber" name="114" href="#114">114</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> updateGeoData(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer, <strong class="jxr_keyword">final</strong> InetAddress address) {
+<a class="jxr_linenumber" name="115" href="#115">115</a>         updateGeoData(peer, address.getHostAddress());
+<a class="jxr_linenumber" name="116" href="#116">116</a>     }
+<a class="jxr_linenumber" name="117" href="#117">117</a> 
+<a class="jxr_linenumber" name="118" href="#118">118</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> updateGeoData(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer, <strong class="jxr_keyword">final</strong> String address) {
+<a class="jxr_linenumber" name="119" href="#119">119</a>         <strong class="jxr_keyword">if</strong> (peer.hasGeoData()) {
+<a class="jxr_linenumber" name="120" href="#120">120</a>             log.debug(<span class="jxr_string">"Peer already had geo data: {}"</span>, peer);
+<a class="jxr_linenumber" name="121" href="#121">121</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="122" href="#122">122</a>         }
+<a class="jxr_linenumber" name="123" href="#123">123</a> 
+<a class="jxr_linenumber" name="124" href="#124">124</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/GeoData.html">GeoData</a> geo = geoIpLookupService.getGeoData(address);
+<a class="jxr_linenumber" name="125" href="#125">125</a>         peer.setCountry(geo.getCountrycode());
+<a class="jxr_linenumber" name="126" href="#126">126</a>         peer.setLat(geo.getLatitude());
+<a class="jxr_linenumber" name="127" href="#127">127</a>         peer.setLon(geo.getLongitude());
+<a class="jxr_linenumber" name="128" href="#128">128</a>     }
+<a class="jxr_linenumber" name="129" href="#129">129</a> 
+<a class="jxr_linenumber" name="130" href="#130">130</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> updatePeer(<strong class="jxr_keyword">final</strong> URI fullJid, <strong class="jxr_keyword">final</strong> InetSocketAddress isa,
+<a class="jxr_linenumber" name="131" href="#131">131</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Type</a> type) {
+<a class="jxr_linenumber" name="132" href="#132">132</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer = <strong class="jxr_keyword">this</strong>.model.getPeerCollector().getPeer(fullJid);
+<a class="jxr_linenumber" name="133" href="#133">133</a>         <strong class="jxr_keyword">if</strong> (peer == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="134" href="#134">134</a>             log.warn(<span class="jxr_string">"No peer for {}"</span>, fullJid);
+<a class="jxr_linenumber" name="135" href="#135">135</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="136" href="#136">136</a>         }
+<a class="jxr_linenumber" name="137" href="#137">137</a>         updatePeer(peer, isa, type);
+<a class="jxr_linenumber" name="138" href="#138">138</a>     }
+<a class="jxr_linenumber" name="139" href="#139">139</a> 
+<a class="jxr_linenumber" name="140" href="#140">140</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> updatePeer(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer, <strong class="jxr_keyword">final</strong> InetSocketAddress isa,
+<a class="jxr_linenumber" name="141" href="#141">141</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Type</a> type) {
+<a class="jxr_linenumber" name="142" href="#142">142</a>         <strong class="jxr_keyword">final</strong> String address = isa.getAddress().getHostAddress();
+<a class="jxr_linenumber" name="143" href="#143">143</a>         <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(peer.getIp())) {
+<a class="jxr_linenumber" name="144" href="#144">144</a>             peer.setIp(address);
+<a class="jxr_linenumber" name="145" href="#145">145</a>         }
+<a class="jxr_linenumber" name="146" href="#146">146</a>         <strong class="jxr_keyword">if</strong> (peer.getPort() == 0) {
+<a class="jxr_linenumber" name="147" href="#147">147</a>             peer.setPort(isa.getPort());
+<a class="jxr_linenumber" name="148" href="#148">148</a>         }
+<a class="jxr_linenumber" name="149" href="#149">149</a>         <strong class="jxr_keyword">if</strong> (peer.getRosterEntry() == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="150" href="#150">150</a>             log.debug(<span class="jxr_string">"Setting roster entry"</span>);
+<a class="jxr_linenumber" name="151" href="#151">151</a>             <strong class="jxr_keyword">final</strong> URI uri = LanternUtils.newURI(peer.getPeerid());
+<a class="jxr_linenumber" name="152" href="#152">152</a>             peer.setRosterEntry(rosterEntry(uri));
+<a class="jxr_linenumber" name="153" href="#153">153</a>         }
+<a class="jxr_linenumber" name="154" href="#154">154</a>         peer.setType(type.toString());
+<a class="jxr_linenumber" name="155" href="#155">155</a>         updateGeoData(peer, isa.getAddress());
+<a class="jxr_linenumber" name="156" href="#156">156</a>         <em class="jxr_comment">// Note we don't sync peers with the frontend here because the timer</em>
+<a class="jxr_linenumber" name="157" href="#157">157</a>         <em class="jxr_comment">// will do it for us</em>
+<a class="jxr_linenumber" name="158" href="#158">158</a>     }
+<a class="jxr_linenumber" name="159" href="#159">159</a> 
+<a class="jxr_linenumber" name="160" href="#160">160</a>     @Override
+<a class="jxr_linenumber" name="161" href="#161">161</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onOutgoingConnection(<strong class="jxr_keyword">final</strong> URI fullJid,
+<a class="jxr_linenumber" name="162" href="#162">162</a>             <strong class="jxr_keyword">final</strong> InetSocketAddress isa, <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Type</a> type) {
+<a class="jxr_linenumber" name="163" href="#163">163</a>         updatePeer(fullJid, isa, type);
+<a class="jxr_linenumber" name="164" href="#164">164</a>     }
+<a class="jxr_linenumber" name="165" href="#165">165</a> 
+<a class="jxr_linenumber" name="166" href="#166">166</a>     @Override
+<a class="jxr_linenumber" name="167" href="#167">167</a>     <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> addPeer(<strong class="jxr_keyword">final</strong> URI fullJid, <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Type</a> type) {
+<a class="jxr_linenumber" name="168" href="#168">168</a> 
+<a class="jxr_linenumber" name="169" href="#169">169</a>         <em class="jxr_comment">// This is a peer we know very little about at this point, as we</em>
+<a class="jxr_linenumber" name="170" href="#170">170</a>         <em class="jxr_comment">// haven't made any network connections with them.</em>
+<a class="jxr_linenumber" name="171" href="#171">171</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/LanternRosterEntry.html">LanternRosterEntry</a> entry = rosterEntry(fullJid);
+<a class="jxr_linenumber" name="172" href="#172">172</a>         log.debug(<span class="jxr_string">"Got roster entry: {} for '{}'"</span>, entry, fullJid);
+<a class="jxr_linenumber" name="173" href="#173">173</a>         <strong class="jxr_keyword">if</strong> (entry == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="174" href="#174">174</a>             <em class="jxr_comment">// This will happen for cloud "peers" and kscope peers but otherwise</em>
+<a class="jxr_linenumber" name="175" href="#175">175</a>             <em class="jxr_comment">// all peers should be on your roster.</em>
+<a class="jxr_linenumber" name="176" href="#176">176</a>             log.debug(<span class="jxr_string">"Could not find match for type '{}':\n{}"</span>, type, 
+<a class="jxr_linenumber" name="177" href="#177">177</a>                     ThreadUtils.dumpStack());
+<a class="jxr_linenumber" name="178" href="#178">178</a>             log.debug(<span class="jxr_string">"Roster is: {}"</span>, <strong class="jxr_keyword">this</strong>.roster.getEntries());
+<a class="jxr_linenumber" name="179" href="#179">179</a>         }
 <a class="jxr_linenumber" name="180" href="#180">180</a> 
-<a class="jxr_linenumber" name="181" href="#181">181</a>         <em class="jxr_comment">// This is a peer we know very little about at this point, as we</em>
-<a class="jxr_linenumber" name="182" href="#182">182</a>         <em class="jxr_comment">// haven't made any network connections with them.</em>
-<a class="jxr_linenumber" name="183" href="#183">183</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/LanternRosterEntry.html">LanternRosterEntry</a> entry = rosterEntry(fullJid);
-<a class="jxr_linenumber" name="184" href="#184">184</a>         log.debug(<span class="jxr_string">"Got roster entry: {} for '{}'"</span>, entry, fullJid);
-<a class="jxr_linenumber" name="185" href="#185">185</a>         <strong class="jxr_keyword">if</strong> (entry == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="186" href="#186">186</a>             log.debug(<span class="jxr_string">"Could not find match for type{}:\n{}"</span>, type, 
-<a class="jxr_linenumber" name="187" href="#187">187</a>                     ThreadUtils.dumpStack());
-<a class="jxr_linenumber" name="188" href="#188">188</a>             log.debug(<span class="jxr_string">"Roster is: {}"</span>, <strong class="jxr_keyword">this</strong>.roster.getEntries());
-<a class="jxr_linenumber" name="189" href="#189">189</a>         }
-<a class="jxr_linenumber" name="190" href="#190">190</a> 
-<a class="jxr_linenumber" name="191" href="#191">191</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> existing = <strong class="jxr_keyword">this</strong>.model.getPeerCollector().getPeer(fullJid);
-<a class="jxr_linenumber" name="192" href="#192">192</a> 
-<a class="jxr_linenumber" name="193" href="#193">193</a>         <strong class="jxr_keyword">if</strong> (existing != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="194" href="#194">194</a>             log.debug(<span class="jxr_string">"Peer already exists..."</span>);
-<a class="jxr_linenumber" name="195" href="#195">195</a>             <strong class="jxr_keyword">return</strong> existing;
-<a class="jxr_linenumber" name="196" href="#196">196</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="197" href="#197">197</a>             log.debug(<span class="jxr_string">"Adding peer {}"</span>, fullJid);
-<a class="jxr_linenumber" name="198" href="#198">198</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer = <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/state/Peer.html">Peer</a>(fullJid, <span class="jxr_string">""</span>, false, 0L, 0L, type,
-<a class="jxr_linenumber" name="199" href="#199">199</a>                     <span class="jxr_string">""</span>, 0, Mode.unknown, false, <strong class="jxr_keyword">null</strong>, entry);
-<a class="jxr_linenumber" name="200" href="#200">200</a>             <strong class="jxr_keyword">this</strong>.model.getPeerCollector().addPeer(fullJid, peer);
-<a class="jxr_linenumber" name="201" href="#201">201</a>             <strong class="jxr_keyword">return</strong> peer;
-<a class="jxr_linenumber" name="202" href="#202">202</a>         }
-<a class="jxr_linenumber" name="203" href="#203">203</a>     }
-<a class="jxr_linenumber" name="204" href="#204">204</a> 
-<a class="jxr_linenumber" name="205" href="#205">205</a>     <strong class="jxr_keyword">private</strong> <a href="../../org/lantern/LanternRosterEntry.html">LanternRosterEntry</a> rosterEntry(<strong class="jxr_keyword">final</strong> URI fullJid) {
-<a class="jxr_linenumber" name="206" href="#206">206</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.roster.getRosterEntry(fullJid.toASCIIString());
-<a class="jxr_linenumber" name="207" href="#207">207</a>     }
-<a class="jxr_linenumber" name="208" href="#208">208</a> 
-<a class="jxr_linenumber" name="209" href="#209">209</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;String, Peer&gt; certsToPeers =
-<a class="jxr_linenumber" name="210" href="#210">210</a>             <strong class="jxr_keyword">new</strong> ConcurrentHashMap&lt;String, Peer&gt;();
-<a class="jxr_linenumber" name="211" href="#211">211</a> 
-<a class="jxr_linenumber" name="212" href="#212">212</a>     @Subscribe
-<a class="jxr_linenumber" name="213" href="#213">213</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onCert(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/event/PeerCertEvent.html">PeerCertEvent</a> event) {
-<a class="jxr_linenumber" name="214" href="#214">214</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer = <strong class="jxr_keyword">this</strong>.model.getPeerCollector().getPeer(event.getJid());
-<a class="jxr_linenumber" name="215" href="#215">215</a>         <strong class="jxr_keyword">if</strong> (peer == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="216" href="#216">216</a>             log.error(<span class="jxr_string">"Got a cert for peer we don't know about? "</span> +
-<a class="jxr_linenumber" name="217" href="#217">217</a>                 <span class="jxr_string">"{} not found in {}"</span>, event.getJid(), 
-<a class="jxr_linenumber" name="218" href="#218">218</a>                 <strong class="jxr_keyword">this</strong>.model.getPeerCollector().getPeers().keySet());
-<a class="jxr_linenumber" name="219" href="#219">219</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="220" href="#220">220</a>             certsToPeers.put(event.getBase64Cert(), peer);
-<a class="jxr_linenumber" name="221" href="#221">221</a>         }
-<a class="jxr_linenumber" name="222" href="#222">222</a>     }
-<a class="jxr_linenumber" name="223" href="#223">223</a> 
-<a class="jxr_linenumber" name="224" href="#224">224</a>     @Subscribe
-<a class="jxr_linenumber" name="225" href="#225">225</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onIncomingPeerEvent(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/event/IncomingPeerEvent.html">IncomingPeerEvent</a> event) {
-<a class="jxr_linenumber" name="226" href="#226">226</a>         <em class="jxr_comment">// First we have to figure out which peer this is an incoming socket</em>
-<a class="jxr_linenumber" name="227" href="#227">227</a>         <em class="jxr_comment">// for base on the certificate.</em>
-<a class="jxr_linenumber" name="228" href="#228">228</a>         <strong class="jxr_keyword">final</strong> X509Certificate cert = event.getCert();
-<a class="jxr_linenumber" name="229" href="#229">229</a>         <strong class="jxr_keyword">final</strong> Channel channel = event.getChannel();
-<a class="jxr_linenumber" name="230" href="#230">230</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/util/LanternTrafficCounter.html">LanternTrafficCounter</a> counter = event.getTrafficCounter();
-<a class="jxr_linenumber" name="231" href="#231">231</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="232" href="#232">232</a>             <strong class="jxr_keyword">final</strong> String base64Cert =
-<a class="jxr_linenumber" name="233" href="#233">233</a>                     Base64.encodeBase64String(cert.getEncoded());
-<a class="jxr_linenumber" name="234" href="#234">234</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer = certsToPeers.get(base64Cert);
-<a class="jxr_linenumber" name="235" href="#235">235</a>             <strong class="jxr_keyword">if</strong> (peer == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="236" href="#236">236</a>                 log.error(<span class="jxr_string">"No matching peer for cert: {} in {}"</span>, base64Cert,
-<a class="jxr_linenumber" name="237" href="#237">237</a>                     certsToPeers);
-<a class="jxr_linenumber" name="238" href="#238">238</a>                 <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="239" href="#239">239</a>             }
-<a class="jxr_linenumber" name="240" href="#240">240</a>             log.debug(<span class="jxr_string">"Found peer by certificate!!!"</span>);
-<a class="jxr_linenumber" name="241" href="#241">241</a>             peer.setMode(Mode.get);
-<a class="jxr_linenumber" name="242" href="#242">242</a>             updatePeer(peer, (InetSocketAddress)channel.getRemoteAddress(),
-<a class="jxr_linenumber" name="243" href="#243">243</a>                 Type.pc, counter);
-<a class="jxr_linenumber" name="244" href="#244">244</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> CertificateEncodingException e) {
-<a class="jxr_linenumber" name="245" href="#245">245</a>             log.error(<span class="jxr_string">"Could not encode certificate?"</span>, e);
-<a class="jxr_linenumber" name="246" href="#246">246</a>         }
-<a class="jxr_linenumber" name="247" href="#247">247</a>     }
-<a class="jxr_linenumber" name="248" href="#248">248</a> }
+<a class="jxr_linenumber" name="181" href="#181">181</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> existing = <strong class="jxr_keyword">this</strong>.model.getPeerCollector().getPeer(fullJid);
+<a class="jxr_linenumber" name="182" href="#182">182</a> 
+<a class="jxr_linenumber" name="183" href="#183">183</a>         <strong class="jxr_keyword">if</strong> (existing != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="184" href="#184">184</a>             log.debug(<span class="jxr_string">"Peer already exists..."</span>);
+<a class="jxr_linenumber" name="185" href="#185">185</a>             <strong class="jxr_keyword">return</strong> existing;
+<a class="jxr_linenumber" name="186" href="#186">186</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="187" href="#187">187</a>             log.debug(<span class="jxr_string">"Adding peer {}"</span>, fullJid);
+<a class="jxr_linenumber" name="188" href="#188">188</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer = <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/state/Peer.html">Peer</a>(fullJid, <span class="jxr_string">""</span>, false, 0L, 0L, type,
+<a class="jxr_linenumber" name="189" href="#189">189</a>                     <span class="jxr_string">""</span>, 0, Mode.unknown, false, entry);
+<a class="jxr_linenumber" name="190" href="#190">190</a>             <strong class="jxr_keyword">this</strong>.model.getPeerCollector().addPeer(fullJid, peer);
+<a class="jxr_linenumber" name="191" href="#191">191</a>             <strong class="jxr_keyword">return</strong> peer;
+<a class="jxr_linenumber" name="192" href="#192">192</a>         }
+<a class="jxr_linenumber" name="193" href="#193">193</a>     }
+<a class="jxr_linenumber" name="194" href="#194">194</a>     
+<a class="jxr_linenumber" name="195" href="#195">195</a>     @Override
+<a class="jxr_linenumber" name="196" href="#196">196</a>     <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peerForJid(URI fullJid) {
+<a class="jxr_linenumber" name="197" href="#197">197</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.model.getPeerCollector().getPeer(fullJid);
+<a class="jxr_linenumber" name="198" href="#198">198</a>     }
+<a class="jxr_linenumber" name="199" href="#199">199</a>     
+<a class="jxr_linenumber" name="200" href="#200">200</a>     <strong class="jxr_keyword">private</strong> <a href="../../org/lantern/LanternRosterEntry.html">LanternRosterEntry</a> rosterEntry(<strong class="jxr_keyword">final</strong> URI fullJid) {
+<a class="jxr_linenumber" name="201" href="#201">201</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.roster.getRosterEntry(fullJid.toASCIIString());
+<a class="jxr_linenumber" name="202" href="#202">202</a>     }
+<a class="jxr_linenumber" name="203" href="#203">203</a> 
+<a class="jxr_linenumber" name="204" href="#204">204</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;X509Certificate, Peer&gt; certsToPeers =
+<a class="jxr_linenumber" name="205" href="#205">205</a>             <strong class="jxr_keyword">new</strong> ConcurrentHashMap&lt;X509Certificate, Peer&gt;();
+<a class="jxr_linenumber" name="206" href="#206">206</a> 
+<a class="jxr_linenumber" name="207" href="#207">207</a>     @Subscribe
+<a class="jxr_linenumber" name="208" href="#208">208</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onCert(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/event/PeerCertEvent.html">PeerCertEvent</a> event) {
+<a class="jxr_linenumber" name="209" href="#209">209</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peer = <strong class="jxr_keyword">this</strong>.model.getPeerCollector().getPeer(event.getJid());
+<a class="jxr_linenumber" name="210" href="#210">210</a>         <strong class="jxr_keyword">if</strong> (peer == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="211" href="#211">211</a>             log.error(<span class="jxr_string">"Got a cert for peer we don't know about? "</span> +
+<a class="jxr_linenumber" name="212" href="#212">212</a>                     <span class="jxr_string">"{} not found in {}"</span>, event.getJid(),
+<a class="jxr_linenumber" name="213" href="#213">213</a>                     <strong class="jxr_keyword">this</strong>.model.getPeerCollector().getPeers().keySet());
+<a class="jxr_linenumber" name="214" href="#214">214</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="215" href="#215">215</a>             byte[] certificateBytes = Base64
+<a class="jxr_linenumber" name="216" href="#216">216</a>                     .decodeBase64(event.getBase64Cert());
+<a class="jxr_linenumber" name="217" href="#217">217</a>             <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="218" href="#218">218</a>                 X509Certificate certificate = X509Certificate
+<a class="jxr_linenumber" name="219" href="#219">219</a>                         .getInstance(certificateBytes);
+<a class="jxr_linenumber" name="220" href="#220">220</a>                 certsToPeers.put(certificate, peer);
+<a class="jxr_linenumber" name="221" href="#221">221</a>             } <strong class="jxr_keyword">catch</strong> (CertificateException ce) {
+<a class="jxr_linenumber" name="222" href="#222">222</a>                 log.error(<span class="jxr_string">"Unable to decode X509 certificate"</span>, ce);
+<a class="jxr_linenumber" name="223" href="#223">223</a>             }
+<a class="jxr_linenumber" name="224" href="#224">224</a>         }
+<a class="jxr_linenumber" name="225" href="#225">225</a>     }
+<a class="jxr_linenumber" name="226" href="#226">226</a> 
+<a class="jxr_linenumber" name="227" href="#227">227</a>     @Override
+<a class="jxr_linenumber" name="228" href="#228">228</a>     <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> peerForSession(SSLSession sslSession) {
+<a class="jxr_linenumber" name="229" href="#229">229</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="230" href="#230">230</a>             X509Certificate[] certificateChain = sslSession
+<a class="jxr_linenumber" name="231" href="#231">231</a>                     .getPeerCertificateChain();
+<a class="jxr_linenumber" name="232" href="#232">232</a>             <strong class="jxr_keyword">if</strong> (certificateChain.length == 0) {
+<a class="jxr_linenumber" name="233" href="#233">233</a>                 log.error(<span class="jxr_string">"No certificates in chain"</span>);
+<a class="jxr_linenumber" name="234" href="#234">234</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="235" href="#235">235</a>             }
+<a class="jxr_linenumber" name="236" href="#236">236</a>             X509Certificate cert = certificateChain[0];
+<a class="jxr_linenumber" name="237" href="#237">237</a>             <strong class="jxr_keyword">return</strong> certsToPeers.get(cert);
+<a class="jxr_linenumber" name="238" href="#238">238</a>         } <strong class="jxr_keyword">catch</strong> (SSLPeerUnverifiedException spue) {
+<a class="jxr_linenumber" name="239" href="#239">239</a>             log.error(<span class="jxr_string">"Peer not verified"</span>);
+<a class="jxr_linenumber" name="240" href="#240">240</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="241" href="#241">241</a>         }
+<a class="jxr_linenumber" name="242" href="#242">242</a>     }
+<a class="jxr_linenumber" name="243" href="#243">243</a> 
+<a class="jxr_linenumber" name="244" href="#244">244</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> peerSentRequest(InetSocketAddress peerAddress,
+<a class="jxr_linenumber" name="245" href="#245">245</a>             SSLSession sslSession) {
+<a class="jxr_linenumber" name="246" href="#246">246</a>         <a href="../../org/lantern/state/Peer.html">Peer</a> peer = peerForSession(sslSession);
+<a class="jxr_linenumber" name="247" href="#247">247</a>         <strong class="jxr_keyword">if</strong> (peer != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="248" href="#248">248</a>             log.debug(<span class="jxr_string">"Found peer by certificate!!!"</span>);
+<a class="jxr_linenumber" name="249" href="#249">249</a>             peer.setMode(Mode.get);
+<a class="jxr_linenumber" name="250" href="#250">250</a>             updatePeer(peer, peerAddress, Type.pc);
+<a class="jxr_linenumber" name="251" href="#251">251</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="252" href="#252">252</a>             log.error(<span class="jxr_string">"No peer found for ssl session: {}"</span>, sslSession);
+<a class="jxr_linenumber" name="253" href="#253">253</a>         }
+<a class="jxr_linenumber" name="254" href="#254">254</a>     }
+<a class="jxr_linenumber" name="255" href="#255">255</a> }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

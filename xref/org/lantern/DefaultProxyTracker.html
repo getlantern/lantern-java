@@ -10,636 +10,674 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.lantern;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.io.File;
-<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.io.FileInputStream;
-<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> java.io.IOException;
-<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> java.io.InputStream;
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> java.net.InetSocketAddress;
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> java.net.Socket;
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> java.net.URI;
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> java.util.Collection;
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> java.util.Date;
-<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> java.util.HashMap;
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> java.util.TimerTask;
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.ExecutorService;
-<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.ScheduledExecutorService;
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicBoolean;
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicInteger;
-<a class="jxr_linenumber" name="19" href="#19">19</a>  
-<a class="jxr_linenumber" name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.io.IOUtils;
-<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.StringUtils;
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.SystemUtils;
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.codehaus.jackson.map.ObjectMapper;
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.jboss.netty.handler.traffic.GlobalTrafficShapingHandler;
-<a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.jboss.netty.util.Timer;
-<a class="jxr_linenumber" name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.Events;
-<a class="jxr_linenumber" name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.ModeChangedEvent;
-<a class="jxr_linenumber" name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.ProxyConnectionEvent;
-<a class="jxr_linenumber" name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.ResetEvent;
-<a class="jxr_linenumber" name="30" href="#30">30</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Mode;
-<a class="jxr_linenumber" name="31" href="#31">31</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Model;
-<a class="jxr_linenumber" name="32" href="#32">32</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Peer;
-<a class="jxr_linenumber" name="33" href="#33">33</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Peer.Type;
-<a class="jxr_linenumber" name="34" href="#34">34</a>  <strong class="jxr_keyword">import</strong> org.lantern.util.Netty3LanternTrafficCounterHandler;
-<a class="jxr_linenumber" name="35" href="#35">35</a>  <strong class="jxr_keyword">import</strong> org.lantern.util.Netty4LanternTrafficCounterHandler;
-<a class="jxr_linenumber" name="36" href="#36">36</a>  <strong class="jxr_keyword">import</strong> org.lantern.util.Threads;
-<a class="jxr_linenumber" name="37" href="#37">37</a>  <strong class="jxr_keyword">import</strong> org.littleshoot.util.FiveTuple;
-<a class="jxr_linenumber" name="38" href="#38">38</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="39" href="#39">39</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
-<a class="jxr_linenumber" name="40" href="#40">40</a>  
-<a class="jxr_linenumber" name="41" href="#41">41</a>  <strong class="jxr_keyword">import</strong> com.google.common.eventbus.Subscribe;
-<a class="jxr_linenumber" name="42" href="#42">42</a>  <strong class="jxr_keyword">import</strong> com.google.common.io.Files;
-<a class="jxr_linenumber" name="43" href="#43">43</a>  <strong class="jxr_keyword">import</strong> com.google.inject.Inject;
-<a class="jxr_linenumber" name="44" href="#44">44</a>  <strong class="jxr_keyword">import</strong> com.google.inject.Singleton;
-<a class="jxr_linenumber" name="45" href="#45">45</a>  
-<a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="47" href="#47">47</a>  <em class="jxr_javadoccomment"> * Class for keeping track of all proxies we know about.</em>
-<a class="jxr_linenumber" name="48" href="#48">48</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="49" href="#49">49</a>  @Singleton
-<a class="jxr_linenumber" name="50" href="#50">50</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../org/lantern/DefaultProxyTracker.html">DefaultProxyTracker</a> <strong class="jxr_keyword">implements</strong> <a href="../../org/lantern/ProxyTracker.html">ProxyTracker</a> {
-<a class="jxr_linenumber" name="51" href="#51">51</a>  
-<a class="jxr_linenumber" name="52" href="#52">52</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Logger log = LoggerFactory.getLogger(getClass());
-<a class="jxr_linenumber" name="53" href="#53">53</a>  
-<a class="jxr_linenumber" name="54" href="#54">54</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ExecutorService p2pSocketThreadPool =
-<a class="jxr_linenumber" name="55" href="#55">55</a>          Threads.newCachedThreadPool(<span class="jxr_string">"P2P-Socket-Creation-Thread-"</span>);
-<a class="jxr_linenumber" name="56" href="#56">56</a>  
-<a class="jxr_linenumber" name="57" href="#57">57</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="58" href="#58">58</a>  <em class="jxr_javadoccomment">     * These are the proxies this Lantern instance is using that can be directly</em>
-<a class="jxr_linenumber" name="59" href="#59">59</a>  <em class="jxr_javadoccomment">     * connected to.</em>
-<a class="jxr_linenumber" name="60" href="#60">60</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="61" href="#61">61</a>      <a href="../../org/lantern/ProxyQueue.html">ProxyQueue</a> proxyQueue;
+<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.lantern.state.Peer.Type.*;
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.littleshoot.util.FiveTuple.Protocol.*;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   
+<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> java.io.File;
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> java.io.FileInputStream;
+<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> java.io.InputStream;
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> java.net.InetAddress;
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> java.net.InetSocketAddress;
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> java.net.Socket;
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> java.net.URI;
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> java.util.Collection;
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> java.util.Comparator;
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> java.util.Date;
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> java.util.HashMap;
+<a class="jxr_linenumber" name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> java.util.Iterator;
+<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.ConcurrentHashMap;
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.ExecutorService;
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.ScheduledExecutorService;
+<a class="jxr_linenumber" name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.TimeUnit;
+<a class="jxr_linenumber" name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicBoolean;
+<a class="jxr_linenumber" name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicInteger;
+<a class="jxr_linenumber" name="29" href="#29">29</a>  
+<a class="jxr_linenumber" name="30" href="#30">30</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.io.IOUtils;
+<a class="jxr_linenumber" name="31" href="#31">31</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.SystemUtils;
+<a class="jxr_linenumber" name="32" href="#32">32</a>  <strong class="jxr_keyword">import</strong> org.codehaus.jackson.map.ObjectMapper;
+<a class="jxr_linenumber" name="33" href="#33">33</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.Events;
+<a class="jxr_linenumber" name="34" href="#34">34</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.ModeChangedEvent;
+<a class="jxr_linenumber" name="35" href="#35">35</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.ProxyConnectionEvent;
+<a class="jxr_linenumber" name="36" href="#36">36</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.ResetEvent;
+<a class="jxr_linenumber" name="37" href="#37">37</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Mode;
+<a class="jxr_linenumber" name="38" href="#38">38</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Model;
+<a class="jxr_linenumber" name="39" href="#39">39</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Peer;
+<a class="jxr_linenumber" name="40" href="#40">40</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.Peer.Type;
+<a class="jxr_linenumber" name="41" href="#41">41</a>  <strong class="jxr_keyword">import</strong> org.lantern.state.SyncPath;
+<a class="jxr_linenumber" name="42" href="#42">42</a>  <strong class="jxr_keyword">import</strong> org.lantern.util.Threads;
+<a class="jxr_linenumber" name="43" href="#43">43</a>  <strong class="jxr_keyword">import</strong> org.littleshoot.util.FiveTuple;
+<a class="jxr_linenumber" name="44" href="#44">44</a>  <strong class="jxr_keyword">import</strong> org.littleshoot.util.FiveTuple.Protocol;
+<a class="jxr_linenumber" name="45" href="#45">45</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="46" href="#46">46</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="47" href="#47">47</a>  
+<a class="jxr_linenumber" name="48" href="#48">48</a>  <strong class="jxr_keyword">import</strong> com.google.common.eventbus.Subscribe;
+<a class="jxr_linenumber" name="49" href="#49">49</a>  <strong class="jxr_keyword">import</strong> com.google.common.io.Files;
+<a class="jxr_linenumber" name="50" href="#50">50</a>  <strong class="jxr_keyword">import</strong> com.google.inject.Inject;
+<a class="jxr_linenumber" name="51" href="#51">51</a>  <strong class="jxr_keyword">import</strong> com.google.inject.Singleton;
+<a class="jxr_linenumber" name="52" href="#52">52</a>  
+<a class="jxr_linenumber" name="53" href="#53">53</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="54" href="#54">54</a>  <em class="jxr_javadoccomment"> * Class for keeping track of all proxies we know about.</em>
+<a class="jxr_linenumber" name="55" href="#55">55</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="56" href="#56">56</a>  @Singleton
+<a class="jxr_linenumber" name="57" href="#57">57</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../org/lantern/DefaultProxyTracker.html">DefaultProxyTracker</a> <strong class="jxr_keyword">implements</strong> <a href="../../org/lantern/ProxyTracker.html">ProxyTracker</a> {
+<a class="jxr_linenumber" name="58" href="#58">58</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> RECENTLY_DECEASED_CUTOFF_IN_MILLIS = 10000;
+<a class="jxr_linenumber" name="59" href="#59">59</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> NAT_TRAVERSAL_INITIAL_DELAY = 5000;
+<a class="jxr_linenumber" name="60" href="#60">60</a>  
+<a class="jxr_linenumber" name="61" href="#61">61</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/DefaultProxyTracker.html">ProxyPrioritizer</a> PROXY_PRIORITIZER = <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/DefaultProxyTracker.html">ProxyPrioritizer</a>();
 <a class="jxr_linenumber" name="62" href="#62">62</a>  
-<a class="jxr_linenumber" name="63" href="#63">63</a>      <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> This is are presently not used */</em>
-<a class="jxr_linenumber" name="64" href="#64">64</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyQueue.html">ProxyQueue</a> laeProxyQueue;
+<a class="jxr_linenumber" name="63" href="#63">63</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger LOG = LoggerFactory
+<a class="jxr_linenumber" name="64" href="#64">64</a>              .getLogger(DefaultProxyTracker.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="65" href="#65">65</a>  
-<a class="jxr_linenumber" name="66" href="#66">66</a>      <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> <a href="../../org/lantern/state/Peer.html">Peer</a> proxies that we can't directly connect to */</em>
-<a class="jxr_linenumber" name="67" href="#67">67</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/DefaultProxyTracker.html">PeerProxyQueue</a> peerProxyQueue;
+<a class="jxr_linenumber" name="66" href="#66">66</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ExecutorService p2pSocketThreadPool =
+<a class="jxr_linenumber" name="67" href="#67">67</a>              Threads.newCachedThreadPool(<span class="jxr_string">"P2P-Socket-Creation-Thread-"</span>);
 <a class="jxr_linenumber" name="68" href="#68">68</a>  
-<a class="jxr_linenumber" name="69" href="#69">69</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Model.html">Model</a> model;
-<a class="jxr_linenumber" name="70" href="#70">70</a>  
-<a class="jxr_linenumber" name="71" href="#71">71</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/PeerFactory.html">PeerFactory</a> peerFactory;
-<a class="jxr_linenumber" name="72" href="#72">72</a>  
-<a class="jxr_linenumber" name="73" href="#73">73</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Timer timer;
+<a class="jxr_linenumber" name="69" href="#69">69</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="70" href="#70">70</a>  <em class="jxr_javadoccomment">     * Holds all proxies keyed to their {@link FiveTuple}.</em>
+<a class="jxr_linenumber" name="71" href="#71">71</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="72" href="#72">72</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;FiveTuple, ProxyHolder&gt; proxies =
+<a class="jxr_linenumber" name="73" href="#73">73</a>              <strong class="jxr_keyword">new</strong> ConcurrentHashMap&lt;FiveTuple, ProxyHolder&gt;();
 <a class="jxr_linenumber" name="74" href="#74">74</a>  
-<a class="jxr_linenumber" name="75" href="#75">75</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Collection&lt;Netty3LanternTrafficCounterHandler&gt; netty3TrafficShapers =
-<a class="jxr_linenumber" name="76" href="#76">76</a>              <strong class="jxr_keyword">new</strong> ArrayList&lt;Netty3LanternTrafficCounterHandler&gt;();
-<a class="jxr_linenumber" name="77" href="#77">77</a>  
-<a class="jxr_linenumber" name="78" href="#78">78</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Collection&lt;Netty4LanternTrafficCounterHandler&gt; netty4TrafficShapers =
-<a class="jxr_linenumber" name="79" href="#79">79</a>              <strong class="jxr_keyword">new</strong> ArrayList&lt;Netty4LanternTrafficCounterHandler&gt;();
-<a class="jxr_linenumber" name="80" href="#80">80</a>  
-<a class="jxr_linenumber" name="81" href="#81">81</a>  
-<a class="jxr_linenumber" name="82" href="#82">82</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> ScheduledExecutorService netty4TrafficCounterExecutor =
-<a class="jxr_linenumber" name="83" href="#83">83</a>              Threads.newScheduledThreadPool(<span class="jxr_string">"Netty4-Traffic-Counter-"</span>);
+<a class="jxr_linenumber" name="75" href="#75">75</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="76" href="#76">76</a>  <em class="jxr_javadoccomment">     * Holds the times at which a given JID should next be NAT traversed. We use</em>
+<a class="jxr_linenumber" name="77" href="#77">77</a>  <em class="jxr_javadoccomment">     * this to implement a back-off strategy that keeps us from too frequently</em>
+<a class="jxr_linenumber" name="78" href="#78">78</a>  <em class="jxr_javadoccomment">     * trying to NAT traverse to the same peers.</em>
+<a class="jxr_linenumber" name="79" href="#79">79</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="80" href="#80">80</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;URI, ScheduledNatTraversal&gt; natTraversalSchedule =
+<a class="jxr_linenumber" name="81" href="#81">81</a>              <strong class="jxr_keyword">new</strong> ConcurrentHashMap&lt;URI, ScheduledNatTraversal&gt;();
+<a class="jxr_linenumber" name="82" href="#82">82</a>  
+<a class="jxr_linenumber" name="83" href="#83">83</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Model.html">Model</a> model;
 <a class="jxr_linenumber" name="84" href="#84">84</a>  
-<a class="jxr_linenumber" name="85" href="#85">85</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="86" href="#86">86</a>  <em class="jxr_javadoccomment">     * Thread pool for checking connections to proxies -- otherwise these</em>
-<a class="jxr_linenumber" name="87" href="#87">87</a>  <em class="jxr_javadoccomment">     * can hold up the XMPP processing thread or any other calling thread.</em>
-<a class="jxr_linenumber" name="88" href="#88">88</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="89" href="#89">89</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ExecutorService proxyCheckThreadPool =
-<a class="jxr_linenumber" name="90" href="#90">90</a>              Threads.newCachedThreadPool(<span class="jxr_string">"Proxy-Connection-Check-Pool-"</span>);
-<a class="jxr_linenumber" name="91" href="#91">91</a>  
-<a class="jxr_linenumber" name="92" href="#92">92</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/XmppHandler.html">XmppHandler</a> xmppHandler;
+<a class="jxr_linenumber" name="85" href="#85">85</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/PeerFactory.html">PeerFactory</a> peerFactory;
+<a class="jxr_linenumber" name="86" href="#86">86</a>  
+<a class="jxr_linenumber" name="87" href="#87">87</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="88" href="#88">88</a>  <em class="jxr_javadoccomment">     * Thread pool for checking connections to proxies -- otherwise these can</em>
+<a class="jxr_linenumber" name="89" href="#89">89</a>  <em class="jxr_javadoccomment">     * hold up the XMPP processing thread or any other calling thread.</em>
+<a class="jxr_linenumber" name="90" href="#90">90</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="91" href="#91">91</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ExecutorService proxyCheckThreadPool =
+<a class="jxr_linenumber" name="92" href="#92">92</a>              Threads.newCachedThreadPool(<span class="jxr_string">"Proxy-Connection-Check-Pool-"</span>);
 <a class="jxr_linenumber" name="93" href="#93">93</a>  
-<a class="jxr_linenumber" name="94" href="#94">94</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicBoolean proxiesPopulated = <strong class="jxr_keyword">new</strong> AtomicBoolean(false);
+<a class="jxr_linenumber" name="94" href="#94">94</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/XmppHandler.html">XmppHandler</a> xmppHandler;
 <a class="jxr_linenumber" name="95" href="#95">95</a>  
-<a class="jxr_linenumber" name="96" href="#96">96</a>      <strong class="jxr_keyword">private</strong> String fallbackServerHost;
+<a class="jxr_linenumber" name="96" href="#96">96</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicBoolean proxiesPopulated = <strong class="jxr_keyword">new</strong> AtomicBoolean(false);
 <a class="jxr_linenumber" name="97" href="#97">97</a>  
-<a class="jxr_linenumber" name="98" href="#98">98</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> fallbackServerPort;
-<a class="jxr_linenumber" name="99" href="#99">99</a>      
-<a class="jxr_linenumber" name="100" href="#100">100</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> java.util.Timer proxyRetryTimer = <strong class="jxr_keyword">new</strong> java.util.Timer();
+<a class="jxr_linenumber" name="98" href="#98">98</a>      <strong class="jxr_keyword">private</strong> String fallbackServerHost;
+<a class="jxr_linenumber" name="99" href="#99">99</a>  
+<a class="jxr_linenumber" name="100" href="#100">100</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> fallbackServerPort;
 <a class="jxr_linenumber" name="101" href="#101">101</a> 
-<a class="jxr_linenumber" name="102" href="#102">102</a>     @Inject
-<a class="jxr_linenumber" name="103" href="#103">103</a>     <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/DefaultProxyTracker.html">DefaultProxyTracker</a>(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Model.html">Model</a> model,
-<a class="jxr_linenumber" name="104" href="#104">104</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/PeerFactory.html">PeerFactory</a> peerFactory, <strong class="jxr_keyword">final</strong> org.jboss.netty.util.Timer timer,
-<a class="jxr_linenumber" name="105" href="#105">105</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/XmppHandler.html">XmppHandler</a> xmppHandler) {
-<a class="jxr_linenumber" name="106" href="#106">106</a>         proxyQueue = <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/ProxyQueue.html">ProxyQueue</a>(model);
-<a class="jxr_linenumber" name="107" href="#107">107</a>         laeProxyQueue = <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/ProxyQueue.html">ProxyQueue</a>(model);
-<a class="jxr_linenumber" name="108" href="#108">108</a>         peerProxyQueue = <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/DefaultProxyTracker.html">PeerProxyQueue</a>(model);
-<a class="jxr_linenumber" name="109" href="#109">109</a>         <strong class="jxr_keyword">this</strong>.model = model;
-<a class="jxr_linenumber" name="110" href="#110">110</a>         <strong class="jxr_keyword">this</strong>.peerFactory = peerFactory;
-<a class="jxr_linenumber" name="111" href="#111">111</a>         <strong class="jxr_keyword">this</strong>.timer = timer;
-<a class="jxr_linenumber" name="112" href="#112">112</a>         <strong class="jxr_keyword">this</strong>.xmppHandler = xmppHandler;
-<a class="jxr_linenumber" name="113" href="#113">113</a>         
-<a class="jxr_linenumber" name="114" href="#114">114</a>         proxyRetryTimer.schedule(<strong class="jxr_keyword">new</strong> TimerTask() {
-<a class="jxr_linenumber" name="115" href="#115">115</a>             
-<a class="jxr_linenumber" name="116" href="#116">116</a>             @Override
-<a class="jxr_linenumber" name="117" href="#117">117</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
-<a class="jxr_linenumber" name="118" href="#118">118</a>                 restoreTimedInProxies(proxyQueue);
-<a class="jxr_linenumber" name="119" href="#119">119</a>                 restoreTimedInProxies(peerProxyQueue);
-<a class="jxr_linenumber" name="120" href="#120">120</a>                 restoreTimedInProxies(laeProxyQueue);
-<a class="jxr_linenumber" name="121" href="#121">121</a>             }
-<a class="jxr_linenumber" name="122" href="#122">122</a>         }, 10000, 4000);
-<a class="jxr_linenumber" name="123" href="#123">123</a> 
-<a class="jxr_linenumber" name="124" href="#124">124</a>         Events.register(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="125" href="#125">125</a>     }
-<a class="jxr_linenumber" name="126" href="#126">126</a> 
-<a class="jxr_linenumber" name="127" href="#127">127</a>     @Override
-<a class="jxr_linenumber" name="128" href="#128">128</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> start() {
-<a class="jxr_linenumber" name="129" href="#129">129</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.model.getSettings().getMode() == Mode.get) {
-<a class="jxr_linenumber" name="130" href="#130">130</a>             prepopulateProxies();
-<a class="jxr_linenumber" name="131" href="#131">131</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="132" href="#132">132</a>             log.debug(<span class="jxr_string">"Not adding proxies in give mode..."</span>);
-<a class="jxr_linenumber" name="133" href="#133">133</a>         }
-<a class="jxr_linenumber" name="134" href="#134">134</a>     }
-<a class="jxr_linenumber" name="135" href="#135">135</a> 
+<a class="jxr_linenumber" name="102" href="#102">102</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ScheduledExecutorService proxyRetryService = <a href="../../org/lantern/util/Threads.html">Threads</a>
+<a class="jxr_linenumber" name="103" href="#103">103</a>             .newSingleThreadedScheduledExecutor(<span class="jxr_string">"Proxy-Retry"</span>);
+<a class="jxr_linenumber" name="104" href="#104">104</a> 
+<a class="jxr_linenumber" name="105" href="#105">105</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/LanternTrustStore.html">LanternTrustStore</a> lanternTrustStore;
+<a class="jxr_linenumber" name="106" href="#106">106</a> 
+<a class="jxr_linenumber" name="107" href="#107">107</a>     @Inject
+<a class="jxr_linenumber" name="108" href="#108">108</a>     <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/DefaultProxyTracker.html">DefaultProxyTracker</a>(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Model.html">Model</a> model,
+<a class="jxr_linenumber" name="109" href="#109">109</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/PeerFactory.html">PeerFactory</a> peerFactory,
+<a class="jxr_linenumber" name="110" href="#110">110</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/XmppHandler.html">XmppHandler</a> xmppHandler,
+<a class="jxr_linenumber" name="111" href="#111">111</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/LanternTrustStore.html">LanternTrustStore</a> lanternTrustStore) {
+<a class="jxr_linenumber" name="112" href="#112">112</a>         <strong class="jxr_keyword">this</strong>.model = model;
+<a class="jxr_linenumber" name="113" href="#113">113</a>         <strong class="jxr_keyword">this</strong>.peerFactory = peerFactory;
+<a class="jxr_linenumber" name="114" href="#114">114</a>         <strong class="jxr_keyword">this</strong>.xmppHandler = xmppHandler;
+<a class="jxr_linenumber" name="115" href="#115">115</a>         <strong class="jxr_keyword">this</strong>.lanternTrustStore = lanternTrustStore;
+<a class="jxr_linenumber" name="116" href="#116">116</a> 
+<a class="jxr_linenumber" name="117" href="#117">117</a>         <em class="jxr_comment">// Periodically restore timed in proxies</em>
+<a class="jxr_linenumber" name="118" href="#118">118</a>         proxyRetryService.scheduleWithFixedDelay(<strong class="jxr_keyword">new</strong> Runnable() {
+<a class="jxr_linenumber" name="119" href="#119">119</a>             @Override
+<a class="jxr_linenumber" name="120" href="#120">120</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
+<a class="jxr_linenumber" name="121" href="#121">121</a>                 restoreTimedInProxies();
+<a class="jxr_linenumber" name="122" href="#122">122</a>             }
+<a class="jxr_linenumber" name="123" href="#123">123</a>         }, 10000, 4000, TimeUnit.MILLISECONDS);
+<a class="jxr_linenumber" name="124" href="#124">124</a> 
+<a class="jxr_linenumber" name="125" href="#125">125</a>         Events.register(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="126" href="#126">126</a>     }
+<a class="jxr_linenumber" name="127" href="#127">127</a> 
+<a class="jxr_linenumber" name="128" href="#128">128</a>     @Override
+<a class="jxr_linenumber" name="129" href="#129">129</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> start() {
+<a class="jxr_linenumber" name="130" href="#130">130</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.model.getSettings().getMode() == Mode.get) {
+<a class="jxr_linenumber" name="131" href="#131">131</a>             prepopulateProxies();
+<a class="jxr_linenumber" name="132" href="#132">132</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="133" href="#133">133</a>             LOG.debug(<span class="jxr_string">"Not adding proxies in give mode..."</span>);
+<a class="jxr_linenumber" name="134" href="#134">134</a>         }
+<a class="jxr_linenumber" name="135" href="#135">135</a>     }
 <a class="jxr_linenumber" name="136" href="#136">136</a> 
-<a class="jxr_linenumber" name="137" href="#137">137</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> prepopulateProxies() {
-<a class="jxr_linenumber" name="138" href="#138">138</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.model.getSettings().getMode() == Mode.give) {
-<a class="jxr_linenumber" name="139" href="#139">139</a>             log.debug(<span class="jxr_string">"Not loading proxies in give mode"</span>);
-<a class="jxr_linenumber" name="140" href="#140">140</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="141" href="#141">141</a>         }
-<a class="jxr_linenumber" name="142" href="#142">142</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.proxiesPopulated.get()) {
-<a class="jxr_linenumber" name="143" href="#143">143</a>             log.debug(<span class="jxr_string">"Proxies already populated!"</span>);
-<a class="jxr_linenumber" name="144" href="#144">144</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="145" href="#145">145</a>         }
-<a class="jxr_linenumber" name="146" href="#146">146</a>         <strong class="jxr_keyword">this</strong>.proxiesPopulated.set(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="147" href="#147">147</a>         addFallbackProxies();
-<a class="jxr_linenumber" name="148" href="#148">148</a>         <em class="jxr_comment">// Add all the stored proxies.</em>
-<a class="jxr_linenumber" name="149" href="#149">149</a>         <strong class="jxr_keyword">final</strong> Collection&lt;Peer&gt; peers = <strong class="jxr_keyword">this</strong>.model.getPeers();
-<a class="jxr_linenumber" name="150" href="#150">150</a>         log.debug(<span class="jxr_string">"Proxy set is: {}"</span>, peers);
-<a class="jxr_linenumber" name="151" href="#151">151</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Peer peer : peers) {
-<a class="jxr_linenumber" name="152" href="#152">152</a>             <em class="jxr_comment">// Don't use peer proxies since we're not connected to XMPP yet.</em>
-<a class="jxr_linenumber" name="153" href="#153">153</a>             <strong class="jxr_keyword">if</strong> (peer.isMapped()) {
-<a class="jxr_linenumber" name="154" href="#154">154</a>                 <strong class="jxr_keyword">final</strong> String id = peer.getPeerid();
-<a class="jxr_linenumber" name="155" href="#155">155</a>                 <strong class="jxr_keyword">if</strong> (!id.contains(fallbackServerHost)) {
-<a class="jxr_linenumber" name="156" href="#156">156</a>                     addProxy(LanternUtils.newURI(peer.getPeerid()), 
-<a class="jxr_linenumber" name="157" href="#157">157</a>                         <strong class="jxr_keyword">new</strong> InetSocketAddress(peer.getIp(), peer.getPort()));
-<a class="jxr_linenumber" name="158" href="#158">158</a>                 }
-<a class="jxr_linenumber" name="159" href="#159">159</a>             }
-<a class="jxr_linenumber" name="160" href="#160">160</a>         }
-<a class="jxr_linenumber" name="161" href="#161">161</a>     }
-<a class="jxr_linenumber" name="162" href="#162">162</a>     
-<a class="jxr_linenumber" name="163" href="#163">163</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addFallbackProxies() {
-<a class="jxr_linenumber" name="164" href="#164">164</a>         parseFallbackProxy();
-<a class="jxr_linenumber" name="165" href="#165">165</a>         addSingleFallbackProxy(fallbackServerHost, fallbackServerPort);
-<a class="jxr_linenumber" name="166" href="#166">166</a> 
-<a class="jxr_linenumber" name="167" href="#167">167</a>         <strong class="jxr_keyword">final</strong> File file = <strong class="jxr_keyword">new</strong> File(SystemUtils.USER_HOME, <span class="jxr_string">"fallbacks.json"</span>);
-<a class="jxr_linenumber" name="168" href="#168">168</a>         <strong class="jxr_keyword">if</strong> (!file.isFile()) {
-<a class="jxr_linenumber" name="169" href="#169">169</a>             log.info(<span class="jxr_string">"No fallback proxies in: {}"</span>, file.getAbsolutePath());
-<a class="jxr_linenumber" name="170" href="#170">170</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="171" href="#171">171</a>         }
-<a class="jxr_linenumber" name="172" href="#172">172</a>         <strong class="jxr_keyword">final</strong> ObjectMapper om = <strong class="jxr_keyword">new</strong> ObjectMapper();
-<a class="jxr_linenumber" name="173" href="#173">173</a>         InputStream is = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="174" href="#174">174</a>             
-<a class="jxr_linenumber" name="175" href="#175">175</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="176" href="#176">176</a>             is = <strong class="jxr_keyword">new</strong> FileInputStream(file);
-<a class="jxr_linenumber" name="177" href="#177">177</a>             <strong class="jxr_keyword">final</strong> String proxy = IOUtils.toString(is);
-<a class="jxr_linenumber" name="178" href="#178">178</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/FallbackProxies.html">FallbackProxies</a> all = om.readValue(proxy, FallbackProxies.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="179" href="#179">179</a>             <strong class="jxr_keyword">final</strong> Collection&lt;FallbackProxy&gt; proxies = all.getProxies();
-<a class="jxr_linenumber" name="180" href="#180">180</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> FallbackProxy fp : proxies) {
-<a class="jxr_linenumber" name="181" href="#181">181</a>                 log.debug(<span class="jxr_string">"Adding fallback: {}"</span>, fp);
-<a class="jxr_linenumber" name="182" href="#182">182</a>                 addSingleFallbackProxy(fp.getIp(), fp.getPort());
-<a class="jxr_linenumber" name="183" href="#183">183</a>             }
-<a class="jxr_linenumber" name="184" href="#184">184</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
-<a class="jxr_linenumber" name="185" href="#185">185</a>             log.error(<span class="jxr_string">"Could not load fallback proxies?"</span>);
-<a class="jxr_linenumber" name="186" href="#186">186</a>         }
-<a class="jxr_linenumber" name="187" href="#187">187</a>     }
-<a class="jxr_linenumber" name="188" href="#188">188</a> 
-<a class="jxr_linenumber" name="189" href="#189">189</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addSingleFallbackProxy(<strong class="jxr_keyword">final</strong> String host, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> port) {
-<a class="jxr_linenumber" name="190" href="#190">190</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.model.getSettings().isTcp()) {
-<a class="jxr_linenumber" name="191" href="#191">191</a>             <strong class="jxr_keyword">final</strong> URI uri = 
-<a class="jxr_linenumber" name="192" href="#192">192</a>                 LanternUtils.newURI(<span class="jxr_string">"fallback-"</span>+host+<span class="jxr_string">"@getlantern.org"</span>);
-<a class="jxr_linenumber" name="193" href="#193">193</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> cloud = <strong class="jxr_keyword">this</strong>.peerFactory.addPeer(uri, Type.cloud);
-<a class="jxr_linenumber" name="194" href="#194">194</a>             cloud.setMode(org.lantern.state.Mode.give);
-<a class="jxr_linenumber" name="195" href="#195">195</a>             
-<a class="jxr_linenumber" name="196" href="#196">196</a>             log.debug(<span class="jxr_string">"Adding fallback: {}"</span>, host);
-<a class="jxr_linenumber" name="197" href="#197">197</a>             addProxy(uri, host, port, Type.cloud);
-<a class="jxr_linenumber" name="198" href="#198">198</a>         }
-<a class="jxr_linenumber" name="199" href="#199">199</a>     }
+<a class="jxr_linenumber" name="137" href="#137">137</a>     @Override
+<a class="jxr_linenumber" name="138" href="#138">138</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> clear() {
+<a class="jxr_linenumber" name="139" href="#139">139</a>         proxies.clear();
+<a class="jxr_linenumber" name="140" href="#140">140</a> 
+<a class="jxr_linenumber" name="141" href="#141">141</a>         <em class="jxr_comment">// We need to add the fallback proxy back in.</em>
+<a class="jxr_linenumber" name="142" href="#142">142</a>         addFallbackProxies();
+<a class="jxr_linenumber" name="143" href="#143">143</a>     }
+<a class="jxr_linenumber" name="144" href="#144">144</a> 
+<a class="jxr_linenumber" name="145" href="#145">145</a>     @Override
+<a class="jxr_linenumber" name="146" href="#146">146</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> clearPeerProxySet() {
+<a class="jxr_linenumber" name="147" href="#147">147</a>         Iterator&lt;FiveTuple&gt; it = proxies.keySet().iterator();
+<a class="jxr_linenumber" name="148" href="#148">148</a>         <strong class="jxr_keyword">while</strong> (it.hasNext()) {
+<a class="jxr_linenumber" name="149" href="#149">149</a>             <strong class="jxr_keyword">if</strong> (it.next().getProtocol() == UDP) {
+<a class="jxr_linenumber" name="150" href="#150">150</a>                 it.remove();
+<a class="jxr_linenumber" name="151" href="#151">151</a>             }
+<a class="jxr_linenumber" name="152" href="#152">152</a>         }
+<a class="jxr_linenumber" name="153" href="#153">153</a>     }
+<a class="jxr_linenumber" name="154" href="#154">154</a> 
+<a class="jxr_linenumber" name="155" href="#155">155</a>     @Override
+<a class="jxr_linenumber" name="156" href="#156">156</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addProxy(URI jid, InetSocketAddress address) {
+<a class="jxr_linenumber" name="157" href="#157">157</a>         addProxy(jid, address, Type.pc);
+<a class="jxr_linenumber" name="158" href="#158">158</a>     }
+<a class="jxr_linenumber" name="159" href="#159">159</a> 
+<a class="jxr_linenumber" name="160" href="#160">160</a>     @Override
+<a class="jxr_linenumber" name="161" href="#161">161</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addProxy(URI jid) {
+<a class="jxr_linenumber" name="162" href="#162">162</a>         <strong class="jxr_keyword">this</strong>.addProxy(jid, (ProxyHolder) <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="163" href="#163">163</a>     }
+<a class="jxr_linenumber" name="164" href="#164">164</a> 
+<a class="jxr_linenumber" name="165" href="#165">165</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addProxy(URI jid, InetSocketAddress address, <a href="../../org/lantern/state/Peer.html">Type</a> type) {
+<a class="jxr_linenumber" name="166" href="#166">166</a>         <strong class="jxr_keyword">boolean</strong> canAddAsTCP = address != <strong class="jxr_keyword">null</strong> &amp;&amp; address.getPort() &gt; 0
+<a class="jxr_linenumber" name="167" href="#167">167</a>                 &amp;&amp; <strong class="jxr_keyword">this</strong>.model.getSettings().isTcp();
+<a class="jxr_linenumber" name="168" href="#168">168</a>         addProxy(jid, canAddAsTCP ? <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a>(<strong class="jxr_keyword">this</strong>, peerFactory,
+<a class="jxr_linenumber" name="169" href="#169">169</a>                 lanternTrustStore, jid, address, type) : <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="170" href="#170">170</a>     }
+<a class="jxr_linenumber" name="171" href="#171">171</a> 
+<a class="jxr_linenumber" name="172" href="#172">172</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addProxy(URI jid, <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> proxyHolder) {
+<a class="jxr_linenumber" name="173" href="#173">173</a>         <strong class="jxr_keyword">if</strong> (proxyHolder != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="174" href="#174">174</a>             addTcpProxy(jid, proxyHolder, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="175" href="#175">175</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="176" href="#176">176</a>             addNattedProxy(jid, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="177" href="#177">177</a>         }
+<a class="jxr_linenumber" name="178" href="#178">178</a>     }
+<a class="jxr_linenumber" name="179" href="#179">179</a> 
+<a class="jxr_linenumber" name="180" href="#180">180</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="181" href="#181">181</a> <em class="jxr_javadoccomment">     * Attempts to add this proxy as a proxy using a known TCP port.</em>
+<a class="jxr_linenumber" name="182" href="#182">182</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="183" href="#183">183</a> <em class="jxr_javadoccomment">     * @param jid</em>
+<a class="jxr_linenumber" name="184" href="#184">184</a> <em class="jxr_javadoccomment">     * @param ph</em>
+<a class="jxr_linenumber" name="185" href="#185">185</a> <em class="jxr_javadoccomment">     * @param allowFallbackToNatTTraversal</em>
+<a class="jxr_linenumber" name="186" href="#186">186</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="187" href="#187">187</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addTcpProxy(<strong class="jxr_keyword">final</strong> URI jid, <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> ph,
+<a class="jxr_linenumber" name="188" href="#188">188</a>             <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> allowFallbackToNatTTraversal) {
+<a class="jxr_linenumber" name="189" href="#189">189</a>         LOG.info(<span class="jxr_string">"Adding TCP proxy {} {}"</span>, jid, ph);
+<a class="jxr_linenumber" name="190" href="#190">190</a> 
+<a class="jxr_linenumber" name="191" href="#191">191</a>         <em class="jxr_comment">// We've seen this in weird cases in the field -- might as well</em>
+<a class="jxr_linenumber" name="192" href="#192">192</a>         <em class="jxr_comment">// program defensively here.</em>
+<a class="jxr_linenumber" name="193" href="#193">193</a>         InetAddress remoteAddress = ph.getFiveTuple().getRemote().getAddress();
+<a class="jxr_linenumber" name="194" href="#194">194</a>         <strong class="jxr_keyword">if</strong> (remoteAddress.isLoopbackAddress()
+<a class="jxr_linenumber" name="195" href="#195">195</a>                 || remoteAddress.isAnyLocalAddress()) {
+<a class="jxr_linenumber" name="196" href="#196">196</a>             LOG.warn(<span class="jxr_string">"Can connect to neither loopback nor 0.0.0.0 address {}"</span>, 
+<a class="jxr_linenumber" name="197" href="#197">197</a>                 remoteAddress);
+<a class="jxr_linenumber" name="198" href="#198">198</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="199" href="#199">199</a>         }
 <a class="jxr_linenumber" name="200" href="#200">200</a> 
-<a class="jxr_linenumber" name="201" href="#201">201</a>     @Override
-<a class="jxr_linenumber" name="202" href="#202">202</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isEmpty() {
-<a class="jxr_linenumber" name="203" href="#203">203</a>         <strong class="jxr_keyword">return</strong> proxyQueue.isEmpty();
-<a class="jxr_linenumber" name="204" href="#204">204</a>     }
-<a class="jxr_linenumber" name="205" href="#205">205</a> 
-<a class="jxr_linenumber" name="206" href="#206">206</a>     @Override
-<a class="jxr_linenumber" name="207" href="#207">207</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> clear() {
-<a class="jxr_linenumber" name="208" href="#208">208</a>         proxyQueue.clear();
-<a class="jxr_linenumber" name="209" href="#209">209</a>         peerProxyQueue.clear();
-<a class="jxr_linenumber" name="210" href="#210">210</a>         laeProxyQueue.clear();
-<a class="jxr_linenumber" name="211" href="#211">211</a> 
-<a class="jxr_linenumber" name="212" href="#212">212</a>         <em class="jxr_comment">// We need to add the fallback proxy back in.</em>
-<a class="jxr_linenumber" name="213" href="#213">213</a>         addFallbackProxies();
-<a class="jxr_linenumber" name="214" href="#214">214</a>     }
-<a class="jxr_linenumber" name="215" href="#215">215</a> 
-<a class="jxr_linenumber" name="216" href="#216">216</a>     @Override
-<a class="jxr_linenumber" name="217" href="#217">217</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> clearPeerProxySet() {
-<a class="jxr_linenumber" name="218" href="#218">218</a>         peerProxyQueue.clear();
-<a class="jxr_linenumber" name="219" href="#219">219</a>     }
-<a class="jxr_linenumber" name="220" href="#220">220</a> 
-<a class="jxr_linenumber" name="221" href="#221">221</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> TODO: this is unused */</em>
-<a class="jxr_linenumber" name="222" href="#222">222</a>     @Override
-<a class="jxr_linenumber" name="223" href="#223">223</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addLaeProxy(<strong class="jxr_keyword">final</strong> String cur) {
-<a class="jxr_linenumber" name="224" href="#224">224</a>         log.debug(<span class="jxr_string">"Adding LAE proxy"</span>);
-<a class="jxr_linenumber" name="225" href="#225">225</a>         <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="226" href="#226">226</a> <em class="jxr_comment">        addProxyWithChecks(this.laeProxySet, this.laeProxies,</em>
-<a class="jxr_linenumber" name="227" href="#227">227</a> <em class="jxr_comment">            new ProxyHolder(cur, new InetSocketAddress(cur, 443),</em>
-<a class="jxr_linenumber" name="228" href="#228">228</a> <em class="jxr_comment">                netty3TrafficCounter()), cur, Type.laeproxy);</em>
-<a class="jxr_linenumber" name="229" href="#229">229</a> <em class="jxr_comment">                */</em>
-<a class="jxr_linenumber" name="230" href="#230">230</a>     }
-<a class="jxr_linenumber" name="231" href="#231">231</a> 
-<a class="jxr_linenumber" name="232" href="#232">232</a>     @Override
-<a class="jxr_linenumber" name="233" href="#233">233</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addProxy(<strong class="jxr_keyword">final</strong> URI fullJid, <strong class="jxr_keyword">final</strong> String hostPort) {
-<a class="jxr_linenumber" name="234" href="#234">234</a>         log.debug(<span class="jxr_string">"Adding proxy as string: {}"</span>, hostPort);
-<a class="jxr_linenumber" name="235" href="#235">235</a>         <strong class="jxr_keyword">final</strong> String hostname =
-<a class="jxr_linenumber" name="236" href="#236">236</a>             StringUtils.substringBefore(hostPort, <span class="jxr_string">":"</span>);
-<a class="jxr_linenumber" name="237" href="#237">237</a>         <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> port =
-<a class="jxr_linenumber" name="238" href="#238">238</a>             Integer.parseInt(StringUtils.substringAfter(hostPort, <span class="jxr_string">":"</span>));
-<a class="jxr_linenumber" name="239" href="#239">239</a> 
-<a class="jxr_linenumber" name="240" href="#240">240</a>         addProxy(fullJid, hostname, port, Type.pc);
-<a class="jxr_linenumber" name="241" href="#241">241</a>     }
-<a class="jxr_linenumber" name="242" href="#242">242</a> 
-<a class="jxr_linenumber" name="243" href="#243">243</a> 
-<a class="jxr_linenumber" name="244" href="#244">244</a>     @Override
-<a class="jxr_linenumber" name="245" href="#245">245</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addProxy(<strong class="jxr_keyword">final</strong> URI fullJid, <strong class="jxr_keyword">final</strong> InetSocketAddress isa) {
-<a class="jxr_linenumber" name="246" href="#246">246</a>         log.debug(<span class="jxr_string">"Adding proxy: {}"</span>, isa);
-<a class="jxr_linenumber" name="247" href="#247">247</a>         addProxy(fullJid, isa.getAddress().getHostAddress(), isa.getPort(), Type.pc);
-<a class="jxr_linenumber" name="248" href="#248">248</a>     }
-<a class="jxr_linenumber" name="249" href="#249">249</a> 
-<a class="jxr_linenumber" name="250" href="#250">250</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addProxy(<strong class="jxr_keyword">final</strong> URI fullJid, <strong class="jxr_keyword">final</strong> String host, 
-<a class="jxr_linenumber" name="251" href="#251">251</a>             <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> port, <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Type</a> type) {
-<a class="jxr_linenumber" name="252" href="#252">252</a>         <strong class="jxr_keyword">final</strong> InetSocketAddress isa = LanternUtils.isa(host, port);
-<a class="jxr_linenumber" name="253" href="#253">253</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.model.getSettings().getMode() == Mode.give) {
-<a class="jxr_linenumber" name="254" href="#254">254</a>             log.debug(<span class="jxr_string">"Not adding proxy in give mode"</span>);
-<a class="jxr_linenumber" name="255" href="#255">255</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="256" href="#256">256</a>         }
-<a class="jxr_linenumber" name="257" href="#257">257</a> 
-<a class="jxr_linenumber" name="258" href="#258">258</a>         addProxyWithChecks(fullJid, proxyQueue,
-<a class="jxr_linenumber" name="259" href="#259">259</a>             <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a>(host, fullJid, isa, netty3TrafficCounter(), type));
-<a class="jxr_linenumber" name="260" href="#260">260</a>     }
-<a class="jxr_linenumber" name="261" href="#261">261</a> 
-<a class="jxr_linenumber" name="262" href="#262">262</a> 
-<a class="jxr_linenumber" name="263" href="#263">263</a>     @Override
-<a class="jxr_linenumber" name="264" href="#264">264</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> hasJidProxy(<strong class="jxr_keyword">final</strong> URI uri) {
-<a class="jxr_linenumber" name="265" href="#265">265</a>         <strong class="jxr_keyword">return</strong> peerProxyQueue.containsPeer(uri);
-<a class="jxr_linenumber" name="266" href="#266">266</a>     }
-<a class="jxr_linenumber" name="267" href="#267">267</a> 
-<a class="jxr_linenumber" name="268" href="#268">268</a>     @Override
-<a class="jxr_linenumber" name="269" href="#269">269</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addJidProxy(<strong class="jxr_keyword">final</strong> URI peerUri) {
-<a class="jxr_linenumber" name="270" href="#270">270</a>         log.debug(<span class="jxr_string">"Considering peer proxy"</span>);
-<a class="jxr_linenumber" name="271" href="#271">271</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.model.getSettings().getMode() == Mode.give) {
-<a class="jxr_linenumber" name="272" href="#272">272</a>             log.debug(<span class="jxr_string">"Not adding JID proxy in give mode"</span>);
-<a class="jxr_linenumber" name="273" href="#273">273</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="201" href="#201">201</a>         proxyCheckThreadPool.submit(<strong class="jxr_keyword">new</strong> Runnable() {
+<a class="jxr_linenumber" name="202" href="#202">202</a> 
+<a class="jxr_linenumber" name="203" href="#203">203</a>             @Override
+<a class="jxr_linenumber" name="204" href="#204">204</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
+<a class="jxr_linenumber" name="205" href="#205">205</a>                 <strong class="jxr_keyword">final</strong> Socket sock = <strong class="jxr_keyword">new</strong> Socket();
+<a class="jxr_linenumber" name="206" href="#206">206</a>                 <strong class="jxr_keyword">final</strong> InetSocketAddress remote = ph.getFiveTuple().getRemote();
+<a class="jxr_linenumber" name="207" href="#207">207</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="208" href="#208">208</a>                     sock.connect(remote, 60 * 1000);
+<a class="jxr_linenumber" name="209" href="#209">209</a> 
+<a class="jxr_linenumber" name="210" href="#210">210</a>                     <strong class="jxr_keyword">if</strong> (proxies.put(ph.getFiveTuple(), ph) == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="211" href="#211">211</a>                         LOG.debug(
+<a class="jxr_linenumber" name="212" href="#212">212</a>                                 <span class="jxr_string">"Added connected TCP proxy.  Proxies is now {}"</span>,
+<a class="jxr_linenumber" name="213" href="#213">213</a>                                 proxies);
+<a class="jxr_linenumber" name="214" href="#214">214</a>                         peerFactory.onOutgoingConnection(jid, remote,
+<a class="jxr_linenumber" name="215" href="#215">215</a>                                 ph.getType());
+<a class="jxr_linenumber" name="216" href="#216">216</a>                     }
+<a class="jxr_linenumber" name="217" href="#217">217</a> 
+<a class="jxr_linenumber" name="218" href="#218">218</a>                     ph.addSuccess();
+<a class="jxr_linenumber" name="219" href="#219">219</a>                     LOG.debug(<span class="jxr_string">"Dispatching CONNECTED event"</span>);
+<a class="jxr_linenumber" name="220" href="#220">220</a>                     Events.asyncEventBus().post(
+<a class="jxr_linenumber" name="221" href="#221">221</a>                             <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/event/ProxyConnectionEvent.html">ProxyConnectionEvent</a>(
+<a class="jxr_linenumber" name="222" href="#222">222</a>                                     ConnectivityStatus.CONNECTED));
+<a class="jxr_linenumber" name="223" href="#223">223</a>                 } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
+<a class="jxr_linenumber" name="224" href="#224">224</a>                     <em class="jxr_comment">// This can happen if the user has subsequently gone</em>
+<a class="jxr_linenumber" name="225" href="#225">225</a>                     <em class="jxr_comment">// offline, for example.</em>
+<a class="jxr_linenumber" name="226" href="#226">226</a>                     LOG.debug(<span class="jxr_string">"Could not connect to {} {}"</span>, jid, ph, e);
+<a class="jxr_linenumber" name="227" href="#227">227</a>                     onCouldNotConnect(ph);
+<a class="jxr_linenumber" name="228" href="#228">228</a> 
+<a class="jxr_linenumber" name="229" href="#229">229</a>                     <strong class="jxr_keyword">if</strong> (allowFallbackToNatTTraversal) {
+<a class="jxr_linenumber" name="230" href="#230">230</a>                         <em class="jxr_comment">// Try adding the proxy by it's JID! This can happen,</em>
+<a class="jxr_linenumber" name="231" href="#231">231</a>                         <em class="jxr_comment">// for example, if we get a bogus port mapping.</em>
+<a class="jxr_linenumber" name="232" href="#232">232</a>                         addNattedProxy(jid, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="233" href="#233">233</a>                     }
+<a class="jxr_linenumber" name="234" href="#234">234</a>                 } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="235" href="#235">235</a>                     IOUtils.closeQuietly(sock);
+<a class="jxr_linenumber" name="236" href="#236">236</a>                 }
+<a class="jxr_linenumber" name="237" href="#237">237</a>             }
+<a class="jxr_linenumber" name="238" href="#238">238</a>         });
+<a class="jxr_linenumber" name="239" href="#239">239</a>     }
+<a class="jxr_linenumber" name="240" href="#240">240</a> 
+<a class="jxr_linenumber" name="241" href="#241">241</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="242" href="#242">242</a> <em class="jxr_javadoccomment">     * Attempts to do a NAT traversal to obtain an available UDP port for the</em>
+<a class="jxr_linenumber" name="243" href="#243">243</a> <em class="jxr_javadoccomment">     * given jid and then adds a proxy for that port.</em>
+<a class="jxr_linenumber" name="244" href="#244">244</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="245" href="#245">245</a> <em class="jxr_javadoccomment">     * @param jid</em>
+<a class="jxr_linenumber" name="246" href="#246">246</a> <em class="jxr_javadoccomment">     * @param adhereToSchedule</em>
+<a class="jxr_linenumber" name="247" href="#247">247</a> <em class="jxr_javadoccomment">     *            whether or not to adhere to the schedule set in</em>
+<a class="jxr_linenumber" name="248" href="#248">248</a> <em class="jxr_javadoccomment">     *            {@link #natTraversalSchedule}</em>
+<a class="jxr_linenumber" name="249" href="#249">249</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="250" href="#250">250</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addNattedProxy(<strong class="jxr_keyword">final</strong> URI jid,
+<a class="jxr_linenumber" name="251" href="#251">251</a>             <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> adhereToSchedule) {
+<a class="jxr_linenumber" name="252" href="#252">252</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">true</strong>) {
+<a class="jxr_linenumber" name="253" href="#253">253</a>             LOG.debug(<span class="jxr_string">"NAT traversal is currently disabled;"</span>);
+<a class="jxr_linenumber" name="254" href="#254">254</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="255" href="#255">255</a>         }
+<a class="jxr_linenumber" name="256" href="#256">256</a>         LOG.debug(<span class="jxr_string">"Considering NAT traversal to proxy for: {}"</span>, jid);
+<a class="jxr_linenumber" name="257" href="#257">257</a>         <strong class="jxr_keyword">final</strong> HashMap&lt;URI, AtomicInteger&gt; peerFailureCount =
+<a class="jxr_linenumber" name="258" href="#258">258</a>                 <strong class="jxr_keyword">new</strong> HashMap&lt;URI, AtomicInteger&gt;();
+<a class="jxr_linenumber" name="259" href="#259">259</a> 
+<a class="jxr_linenumber" name="260" href="#260">260</a>         <strong class="jxr_keyword">if</strong> (hasConnectedNatTraversedProxy(jid)) {
+<a class="jxr_linenumber" name="261" href="#261">261</a>             LOG.debug(
+<a class="jxr_linenumber" name="262" href="#262">262</a>                     <span class="jxr_string">"Already have connected NAT traversed proxy for {}, declining to add"</span>,
+<a class="jxr_linenumber" name="263" href="#263">263</a>                     jid);
+<a class="jxr_linenumber" name="264" href="#264">264</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="265" href="#265">265</a>         }
+<a class="jxr_linenumber" name="266" href="#266">266</a> 
+<a class="jxr_linenumber" name="267" href="#267">267</a>         <strong class="jxr_keyword">if</strong> (adhereToSchedule) {
+<a class="jxr_linenumber" name="268" href="#268">268</a>             <strong class="jxr_keyword">if</strong> (!scheduleAllowsNatTraversal(jid)) {
+<a class="jxr_linenumber" name="269" href="#269">269</a>                 LOG.debug(
+<a class="jxr_linenumber" name="270" href="#270">270</a>                         <span class="jxr_string">"Skipping NAT traversal for {} before scheduled time"</span>,
+<a class="jxr_linenumber" name="271" href="#271">271</a>                         jid);
+<a class="jxr_linenumber" name="272" href="#272">272</a>                 <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="273" href="#273">273</a>             }
 <a class="jxr_linenumber" name="274" href="#274">274</a>         }
-<a class="jxr_linenumber" name="275" href="#275">275</a>         <strong class="jxr_keyword">final</strong> String jid = peerUri.toASCIIString();
-<a class="jxr_linenumber" name="276" href="#276">276</a>         <strong class="jxr_keyword">final</strong> HashMap&lt;URI, AtomicInteger&gt; peerFailureCount =
-<a class="jxr_linenumber" name="277" href="#277">277</a>                 <strong class="jxr_keyword">new</strong> HashMap&lt;URI, AtomicInteger&gt;();
-<a class="jxr_linenumber" name="278" href="#278">278</a> 
-<a class="jxr_linenumber" name="279" href="#279">279</a>         p2pSocketThreadPool.submit(<strong class="jxr_keyword">new</strong> Runnable() {
-<a class="jxr_linenumber" name="280" href="#280">280</a>             @Override
-<a class="jxr_linenumber" name="281" href="#281">281</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
-<a class="jxr_linenumber" name="282" href="#282">282</a>                 <em class="jxr_comment">// TODO: In the past we created a bunch of connections here -</em>
-<a class="jxr_linenumber" name="283" href="#283">283</a>                 <em class="jxr_comment">// a socket pool -- to avoid dealing with connection time</em>
-<a class="jxr_linenumber" name="284" href="#284">284</a>                 <em class="jxr_comment">// delays. We should probably do that again!.</em>
-<a class="jxr_linenumber" name="285" href="#285">285</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="286" href="#286">286</a>                     log.debug(<span class="jxr_string">"Opening outgoing peer..."</span>);
-<a class="jxr_linenumber" name="287" href="#287">287</a>                     <strong class="jxr_keyword">final</strong> FiveTuple tuple = LanternUtils.openOutgoingPeer(
-<a class="jxr_linenumber" name="288" href="#288">288</a>                         peerUri, xmppHandler.getP2PClient(),
-<a class="jxr_linenumber" name="289" href="#289">289</a>                         peerFailureCount);
-<a class="jxr_linenumber" name="290" href="#290">290</a>                     log.debug(<span class="jxr_string">"Got tuple and adding it for peer: {}"</span>, peerUri);
-<a class="jxr_linenumber" name="291" href="#291">291</a> 
-<a class="jxr_linenumber" name="292" href="#292">292</a>                     <strong class="jxr_keyword">final</strong> InetSocketAddress remote = tuple.getRemote();
-<a class="jxr_linenumber" name="293" href="#293">293</a>                     <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> ph =
-<a class="jxr_linenumber" name="294" href="#294">294</a>                         <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a>(jid, peerUri, tuple, netty4TrafficCounter(),
-<a class="jxr_linenumber" name="295" href="#295">295</a>                                 Type.pc);
+<a class="jxr_linenumber" name="275" href="#275">275</a> 
+<a class="jxr_linenumber" name="276" href="#276">276</a>         p2pSocketThreadPool.submit(<strong class="jxr_keyword">new</strong> Runnable() {
+<a class="jxr_linenumber" name="277" href="#277">277</a>             @Override
+<a class="jxr_linenumber" name="278" href="#278">278</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
+<a class="jxr_linenumber" name="279" href="#279">279</a>                 <em class="jxr_comment">// TODO: In the past we created a bunch of connections here -</em>
+<a class="jxr_linenumber" name="280" href="#280">280</a>                 <em class="jxr_comment">// a socket pool -- to avoid dealing with connection time</em>
+<a class="jxr_linenumber" name="281" href="#281">281</a>                 <em class="jxr_comment">// delays. We should probably do that again!.</em>
+<a class="jxr_linenumber" name="282" href="#282">282</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="283" href="#283">283</a>                     LOG.debug(<span class="jxr_string">"Opening outgoing peer..."</span>);
+<a class="jxr_linenumber" name="284" href="#284">284</a>                     <strong class="jxr_keyword">final</strong> FiveTuple tuple = LanternUtils.openOutgoingPeer(
+<a class="jxr_linenumber" name="285" href="#285">285</a>                             jid, xmppHandler.getP2PClient(),
+<a class="jxr_linenumber" name="286" href="#286">286</a>                             peerFailureCount);
+<a class="jxr_linenumber" name="287" href="#287">287</a>                     LOG.debug(<span class="jxr_string">"Got tuple and adding it for peer: {}"</span>, jid);
+<a class="jxr_linenumber" name="288" href="#288">288</a> 
+<a class="jxr_linenumber" name="289" href="#289">289</a>                     <strong class="jxr_keyword">final</strong> InetSocketAddress remote = tuple.getRemote();
+<a class="jxr_linenumber" name="290" href="#290">290</a>                     <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> ph =
+<a class="jxr_linenumber" name="291" href="#291">291</a>                             <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a>(DefaultProxyTracker.<strong class="jxr_keyword">this</strong>,
+<a class="jxr_linenumber" name="292" href="#292">292</a>                                     peerFactory, lanternTrustStore,
+<a class="jxr_linenumber" name="293" href="#293">293</a>                                     jid, tuple, Type.pc);
+<a class="jxr_linenumber" name="294" href="#294">294</a> 
+<a class="jxr_linenumber" name="295" href="#295">295</a>                     peerFactory.onOutgoingConnection(jid, remote, Type.pc);
 <a class="jxr_linenumber" name="296" href="#296">296</a> 
-<a class="jxr_linenumber" name="297" href="#297">297</a>                     peerFactory.onOutgoingConnection(peerUri, remote, Type.pc,
-<a class="jxr_linenumber" name="298" href="#298">298</a>                             ph.getTrafficShapingHandler());
-<a class="jxr_linenumber" name="299" href="#299">299</a> 
-<a class="jxr_linenumber" name="300" href="#300">300</a>                     peerProxyQueue.addPeerProxy(peerUri, ph);
-<a class="jxr_linenumber" name="301" href="#301">301</a> 
-<a class="jxr_linenumber" name="302" href="#302">302</a>                     Events.eventBus().post(
-<a class="jxr_linenumber" name="303" href="#303">303</a>                             <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/event/ProxyConnectionEvent.html">ProxyConnectionEvent</a>(
-<a class="jxr_linenumber" name="304" href="#304">304</a>                                     ConnectivityStatus.CONNECTED));
-<a class="jxr_linenumber" name="305" href="#305">305</a> 
-<a class="jxr_linenumber" name="306" href="#306">306</a>                 } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
-<a class="jxr_linenumber" name="307" href="#307">307</a>                     log.info(<span class="jxr_string">"Could not create peer socket"</span>, e);
+<a class="jxr_linenumber" name="297" href="#297">297</a>                     proxies.put(tuple, ph);
+<a class="jxr_linenumber" name="298" href="#298">298</a> 
+<a class="jxr_linenumber" name="299" href="#299">299</a>                     resetNatTraversalScheduleFor(jid);
+<a class="jxr_linenumber" name="300" href="#300">300</a> 
+<a class="jxr_linenumber" name="301" href="#301">301</a>                     Events.eventBus().post(
+<a class="jxr_linenumber" name="302" href="#302">302</a>                             <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/event/ProxyConnectionEvent.html">ProxyConnectionEvent</a>(
+<a class="jxr_linenumber" name="303" href="#303">303</a>                                     ConnectivityStatus.CONNECTED));
+<a class="jxr_linenumber" name="304" href="#304">304</a> 
+<a class="jxr_linenumber" name="305" href="#305">305</a>                 } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
+<a class="jxr_linenumber" name="306" href="#306">306</a>                     LOG.info(<span class="jxr_string">"Could not create peer socket"</span>, e);
+<a class="jxr_linenumber" name="307" href="#307">307</a>                     scheduleNextAllowedNatTraversalFor(jid);
 <a class="jxr_linenumber" name="308" href="#308">308</a>                 }
 <a class="jxr_linenumber" name="309" href="#309">309</a>             }
 <a class="jxr_linenumber" name="310" href="#310">310</a>         });
 <a class="jxr_linenumber" name="311" href="#311">311</a>     }
 <a class="jxr_linenumber" name="312" href="#312">312</a> 
-<a class="jxr_linenumber" name="313" href="#313">313</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> restoreRecentlyDeceasedProxies(<a href="../../org/lantern/ProxyQueue.html">ProxyQueue</a> queue) {
-<a class="jxr_linenumber" name="314" href="#314">314</a>         <strong class="jxr_keyword">synchronized</strong> (queue) {
-<a class="jxr_linenumber" name="315" href="#315">315</a>             <strong class="jxr_keyword">while</strong> (<strong class="jxr_keyword">true</strong>) {
-<a class="jxr_linenumber" name="316" href="#316">316</a>                 <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> proxy = queue.pausedProxies.poll();
-<a class="jxr_linenumber" name="317" href="#317">317</a>                 <strong class="jxr_keyword">if</strong> (proxy == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="318" href="#318">318</a>                     log.debug(<span class="jxr_string">"No proxy!"</span>);
-<a class="jxr_linenumber" name="319" href="#319">319</a>                     <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="320" href="#320">320</a>                 }
-<a class="jxr_linenumber" name="321" href="#321">321</a>                 log.debug(<span class="jxr_string">"Attempting to restore"</span> + proxy);
-<a class="jxr_linenumber" name="322" href="#322">322</a>                 addProxyWithChecks(proxy.getJid(), queue, proxy);
-<a class="jxr_linenumber" name="323" href="#323">323</a>             }
+<a class="jxr_linenumber" name="313" href="#313">313</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> scheduleAllowsNatTraversal(URI jid) {
+<a class="jxr_linenumber" name="314" href="#314">314</a>         <strong class="jxr_keyword">synchronized</strong> (natTraversalSchedule) {
+<a class="jxr_linenumber" name="315" href="#315">315</a>             <a href="../../org/lantern/DefaultProxyTracker.html">ScheduledNatTraversal</a> scheduled = natTraversalSchedule.get(jid);
+<a class="jxr_linenumber" name="316" href="#316">316</a>             <strong class="jxr_keyword">return</strong> scheduled == <strong class="jxr_keyword">null</strong> || scheduled.scheduledTime &lt;= System
+<a class="jxr_linenumber" name="317" href="#317">317</a>                     .currentTimeMillis();
+<a class="jxr_linenumber" name="318" href="#318">318</a>         }
+<a class="jxr_linenumber" name="319" href="#319">319</a>     }
+<a class="jxr_linenumber" name="320" href="#320">320</a> 
+<a class="jxr_linenumber" name="321" href="#321">321</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> resetNatTraversalScheduleFor(URI jid) {
+<a class="jxr_linenumber" name="322" href="#322">322</a>         <strong class="jxr_keyword">synchronized</strong> (natTraversalSchedule) {
+<a class="jxr_linenumber" name="323" href="#323">323</a>             natTraversalSchedule.remove(jid);
 <a class="jxr_linenumber" name="324" href="#324">324</a>         }
 <a class="jxr_linenumber" name="325" href="#325">325</a>     }
 <a class="jxr_linenumber" name="326" href="#326">326</a> 
-<a class="jxr_linenumber" name="327" href="#327">327</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> restoreTimedInProxies(<a href="../../org/lantern/ProxyQueue.html">ProxyQueue</a> queue) {
-<a class="jxr_linenumber" name="328" href="#328">328</a>         <strong class="jxr_keyword">synchronized</strong>(queue) {
-<a class="jxr_linenumber" name="329" href="#329">329</a>             <strong class="jxr_keyword">long</strong> now = <strong class="jxr_keyword">new</strong> Date().getTime();
-<a class="jxr_linenumber" name="330" href="#330">330</a>             <strong class="jxr_keyword">while</strong> (<strong class="jxr_keyword">true</strong>) {
-<a class="jxr_linenumber" name="331" href="#331">331</a>                 <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> proxy = queue.pausedProxies.peek();
-<a class="jxr_linenumber" name="332" href="#332">332</a>                 <strong class="jxr_keyword">if</strong> (proxy == <strong class="jxr_keyword">null</strong>) 
-<a class="jxr_linenumber" name="333" href="#333">333</a>                     <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="334" href="#334">334</a>                 <strong class="jxr_keyword">if</strong> (now &gt; proxy.getRetryTime()) {
-<a class="jxr_linenumber" name="335" href="#335">335</a>                     log.debug(<span class="jxr_string">"Attempting to restore timed-in proxy "</span> + proxy);
-<a class="jxr_linenumber" name="336" href="#336">336</a>                     addProxyWithChecks(proxy.getJid(), queue, proxy);
-<a class="jxr_linenumber" name="337" href="#337">337</a>                     queue.pausedProxies.remove();
-<a class="jxr_linenumber" name="338" href="#338">338</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="339" href="#339">339</a>                     <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="340" href="#340">340</a>                 }
-<a class="jxr_linenumber" name="341" href="#341">341</a>             }
-<a class="jxr_linenumber" name="342" href="#342">342</a>         }
-<a class="jxr_linenumber" name="343" href="#343">343</a>     }
-<a class="jxr_linenumber" name="344" href="#344">344</a>     @Override
-<a class="jxr_linenumber" name="345" href="#345">345</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addProxyWithChecks(<strong class="jxr_keyword">final</strong> URI fullJid,
-<a class="jxr_linenumber" name="346" href="#346">346</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyQueue.html">ProxyQueue</a> queue, <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> ph) {
-<a class="jxr_linenumber" name="347" href="#347">347</a>         <strong class="jxr_keyword">if</strong> (!<strong class="jxr_keyword">this</strong>.model.getSettings().isTcp()) {
-<a class="jxr_linenumber" name="348" href="#348">348</a>             <em class="jxr_comment">//even with no tcp, we can still add JID proxies</em>
-<a class="jxr_linenumber" name="349" href="#349">349</a>             addJidProxy(fullJid);
-<a class="jxr_linenumber" name="350" href="#350">350</a>             log.debug(<span class="jxr_string">"Not checking proxy when not running with TCP"</span>);
-<a class="jxr_linenumber" name="351" href="#351">351</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="352" href="#352">352</a>         }
-<a class="jxr_linenumber" name="353" href="#353">353</a>         <strong class="jxr_keyword">if</strong> (queue.contains(ph)) {
-<a class="jxr_linenumber" name="354" href="#354">354</a>             log.debug(<span class="jxr_string">"We already know about proxy "</span>+ph+<span class="jxr_string">" in {}"</span>, queue);
-<a class="jxr_linenumber" name="355" href="#355">355</a>             <em class="jxr_comment">//but it might be disconnected</em>
-<a class="jxr_linenumber" name="356" href="#356">356</a>             <strong class="jxr_keyword">if</strong> (!ph.lastFailed()) {
-<a class="jxr_linenumber" name="357" href="#357">357</a>                 log.debug(<span class="jxr_string">"Proxy considered connected"</span>);
-<a class="jxr_linenumber" name="358" href="#358">358</a>                 <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="359" href="#359">359</a>             }
-<a class="jxr_linenumber" name="360" href="#360">360</a>         }
-<a class="jxr_linenumber" name="361" href="#361">361</a> 
-<a class="jxr_linenumber" name="362" href="#362">362</a>         log.debug(<span class="jxr_string">"Trying to add proxy {} to queue {}"</span>, ph, queue);
-<a class="jxr_linenumber" name="363" href="#363">363</a> 
-<a class="jxr_linenumber" name="364" href="#364">364</a>         proxyCheckThreadPool.submit(<strong class="jxr_keyword">new</strong> Runnable() {
+<a class="jxr_linenumber" name="327" href="#327">327</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> scheduleNextAllowedNatTraversalFor(URI jid) {
+<a class="jxr_linenumber" name="328" href="#328">328</a>         <strong class="jxr_keyword">synchronized</strong> (natTraversalSchedule) {
+<a class="jxr_linenumber" name="329" href="#329">329</a>             <a href="../../org/lantern/DefaultProxyTracker.html">ScheduledNatTraversal</a> scheduled = natTraversalSchedule
+<a class="jxr_linenumber" name="330" href="#330">330</a>                     .get(jid);
+<a class="jxr_linenumber" name="331" href="#331">331</a>             <a href="../../org/lantern/DefaultProxyTracker.html">ScheduledNatTraversal</a> nextScheduled;
+<a class="jxr_linenumber" name="332" href="#332">332</a>             <strong class="jxr_keyword">if</strong> (scheduled == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="333" href="#333">333</a>                 nextScheduled = <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/DefaultProxyTracker.html">ScheduledNatTraversal</a>(
+<a class="jxr_linenumber" name="334" href="#334">334</a>                         NAT_TRAVERSAL_INITIAL_DELAY);
+<a class="jxr_linenumber" name="335" href="#335">335</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="336" href="#336">336</a>                 <em class="jxr_comment">// Back off by a factor of 2</em>
+<a class="jxr_linenumber" name="337" href="#337">337</a>                 nextScheduled = <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/DefaultProxyTracker.html">ScheduledNatTraversal</a>(
+<a class="jxr_linenumber" name="338" href="#338">338</a>                         scheduled.delay * 2);
+<a class="jxr_linenumber" name="339" href="#339">339</a>             }
+<a class="jxr_linenumber" name="340" href="#340">340</a>             natTraversalSchedule.put(jid, nextScheduled);
+<a class="jxr_linenumber" name="341" href="#341">341</a>         }
+<a class="jxr_linenumber" name="342" href="#342">342</a>     }
+<a class="jxr_linenumber" name="343" href="#343">343</a> 
+<a class="jxr_linenumber" name="344" href="#344">344</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> hasConnectedNatTraversedProxy(<strong class="jxr_keyword">final</strong> URI jid) {
+<a class="jxr_linenumber" name="345" href="#345">345</a>         <strong class="jxr_keyword">for</strong> (ProxyHolder proxy : proxies.values()) {
+<a class="jxr_linenumber" name="346" href="#346">346</a>             <strong class="jxr_keyword">if</strong> (proxy.getJid().equals(jid) &amp;&amp; proxy.isNatTraversed()
+<a class="jxr_linenumber" name="347" href="#347">347</a>                     &amp;&amp; proxy.isConnected()) {
+<a class="jxr_linenumber" name="348" href="#348">348</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="349" href="#349">349</a>             }
+<a class="jxr_linenumber" name="350" href="#350">350</a>         }
+<a class="jxr_linenumber" name="351" href="#351">351</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="352" href="#352">352</a>     }
+<a class="jxr_linenumber" name="353" href="#353">353</a> 
+<a class="jxr_linenumber" name="354" href="#354">354</a>     @Override
+<a class="jxr_linenumber" name="355" href="#355">355</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removeNatTraversedProxy(<strong class="jxr_keyword">final</strong> URI uri) {
+<a class="jxr_linenumber" name="356" href="#356">356</a>         Iterator&lt;ProxyHolder&gt; it = proxies.values().iterator();
+<a class="jxr_linenumber" name="357" href="#357">357</a>         <strong class="jxr_keyword">while</strong> (it.hasNext()) {
+<a class="jxr_linenumber" name="358" href="#358">358</a>             <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> proxy = it.next();
+<a class="jxr_linenumber" name="359" href="#359">359</a>             <strong class="jxr_keyword">if</strong> (proxy.getJid().equals(uri) &amp;&amp; proxy.isNatTraversed()) {
+<a class="jxr_linenumber" name="360" href="#360">360</a>                 LOG.debug(<span class="jxr_string">"Removing peer by request: {}"</span>, uri);
+<a class="jxr_linenumber" name="361" href="#361">361</a>                 it.remove();
+<a class="jxr_linenumber" name="362" href="#362">362</a>             }
+<a class="jxr_linenumber" name="363" href="#363">363</a>         }
+<a class="jxr_linenumber" name="364" href="#364">364</a>     }
 <a class="jxr_linenumber" name="365" href="#365">365</a> 
-<a class="jxr_linenumber" name="366" href="#366">366</a>             @Override
-<a class="jxr_linenumber" name="367" href="#367">367</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
-<a class="jxr_linenumber" name="368" href="#368">368</a>                 <strong class="jxr_keyword">final</strong> Socket sock = <strong class="jxr_keyword">new</strong> Socket();
-<a class="jxr_linenumber" name="369" href="#369">369</a>                 <strong class="jxr_keyword">final</strong> InetSocketAddress remote = ph.getFiveTuple().getRemote();
-<a class="jxr_linenumber" name="370" href="#370">370</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="371" href="#371">371</a>                     sock.connect(remote, 60*1000);
-<a class="jxr_linenumber" name="372" href="#372">372</a> 
-<a class="jxr_linenumber" name="373" href="#373">373</a>                     <strong class="jxr_keyword">if</strong> (queue.add(ph)) {
-<a class="jxr_linenumber" name="374" href="#374">374</a>                         log.debug(<span class="jxr_string">"Added connected TCP proxy. "</span>
-<a class="jxr_linenumber" name="375" href="#375">375</a>                                 + <span class="jxr_string">"Queue is now: {}"</span>, queue);
-<a class="jxr_linenumber" name="376" href="#376">376</a>                         peerFactory.onOutgoingConnection(fullJid, remote,
-<a class="jxr_linenumber" name="377" href="#377">377</a>                                 ph.getType(), ph.getTrafficShapingHandler());
-<a class="jxr_linenumber" name="378" href="#378">378</a>                     }
-<a class="jxr_linenumber" name="379" href="#379">379</a> 
-<a class="jxr_linenumber" name="380" href="#380">380</a>                     ph.addSuccess();
-<a class="jxr_linenumber" name="381" href="#381">381</a>                     log.debug(<span class="jxr_string">"Dispatching CONNECTED event"</span>);
-<a class="jxr_linenumber" name="382" href="#382">382</a>                     Events.asyncEventBus().post(
-<a class="jxr_linenumber" name="383" href="#383">383</a>                         <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/event/ProxyConnectionEvent.html">ProxyConnectionEvent</a>(ConnectivityStatus.CONNECTED));
-<a class="jxr_linenumber" name="384" href="#384">384</a>                 } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
-<a class="jxr_linenumber" name="385" href="#385">385</a>                     <em class="jxr_comment">// This can happen if the user has subsequently gone </em>
-<a class="jxr_linenumber" name="386" href="#386">386</a>                     <em class="jxr_comment">// offline, for example.</em>
-<a class="jxr_linenumber" name="387" href="#387">387</a>                     log.debug(<span class="jxr_string">"Could not connect to: "</span> + ph, e);
-<a class="jxr_linenumber" name="388" href="#388">388</a>                     onCouldNotConnect(ph);
-<a class="jxr_linenumber" name="389" href="#389">389</a>                     
-<a class="jxr_linenumber" name="390" href="#390">390</a>                     <em class="jxr_comment">// Try adding the proxy by it's JID! This can happen, for </em>
-<a class="jxr_linenumber" name="391" href="#391">391</a>                     <em class="jxr_comment">// example, if we get a bogus port mapping.</em>
-<a class="jxr_linenumber" name="392" href="#392">392</a>                     addJidProxy(fullJid);
-<a class="jxr_linenumber" name="393" href="#393">393</a>                 } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="394" href="#394">394</a>                     IOUtils.closeQuietly(sock);
-<a class="jxr_linenumber" name="395" href="#395">395</a>                 }
-<a class="jxr_linenumber" name="396" href="#396">396</a>             }
-<a class="jxr_linenumber" name="397" href="#397">397</a>         });
-<a class="jxr_linenumber" name="398" href="#398">398</a>     }
-<a class="jxr_linenumber" name="399" href="#399">399</a> 
-<a class="jxr_linenumber" name="400" href="#400">400</a>     @Override
-<a class="jxr_linenumber" name="401" href="#401">401</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onCouldNotConnect(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> ph) {
-<a class="jxr_linenumber" name="402" href="#402">402</a>         <em class="jxr_comment">// This can happen in several scenarios. First, it can happen if you've</em>
-<a class="jxr_linenumber" name="403" href="#403">403</a>         <em class="jxr_comment">// actually disconnected from the internet. Second, it can happen if</em>
-<a class="jxr_linenumber" name="404" href="#404">404</a>         <em class="jxr_comment">// the proxy is blocked. Third, it can happen when the proxy is simply</em>
-<a class="jxr_linenumber" name="405" href="#405">405</a>         <em class="jxr_comment">// down for some reason.</em>
-<a class="jxr_linenumber" name="406" href="#406">406</a> 
-<a class="jxr_linenumber" name="407" href="#407">407</a>         <em class="jxr_comment">// We should remove the proxy here but should certainly keep it on disk</em>
-<a class="jxr_linenumber" name="408" href="#408">408</a>         <em class="jxr_comment">// so we can try to connect to it in the future.</em>
-<a class="jxr_linenumber" name="409" href="#409">409</a>         log.info(<span class="jxr_string">"COULD NOT CONNECT TO STANDARD PROXY!! Proxy address: {}"</span>,
-<a class="jxr_linenumber" name="410" href="#410">410</a>             ph.getFiveTuple());
+<a class="jxr_linenumber" name="366" href="#366">366</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> restoreTimedInProxies() {
+<a class="jxr_linenumber" name="367" href="#367">367</a>         <strong class="jxr_keyword">long</strong> now = <strong class="jxr_keyword">new</strong> Date().getTime();
+<a class="jxr_linenumber" name="368" href="#368">368</a>         <strong class="jxr_keyword">for</strong> (ProxyHolder proxy : proxies.values()) {
+<a class="jxr_linenumber" name="369" href="#369">369</a>             <strong class="jxr_keyword">if</strong> (!proxy.isConnected() &amp;&amp; now &gt; proxy.getRetryTime()) {
+<a class="jxr_linenumber" name="370" href="#370">370</a>                 LOG.debug(<span class="jxr_string">"Attempting to restore timed-in proxy "</span> + proxy);
+<a class="jxr_linenumber" name="371" href="#371">371</a>                 <strong class="jxr_keyword">if</strong> (proxy.isNatTraversed()) {
+<a class="jxr_linenumber" name="372" href="#372">372</a>                     addNattedProxy(proxy.getJid(), false);
+<a class="jxr_linenumber" name="373" href="#373">373</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="374" href="#374">374</a>                     addTcpProxy(proxy.getJid(), proxy, false);
+<a class="jxr_linenumber" name="375" href="#375">375</a>                 }
+<a class="jxr_linenumber" name="376" href="#376">376</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="377" href="#377">377</a>                 <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="378" href="#378">378</a>             }
+<a class="jxr_linenumber" name="379" href="#379">379</a>         }
+<a class="jxr_linenumber" name="380" href="#380">380</a>     }
+<a class="jxr_linenumber" name="381" href="#381">381</a> 
+<a class="jxr_linenumber" name="382" href="#382">382</a>     @Subscribe
+<a class="jxr_linenumber" name="383" href="#383">383</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onConnectivityChanged(<a href="../../org/lantern/ConnectivityChangedEvent.html">ConnectivityChangedEvent</a> e) {
+<a class="jxr_linenumber" name="384" href="#384">384</a>         LOG.debug(<span class="jxr_string">"Got connectivity changed event: {}"</span>, e);
+<a class="jxr_linenumber" name="385" href="#385">385</a>         <strong class="jxr_keyword">if</strong> (e.isConnected()) {
+<a class="jxr_linenumber" name="386" href="#386">386</a>             restoreRecentlyDeceasedProxies();
+<a class="jxr_linenumber" name="387" href="#387">387</a>         }
+<a class="jxr_linenumber" name="388" href="#388">388</a>     }
+<a class="jxr_linenumber" name="389" href="#389">389</a> 
+<a class="jxr_linenumber" name="390" href="#390">390</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> restoreRecentlyDeceasedProxies() {
+<a class="jxr_linenumber" name="391" href="#391">391</a>         <strong class="jxr_keyword">long</strong> now = <strong class="jxr_keyword">new</strong> Date().getTime();
+<a class="jxr_linenumber" name="392" href="#392">392</a>         <strong class="jxr_keyword">for</strong> (ProxyHolder proxy : proxies.values()) {
+<a class="jxr_linenumber" name="393" href="#393">393</a>             <strong class="jxr_keyword">long</strong> timeSinceDeath = now - proxy.getTimeOfDeath();
+<a class="jxr_linenumber" name="394" href="#394">394</a>             <strong class="jxr_keyword">if</strong> (!proxy.isConnected()
+<a class="jxr_linenumber" name="395" href="#395">395</a>                     &amp;&amp; timeSinceDeath &lt; RECENTLY_DECEASED_CUTOFF_IN_MILLIS) {
+<a class="jxr_linenumber" name="396" href="#396">396</a>                 LOG.debug(<span class="jxr_string">"Attempting to restore recently deceased proxy "</span>
+<a class="jxr_linenumber" name="397" href="#397">397</a>                         + proxy);
+<a class="jxr_linenumber" name="398" href="#398">398</a>                 addTcpProxy(proxy.getJid(), proxy, false);
+<a class="jxr_linenumber" name="399" href="#399">399</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="400" href="#400">400</a>                 <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="401" href="#401">401</a>             }
+<a class="jxr_linenumber" name="402" href="#402">402</a>         }
+<a class="jxr_linenumber" name="403" href="#403">403</a>     }
+<a class="jxr_linenumber" name="404" href="#404">404</a> 
+<a class="jxr_linenumber" name="405" href="#405">405</a>     @Override
+<a class="jxr_linenumber" name="406" href="#406">406</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onCouldNotConnect(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> proxy) {
+<a class="jxr_linenumber" name="407" href="#407">407</a>         <em class="jxr_comment">// This can happen in several scenarios. First, it can happen if you've</em>
+<a class="jxr_linenumber" name="408" href="#408">408</a>         <em class="jxr_comment">// actually disconnected from the internet. Second, it can happen if</em>
+<a class="jxr_linenumber" name="409" href="#409">409</a>         <em class="jxr_comment">// the proxy is blocked. Third, it can happen when the proxy is simply</em>
+<a class="jxr_linenumber" name="410" href="#410">410</a>         <em class="jxr_comment">// down for some reason.</em>
 <a class="jxr_linenumber" name="411" href="#411">411</a> 
-<a class="jxr_linenumber" name="412" href="#412">412</a>         onCouldNotConnect(ph, proxyQueue);
-<a class="jxr_linenumber" name="413" href="#413">413</a>     }
-<a class="jxr_linenumber" name="414" href="#414">414</a> 
-<a class="jxr_linenumber" name="415" href="#415">415</a>     @Override
-<a class="jxr_linenumber" name="416" href="#416">416</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onCouldNotConnectToLae(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> ph) {
-<a class="jxr_linenumber" name="417" href="#417">417</a>         log.info(<span class="jxr_string">"COULD NOT CONNECT TO LAE PROXY!! Proxy address: {}"</span>,
-<a class="jxr_linenumber" name="418" href="#418">418</a>             ph.getFiveTuple());
+<a class="jxr_linenumber" name="412" href="#412">412</a>         <em class="jxr_comment">// We should remove the proxy here but should certainly keep it on disk</em>
+<a class="jxr_linenumber" name="413" href="#413">413</a>         <em class="jxr_comment">// so we can try to connect to it in the future.</em>
+<a class="jxr_linenumber" name="414" href="#414">414</a>         LOG.info(<span class="jxr_string">"COULD NOT CONNECT TO STANDARD PROXY!! Proxy address: {}"</span>,
+<a class="jxr_linenumber" name="415" href="#415">415</a>                 proxy.getFiveTuple());
+<a class="jxr_linenumber" name="416" href="#416">416</a>         proxy.addFailure();
+<a class="jxr_linenumber" name="417" href="#417">417</a>         notifyProxiesSize();
+<a class="jxr_linenumber" name="418" href="#418">418</a>     }
 <a class="jxr_linenumber" name="419" href="#419">419</a> 
-<a class="jxr_linenumber" name="420" href="#420">420</a>         <em class="jxr_comment">// For now we assume this is because we've lost our connection.</em>
-<a class="jxr_linenumber" name="421" href="#421">421</a>         onCouldNotConnect(ph, laeProxyQueue);
-<a class="jxr_linenumber" name="422" href="#422">422</a>     }
-<a class="jxr_linenumber" name="423" href="#423">423</a> 
-<a class="jxr_linenumber" name="424" href="#424">424</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> onCouldNotConnect(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> proxyAddress,
-<a class="jxr_linenumber" name="425" href="#425">425</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/ProxyQueue.html">ProxyQueue</a> queue){
-<a class="jxr_linenumber" name="426" href="#426">426</a>         log.info(<span class="jxr_string">"COULD NOT CONNECT!! Proxy address: {}"</span>, proxyAddress);
-<a class="jxr_linenumber" name="427" href="#427">427</a>         queue.proxyFailed(proxyAddress);
+<a class="jxr_linenumber" name="420" href="#420">420</a>     @Override
+<a class="jxr_linenumber" name="421" href="#421">421</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onError(<strong class="jxr_keyword">final</strong> URI peerUri) {
+<a class="jxr_linenumber" name="422" href="#422">422</a>         <strong class="jxr_keyword">for</strong> (ProxyHolder proxy : proxies.values()) {
+<a class="jxr_linenumber" name="423" href="#423">423</a>             <strong class="jxr_keyword">if</strong> (proxy.getJid().equals(peerUri)) {
+<a class="jxr_linenumber" name="424" href="#424">424</a>                 proxy.addFailure();
+<a class="jxr_linenumber" name="425" href="#425">425</a>             }
+<a class="jxr_linenumber" name="426" href="#426">426</a>         }
+<a class="jxr_linenumber" name="427" href="#427">427</a>         notifyProxiesSize();
 <a class="jxr_linenumber" name="428" href="#428">428</a>     }
 <a class="jxr_linenumber" name="429" href="#429">429</a> 
-<a class="jxr_linenumber" name="430" href="#430">430</a>     @Override
-<a class="jxr_linenumber" name="431" href="#431">431</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onCouldNotConnectToPeer(<strong class="jxr_keyword">final</strong> URI peerUri) {
-<a class="jxr_linenumber" name="432" href="#432">432</a>         peerProxyQueue.proxyFailed(peerUri);
-<a class="jxr_linenumber" name="433" href="#433">433</a>     }
-<a class="jxr_linenumber" name="434" href="#434">434</a> 
-<a class="jxr_linenumber" name="435" href="#435">435</a>     @Override
-<a class="jxr_linenumber" name="436" href="#436">436</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onError(<strong class="jxr_keyword">final</strong> URI peerUri) {
-<a class="jxr_linenumber" name="437" href="#437">437</a>         peerProxyQueue.proxyFailed(peerUri);
+<a class="jxr_linenumber" name="430" href="#430">430</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> notifyProxiesSize() {
+<a class="jxr_linenumber" name="431" href="#431">431</a>         <strong class="jxr_keyword">int</strong> numberOfConnectedProxies = 0;
+<a class="jxr_linenumber" name="432" href="#432">432</a>         <strong class="jxr_keyword">for</strong> (ProxyHolder proxy : proxies.values()) {
+<a class="jxr_linenumber" name="433" href="#433">433</a>             <strong class="jxr_keyword">if</strong> (proxy.isConnected()) {
+<a class="jxr_linenumber" name="434" href="#434">434</a>                 numberOfConnectedProxies += 1;
+<a class="jxr_linenumber" name="435" href="#435">435</a>             }
+<a class="jxr_linenumber" name="436" href="#436">436</a>         }
+<a class="jxr_linenumber" name="437" href="#437">437</a>         Events.sync(SyncPath.CONNECTIVITY_NPROXIES, numberOfConnectedProxies);
 <a class="jxr_linenumber" name="438" href="#438">438</a>     }
 <a class="jxr_linenumber" name="439" href="#439">439</a> 
 <a class="jxr_linenumber" name="440" href="#440">440</a>     @Override
-<a class="jxr_linenumber" name="441" href="#441">441</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removePeer(<strong class="jxr_keyword">final</strong> URI uri) {
-<a class="jxr_linenumber" name="442" href="#442">442</a>         log.debug(<span class="jxr_string">"Removing peer by request: {}"</span>, uri);
-<a class="jxr_linenumber" name="443" href="#443">443</a>         peerProxyQueue.removeProxy(uri);
-<a class="jxr_linenumber" name="444" href="#444">444</a>     }
-<a class="jxr_linenumber" name="445" href="#445">445</a> 
-<a class="jxr_linenumber" name="446" href="#446">446</a>     @Override
-<a class="jxr_linenumber" name="447" href="#447">447</a>     <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> getLaeProxy() {
-<a class="jxr_linenumber" name="448" href="#448">448</a>         <strong class="jxr_keyword">return</strong> laeProxyQueue.getProxy();
-<a class="jxr_linenumber" name="449" href="#449">449</a>     }
-<a class="jxr_linenumber" name="450" href="#450">450</a> 
-<a class="jxr_linenumber" name="451" href="#451">451</a>     @Override
-<a class="jxr_linenumber" name="452" href="#452">452</a>     <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> getProxy() {
-<a class="jxr_linenumber" name="453" href="#453">453</a>         <strong class="jxr_keyword">return</strong> proxyQueue.getProxy();
-<a class="jxr_linenumber" name="454" href="#454">454</a>     }
-<a class="jxr_linenumber" name="455" href="#455">455</a> 
-<a class="jxr_linenumber" name="456" href="#456">456</a>     @Subscribe
-<a class="jxr_linenumber" name="457" href="#457">457</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onConnectivityChanged(<a href="../../org/lantern/ConnectivityChangedEvent.html">ConnectivityChangedEvent</a> e) {
-<a class="jxr_linenumber" name="458" href="#458">458</a>         log.debug(<span class="jxr_string">"Got connectivity changed event: {}"</span>, e);
-<a class="jxr_linenumber" name="459" href="#459">459</a>         <strong class="jxr_keyword">if</strong> (e.isConnected()) {
-<a class="jxr_linenumber" name="460" href="#460">460</a>             log.debug(<span class="jxr_string">"Restoring proxies: {}"</span>, proxyQueue);
-<a class="jxr_linenumber" name="461" href="#461">461</a>             restoreRecentlyDeceasedProxies(proxyQueue);
-<a class="jxr_linenumber" name="462" href="#462">462</a>             restoreRecentlyDeceasedProxies(laeProxyQueue);
-<a class="jxr_linenumber" name="463" href="#463">463</a>             restoreRecentlyDeceasedProxies(peerProxyQueue);
-<a class="jxr_linenumber" name="464" href="#464">464</a>         } 
-<a class="jxr_linenumber" name="465" href="#465">465</a>     }
-<a class="jxr_linenumber" name="466" href="#466">466</a> 
-<a class="jxr_linenumber" name="467" href="#467">467</a>     @Override
-<a class="jxr_linenumber" name="468" href="#468">468</a>     <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> getJidProxy() {
-<a class="jxr_linenumber" name="469" href="#469">469</a>         <strong class="jxr_keyword">return</strong> peerProxyQueue.getProxy();
-<a class="jxr_linenumber" name="470" href="#470">470</a>     }
-<a class="jxr_linenumber" name="471" href="#471">471</a> 
-<a class="jxr_linenumber" name="472" href="#472">472</a>     @Override
-<a class="jxr_linenumber" name="473" href="#473">473</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> hasProxy() {
-<a class="jxr_linenumber" name="474" href="#474">474</a>         <strong class="jxr_keyword">return</strong> !proxyQueue.isEmpty();
-<a class="jxr_linenumber" name="475" href="#475">475</a>     }
-<a class="jxr_linenumber" name="476" href="#476">476</a> 
-<a class="jxr_linenumber" name="477" href="#477">477</a>     @Subscribe
-<a class="jxr_linenumber" name="478" href="#478">478</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onReset(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/event/ResetEvent.html">ResetEvent</a> event) {
-<a class="jxr_linenumber" name="479" href="#479">479</a>         clear();
-<a class="jxr_linenumber" name="480" href="#480">480</a>     }
-<a class="jxr_linenumber" name="481" href="#481">481</a> 
-<a class="jxr_linenumber" name="482" href="#482">482</a>     @Override
-<a class="jxr_linenumber" name="483" href="#483">483</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> stop() {
-<a class="jxr_linenumber" name="484" href="#484">484</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> GlobalTrafficShapingHandler handler : <strong class="jxr_keyword">this</strong>.netty3TrafficShapers) {
-<a class="jxr_linenumber" name="485" href="#485">485</a>             handler.releaseExternalResources();
-<a class="jxr_linenumber" name="486" href="#486">486</a>         }
-<a class="jxr_linenumber" name="487" href="#487">487</a>     }
-<a class="jxr_linenumber" name="488" href="#488">488</a> 
-<a class="jxr_linenumber" name="489" href="#489">489</a>     @Subscribe
-<a class="jxr_linenumber" name="490" href="#490">490</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onModeChanged(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/event/ModeChangedEvent.html">ModeChangedEvent</a> event) {
-<a class="jxr_linenumber" name="491" href="#491">491</a>         log.debug(<span class="jxr_string">"Received mode changed event: {}"</span>, event);
-<a class="jxr_linenumber" name="492" href="#492">492</a>         start();
-<a class="jxr_linenumber" name="493" href="#493">493</a>     }
-<a class="jxr_linenumber" name="494" href="#494">494</a> 
-<a class="jxr_linenumber" name="495" href="#495">495</a>     <strong class="jxr_keyword">private</strong> <a href="../../org/lantern/util/Netty3LanternTrafficCounterHandler.html">Netty3LanternTrafficCounterHandler</a> netty3TrafficCounter() {
-<a class="jxr_linenumber" name="496" href="#496">496</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/util/Netty3LanternTrafficCounterHandler.html">Netty3LanternTrafficCounterHandler</a> handler =
-<a class="jxr_linenumber" name="497" href="#497">497</a>             <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/util/Netty3LanternTrafficCounterHandler.html">Netty3LanternTrafficCounterHandler</a>(<strong class="jxr_keyword">this</strong>.timer);
-<a class="jxr_linenumber" name="498" href="#498">498</a>         netty3TrafficShapers.add(handler);
-<a class="jxr_linenumber" name="499" href="#499">499</a>         <strong class="jxr_keyword">return</strong> handler;
-<a class="jxr_linenumber" name="500" href="#500">500</a>     }
-<a class="jxr_linenumber" name="501" href="#501">501</a> 
-<a class="jxr_linenumber" name="502" href="#502">502</a>     <strong class="jxr_keyword">private</strong> <a href="../../org/lantern/util/Netty4LanternTrafficCounterHandler.html">Netty4LanternTrafficCounterHandler</a> netty4TrafficCounter() {
-<a class="jxr_linenumber" name="503" href="#503">503</a>         <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/util/Netty4LanternTrafficCounterHandler.html">Netty4LanternTrafficCounterHandler</a> handler =
-<a class="jxr_linenumber" name="504" href="#504">504</a>                 <strong class="jxr_keyword">new</strong> <a href="../../org/lantern/util/Netty4LanternTrafficCounterHandler.html">Netty4LanternTrafficCounterHandler</a>(
-<a class="jxr_linenumber" name="505" href="#505">505</a>                         netty4TrafficCounterExecutor);
-<a class="jxr_linenumber" name="506" href="#506">506</a>         netty4TrafficShapers.add(handler);
-<a class="jxr_linenumber" name="507" href="#507">507</a>         <strong class="jxr_keyword">return</strong> handler;
-<a class="jxr_linenumber" name="508" href="#508">508</a>     }
+<a class="jxr_linenumber" name="441" href="#441">441</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> hasProxy() {
+<a class="jxr_linenumber" name="442" href="#442">442</a>         <strong class="jxr_keyword">return</strong> !proxies.isEmpty();
+<a class="jxr_linenumber" name="443" href="#443">443</a>     }
+<a class="jxr_linenumber" name="444" href="#444">444</a> 
+<a class="jxr_linenumber" name="445" href="#445">445</a>     @Subscribe
+<a class="jxr_linenumber" name="446" href="#446">446</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onReset(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/event/ResetEvent.html">ResetEvent</a> event) {
+<a class="jxr_linenumber" name="447" href="#447">447</a>         clear();
+<a class="jxr_linenumber" name="448" href="#448">448</a>     }
+<a class="jxr_linenumber" name="449" href="#449">449</a> 
+<a class="jxr_linenumber" name="450" href="#450">450</a>     @Override
+<a class="jxr_linenumber" name="451" href="#451">451</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> stop() {
+<a class="jxr_linenumber" name="452" href="#452">452</a>         proxyRetryService.shutdownNow();
+<a class="jxr_linenumber" name="453" href="#453">453</a>     }
+<a class="jxr_linenumber" name="454" href="#454">454</a> 
+<a class="jxr_linenumber" name="455" href="#455">455</a>     @Subscribe
+<a class="jxr_linenumber" name="456" href="#456">456</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onModeChanged(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/event/ModeChangedEvent.html">ModeChangedEvent</a> event) {
+<a class="jxr_linenumber" name="457" href="#457">457</a>         LOG.debug(<span class="jxr_string">"Received mode changed event: {}"</span>, event);
+<a class="jxr_linenumber" name="458" href="#458">458</a>         start();
+<a class="jxr_linenumber" name="459" href="#459">459</a>     }
+<a class="jxr_linenumber" name="460" href="#460">460</a> 
+<a class="jxr_linenumber" name="461" href="#461">461</a>     @Override
+<a class="jxr_linenumber" name="462" href="#462">462</a>     <strong class="jxr_keyword">public</strong> Collection&lt;ProxyHolder&gt; getConnectedProxiesInOrderOfFallbackPreference() {
+<a class="jxr_linenumber" name="463" href="#463">463</a>         List&lt;ProxyHolder&gt; result = <strong class="jxr_keyword">new</strong> ArrayList&lt;ProxyHolder&gt;();
+<a class="jxr_linenumber" name="464" href="#464">464</a>         <strong class="jxr_keyword">for</strong> (ProxyHolder proxy : proxies.values()) {
+<a class="jxr_linenumber" name="465" href="#465">465</a>             <strong class="jxr_keyword">if</strong> (proxy.isConnected()) {
+<a class="jxr_linenumber" name="466" href="#466">466</a>                 result.add(proxy);
+<a class="jxr_linenumber" name="467" href="#467">467</a>             }
+<a class="jxr_linenumber" name="468" href="#468">468</a>         }
+<a class="jxr_linenumber" name="469" href="#469">469</a>         Collections.sort(result, PROXY_PRIORITIZER);
+<a class="jxr_linenumber" name="470" href="#470">470</a>         <strong class="jxr_keyword">return</strong> result;
+<a class="jxr_linenumber" name="471" href="#471">471</a>     }
+<a class="jxr_linenumber" name="472" href="#472">472</a> 
+<a class="jxr_linenumber" name="473" href="#473">473</a>     @Override
+<a class="jxr_linenumber" name="474" href="#474">474</a>     <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> firstConnectedProxy() {
+<a class="jxr_linenumber" name="475" href="#475">475</a>         Iterator&lt;ProxyHolder&gt; it = getConnectedProxiesInOrderOfFallbackPreference()
+<a class="jxr_linenumber" name="476" href="#476">476</a>                 .iterator();
+<a class="jxr_linenumber" name="477" href="#477">477</a>         <strong class="jxr_keyword">return</strong> it.hasNext() ? it.next() : <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="478" href="#478">478</a>     }
+<a class="jxr_linenumber" name="479" href="#479">479</a> 
+<a class="jxr_linenumber" name="480" href="#480">480</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> prepopulateProxies() {
+<a class="jxr_linenumber" name="481" href="#481">481</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.model.getSettings().getMode() == Mode.give) {
+<a class="jxr_linenumber" name="482" href="#482">482</a>             LOG.debug(<span class="jxr_string">"Not loading proxies in give mode"</span>);
+<a class="jxr_linenumber" name="483" href="#483">483</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="484" href="#484">484</a>         }
+<a class="jxr_linenumber" name="485" href="#485">485</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.proxiesPopulated.get()) {
+<a class="jxr_linenumber" name="486" href="#486">486</a>             LOG.debug(<span class="jxr_string">"Proxies already populated!"</span>);
+<a class="jxr_linenumber" name="487" href="#487">487</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="488" href="#488">488</a>         }
+<a class="jxr_linenumber" name="489" href="#489">489</a>         <strong class="jxr_keyword">this</strong>.proxiesPopulated.set(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="490" href="#490">490</a>         addFallbackProxies();
+<a class="jxr_linenumber" name="491" href="#491">491</a>         <em class="jxr_comment">// Add all the stored proxies.</em>
+<a class="jxr_linenumber" name="492" href="#492">492</a>         <strong class="jxr_keyword">final</strong> Collection&lt;Peer&gt; peers = <strong class="jxr_keyword">this</strong>.model.getPeers();
+<a class="jxr_linenumber" name="493" href="#493">493</a>         LOG.debug(<span class="jxr_string">"Proxy set is: {}"</span>, peers);
+<a class="jxr_linenumber" name="494" href="#494">494</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Peer peer : peers) {
+<a class="jxr_linenumber" name="495" href="#495">495</a>             <em class="jxr_comment">// Don't use peer proxies since we're not connected to XMPP yet.</em>
+<a class="jxr_linenumber" name="496" href="#496">496</a>             <strong class="jxr_keyword">if</strong> (peer.isMapped()) {
+<a class="jxr_linenumber" name="497" href="#497">497</a>                 <strong class="jxr_keyword">final</strong> String id = peer.getPeerid();
+<a class="jxr_linenumber" name="498" href="#498">498</a>                 <strong class="jxr_keyword">if</strong> (!id.contains(fallbackServerHost)) {
+<a class="jxr_linenumber" name="499" href="#499">499</a>                     addProxy(LanternUtils.newURI(peer.getPeerid()),
+<a class="jxr_linenumber" name="500" href="#500">500</a>                             <strong class="jxr_keyword">new</strong> InetSocketAddress(peer.getIp(), peer.getPort()));
+<a class="jxr_linenumber" name="501" href="#501">501</a>                 }
+<a class="jxr_linenumber" name="502" href="#502">502</a>             }
+<a class="jxr_linenumber" name="503" href="#503">503</a>         }
+<a class="jxr_linenumber" name="504" href="#504">504</a>     }
+<a class="jxr_linenumber" name="505" href="#505">505</a> 
+<a class="jxr_linenumber" name="506" href="#506">506</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addFallbackProxies() {
+<a class="jxr_linenumber" name="507" href="#507">507</a>         parseFallbackProxy();
+<a class="jxr_linenumber" name="508" href="#508">508</a>         addSingleFallbackProxy(fallbackServerHost, fallbackServerPort);
 <a class="jxr_linenumber" name="509" href="#509">509</a> 
-<a class="jxr_linenumber" name="510" href="#510">510</a>     @Override
-<a class="jxr_linenumber" name="511" href="#511">511</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setSuccess(<a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> proxyHolder) {
-<a class="jxr_linenumber" name="512" href="#512">512</a>         proxyHolder.resetFailures();
-<a class="jxr_linenumber" name="513" href="#513">513</a>     }
-<a class="jxr_linenumber" name="514" href="#514">514</a> 
-<a class="jxr_linenumber" name="515" href="#515">515</a>     <strong class="jxr_keyword">class</strong> <a href="../../org/lantern/DefaultProxyTracker.html">PeerProxyQueue</a> <strong class="jxr_keyword">extends</strong> <a href="../../org/lantern/ProxyQueue.html">ProxyQueue</a> {
-<a class="jxr_linenumber" name="516" href="#516">516</a>         <em class="jxr_comment">//this unfortunately duplicates the values of proxyMap</em>
-<a class="jxr_linenumber" name="517" href="#517">517</a>         <em class="jxr_comment">//but there doesn't seem to be an elegant way to handle</em>
-<a class="jxr_linenumber" name="518" href="#518">518</a>         <em class="jxr_comment">//this</em>
-<a class="jxr_linenumber" name="519" href="#519">519</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> HashMap&lt;URI, ProxyHolder&gt; peerProxyMap =
-<a class="jxr_linenumber" name="520" href="#520">520</a>                 <strong class="jxr_keyword">new</strong> HashMap&lt;URI, ProxyHolder&gt;();
-<a class="jxr_linenumber" name="521" href="#521">521</a> 
-<a class="jxr_linenumber" name="522" href="#522">522</a>         <a href="../../org/lantern/DefaultProxyTracker.html">PeerProxyQueue</a>(<a href="../../org/lantern/state/Model.html">Model</a> model) {
-<a class="jxr_linenumber" name="523" href="#523">523</a>             <strong class="jxr_keyword">super</strong>(model);
-<a class="jxr_linenumber" name="524" href="#524">524</a>         }
-<a class="jxr_linenumber" name="525" href="#525">525</a> 
-<a class="jxr_linenumber" name="526" href="#526">526</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> proxyFailed(URI peerUri) {
-<a class="jxr_linenumber" name="527" href="#527">527</a>             <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> proxy = peerProxyMap.get(peerUri);
-<a class="jxr_linenumber" name="528" href="#528">528</a>             <strong class="jxr_keyword">if</strong> (proxy != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="529" href="#529">529</a>                 proxyFailed(proxy);
-<a class="jxr_linenumber" name="530" href="#530">530</a>             }
-<a class="jxr_linenumber" name="531" href="#531">531</a>         }
+<a class="jxr_linenumber" name="510" href="#510">510</a>         <strong class="jxr_keyword">final</strong> File file = <strong class="jxr_keyword">new</strong> File(SystemUtils.USER_HOME, <span class="jxr_string">"fallbacks.json"</span>);
+<a class="jxr_linenumber" name="511" href="#511">511</a>         <strong class="jxr_keyword">if</strong> (!file.isFile()) {
+<a class="jxr_linenumber" name="512" href="#512">512</a>             LOG.info(<span class="jxr_string">"No fallback proxies in: {}"</span>, file.getAbsolutePath());
+<a class="jxr_linenumber" name="513" href="#513">513</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="514" href="#514">514</a>         }
+<a class="jxr_linenumber" name="515" href="#515">515</a>         <strong class="jxr_keyword">final</strong> ObjectMapper om = <strong class="jxr_keyword">new</strong> ObjectMapper();
+<a class="jxr_linenumber" name="516" href="#516">516</a>         InputStream is = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="517" href="#517">517</a> 
+<a class="jxr_linenumber" name="518" href="#518">518</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="519" href="#519">519</a>             is = <strong class="jxr_keyword">new</strong> FileInputStream(file);
+<a class="jxr_linenumber" name="520" href="#520">520</a>             <strong class="jxr_keyword">final</strong> String proxy = IOUtils.toString(is);
+<a class="jxr_linenumber" name="521" href="#521">521</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/FallbackProxies.html">FallbackProxies</a> all = om.readValue(proxy,
+<a class="jxr_linenumber" name="522" href="#522">522</a>                     FallbackProxies.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="523" href="#523">523</a>             <strong class="jxr_keyword">final</strong> Collection&lt;FallbackProxy&gt; proxies = all.getProxies();
+<a class="jxr_linenumber" name="524" href="#524">524</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> FallbackProxy fp : proxies) {
+<a class="jxr_linenumber" name="525" href="#525">525</a>                 LOG.debug(<span class="jxr_string">"Adding fallback: {}"</span>, fp);
+<a class="jxr_linenumber" name="526" href="#526">526</a>                 addSingleFallbackProxy(fp.getIp(), fp.getPort());
+<a class="jxr_linenumber" name="527" href="#527">527</a>             }
+<a class="jxr_linenumber" name="528" href="#528">528</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
+<a class="jxr_linenumber" name="529" href="#529">529</a>             LOG.error(<span class="jxr_string">"Could not load fallback proxies?"</span>);
+<a class="jxr_linenumber" name="530" href="#530">530</a>         }
+<a class="jxr_linenumber" name="531" href="#531">531</a>     }
 <a class="jxr_linenumber" name="532" href="#532">532</a> 
-<a class="jxr_linenumber" name="533" href="#533">533</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> removeProxy(URI uri) {
-<a class="jxr_linenumber" name="534" href="#534">534</a>             <strong class="jxr_keyword">if</strong> (peerProxyMap.containsKey(uri)) {
-<a class="jxr_linenumber" name="535" href="#535">535</a>                 <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> proxy = peerProxyMap.remove(uri);
-<a class="jxr_linenumber" name="536" href="#536">536</a>                 proxySet.remove(proxy);
-<a class="jxr_linenumber" name="537" href="#537">537</a>                 proxies.remove(proxy);
-<a class="jxr_linenumber" name="538" href="#538">538</a>                 pausedProxies.remove(proxy);
-<a class="jxr_linenumber" name="539" href="#539">539</a>             }
-<a class="jxr_linenumber" name="540" href="#540">540</a>         }
-<a class="jxr_linenumber" name="541" href="#541">541</a> 
-<a class="jxr_linenumber" name="542" href="#542">542</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> addPeerProxy(URI peerUri, <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> ph) {
-<a class="jxr_linenumber" name="543" href="#543">543</a>             <strong class="jxr_keyword">if</strong> (!peerProxyMap.containsKey(peerUri)) {
-<a class="jxr_linenumber" name="544" href="#544">544</a>                 peerProxyMap.put(peerUri, ph);
-<a class="jxr_linenumber" name="545" href="#545">545</a>                 add(ph);
-<a class="jxr_linenumber" name="546" href="#546">546</a>                 log.debug(<span class="jxr_string">"Queue is now: {}"</span>, peerProxyQueue);
-<a class="jxr_linenumber" name="547" href="#547">547</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="548" href="#548">548</a>                 proxies.add(ph);
-<a class="jxr_linenumber" name="549" href="#549">549</a>             }
-<a class="jxr_linenumber" name="550" href="#550">550</a>         }
-<a class="jxr_linenumber" name="551" href="#551">551</a> 
-<a class="jxr_linenumber" name="552" href="#552">552</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> containsPeer(URI uri) {
-<a class="jxr_linenumber" name="553" href="#553">553</a>             <strong class="jxr_keyword">return</strong> peerProxyMap.containsKey(uri);
-<a class="jxr_linenumber" name="554" href="#554">554</a>         }
-<a class="jxr_linenumber" name="555" href="#555">555</a> 
-<a class="jxr_linenumber" name="556" href="#556">556</a>         @Override
-<a class="jxr_linenumber" name="557" href="#557">557</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">synchronized</strong> <strong class="jxr_keyword">void</strong> reenqueueProxy(<a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> proxy) {
-<a class="jxr_linenumber" name="558" href="#558">558</a>             <em class="jxr_comment">// We handle p2p JIDs a little differently, as we can't make multiple</em>
-<a class="jxr_linenumber" name="559" href="#559">559</a>             <em class="jxr_comment">// connections from ephemeral local ports to the same remote endpoint</em>
-<a class="jxr_linenumber" name="560" href="#560">560</a>             <em class="jxr_comment">// because NAT traversal is local port-specific (at least in many</em>
-<a class="jxr_linenumber" name="561" href="#561">561</a>             <em class="jxr_comment">// cases). So instead of always adding the proxy back to the end of</em>
-<a class="jxr_linenumber" name="562" href="#562">562</a>             <em class="jxr_comment">// the queue, we add it using the full FiveTuple creation process</em>
-<a class="jxr_linenumber" name="563" href="#563">563</a>             <em class="jxr_comment">// from the beginning.</em>
-<a class="jxr_linenumber" name="564" href="#564">564</a>             addJidProxy(LanternUtils.newURI(proxy.getId()));
-<a class="jxr_linenumber" name="565" href="#565">565</a>             log.debug(<span class="jxr_string">"FIFO queue is now: {}"</span>, proxies);
-<a class="jxr_linenumber" name="566" href="#566">566</a>         }
-<a class="jxr_linenumber" name="567" href="#567">567</a>     }
+<a class="jxr_linenumber" name="533" href="#533">533</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addSingleFallbackProxy(<strong class="jxr_keyword">final</strong> String host, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> port) {
+<a class="jxr_linenumber" name="534" href="#534">534</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.model.getSettings().isTcp()) {
+<a class="jxr_linenumber" name="535" href="#535">535</a>             <strong class="jxr_keyword">final</strong> URI uri =
+<a class="jxr_linenumber" name="536" href="#536">536</a>                     LanternUtils.newURI(<span class="jxr_string">"fallback-"</span> + host + <span class="jxr_string">"@getlantern.org"</span>);
+<a class="jxr_linenumber" name="537" href="#537">537</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/state/Peer.html">Peer</a> cloud = <strong class="jxr_keyword">this</strong>.peerFactory.addPeer(uri, Type.cloud);
+<a class="jxr_linenumber" name="538" href="#538">538</a>             cloud.setMode(org.lantern.state.Mode.give);
+<a class="jxr_linenumber" name="539" href="#539">539</a> 
+<a class="jxr_linenumber" name="540" href="#540">540</a>             LOG.debug(<span class="jxr_string">"Adding fallback: {}"</span>, host);
+<a class="jxr_linenumber" name="541" href="#541">541</a>             addProxy(uri, LanternUtils.isa(host, port), Type.cloud);
+<a class="jxr_linenumber" name="542" href="#542">542</a>         }
+<a class="jxr_linenumber" name="543" href="#543">543</a>     }
+<a class="jxr_linenumber" name="544" href="#544">544</a> 
+<a class="jxr_linenumber" name="545" href="#545">545</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> parseFallbackProxy() {
+<a class="jxr_linenumber" name="546" href="#546">546</a>         <strong class="jxr_keyword">final</strong> File file =
+<a class="jxr_linenumber" name="547" href="#547">547</a>                 <strong class="jxr_keyword">new</strong> File(LanternClientConstants.CONFIG_DIR, <span class="jxr_string">"fallback.json"</span>);
+<a class="jxr_linenumber" name="548" href="#548">548</a>         <strong class="jxr_keyword">if</strong> (!file.isFile()) {
+<a class="jxr_linenumber" name="549" href="#549">549</a>             <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="550" href="#550">550</a>                 copyFallback();
+<a class="jxr_linenumber" name="551" href="#551">551</a>             } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
+<a class="jxr_linenumber" name="552" href="#552">552</a>                 LOG.error(<span class="jxr_string">"Could not copy fallback?"</span>, e);
+<a class="jxr_linenumber" name="553" href="#553">553</a>             }
+<a class="jxr_linenumber" name="554" href="#554">554</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="555" href="#555">555</a>             LOG.debug(<span class="jxr_string">"Fallback file already exists!"</span>);
+<a class="jxr_linenumber" name="556" href="#556">556</a>         }
+<a class="jxr_linenumber" name="557" href="#557">557</a>         <strong class="jxr_keyword">if</strong> (!file.isFile()) {
+<a class="jxr_linenumber" name="558" href="#558">558</a>             LOG.error(<span class="jxr_string">"No fallback proxy to load!"</span>);
+<a class="jxr_linenumber" name="559" href="#559">559</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="560" href="#560">560</a>         }
+<a class="jxr_linenumber" name="561" href="#561">561</a> 
+<a class="jxr_linenumber" name="562" href="#562">562</a>         <strong class="jxr_keyword">final</strong> ObjectMapper om = <strong class="jxr_keyword">new</strong> ObjectMapper();
+<a class="jxr_linenumber" name="563" href="#563">563</a>         InputStream is = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="564" href="#564">564</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="565" href="#565">565</a>             is = <strong class="jxr_keyword">new</strong> FileInputStream(file);
+<a class="jxr_linenumber" name="566" href="#566">566</a>             <strong class="jxr_keyword">final</strong> String proxy = IOUtils.toString(is);
+<a class="jxr_linenumber" name="567" href="#567">567</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/FallbackProxy.html">FallbackProxy</a> fp = om.readValue(proxy, FallbackProxy.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="568" href="#568">568</a> 
-<a class="jxr_linenumber" name="569" href="#569">569</a> 
-<a class="jxr_linenumber" name="570" href="#570">570</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> parseFallbackProxy() {
-<a class="jxr_linenumber" name="571" href="#571">571</a>         <strong class="jxr_keyword">final</strong> File file = 
-<a class="jxr_linenumber" name="572" href="#572">572</a>             <strong class="jxr_keyword">new</strong> File(LanternClientConstants.CONFIG_DIR, <span class="jxr_string">"fallback.json"</span>);
-<a class="jxr_linenumber" name="573" href="#573">573</a>         <strong class="jxr_keyword">if</strong> (!file.isFile()) {
-<a class="jxr_linenumber" name="574" href="#574">574</a>             <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="575" href="#575">575</a>                 copyFallback();
-<a class="jxr_linenumber" name="576" href="#576">576</a>             } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
-<a class="jxr_linenumber" name="577" href="#577">577</a>                 log.error(<span class="jxr_string">"Could not copy fallback?"</span>, e);
-<a class="jxr_linenumber" name="578" href="#578">578</a>             }
-<a class="jxr_linenumber" name="579" href="#579">579</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="580" href="#580">580</a>             log.debug(<span class="jxr_string">"Fallback file already exists!"</span>);
-<a class="jxr_linenumber" name="581" href="#581">581</a>         }
-<a class="jxr_linenumber" name="582" href="#582">582</a>         <strong class="jxr_keyword">if</strong> (!file.isFile()) {
-<a class="jxr_linenumber" name="583" href="#583">583</a>             log.error(<span class="jxr_string">"No fallback proxy to load!"</span>);
-<a class="jxr_linenumber" name="584" href="#584">584</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="585" href="#585">585</a>         }
-<a class="jxr_linenumber" name="586" href="#586">586</a> 
-<a class="jxr_linenumber" name="587" href="#587">587</a>         <strong class="jxr_keyword">final</strong> ObjectMapper om = <strong class="jxr_keyword">new</strong> ObjectMapper();
-<a class="jxr_linenumber" name="588" href="#588">588</a>         InputStream is = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="589" href="#589">589</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="590" href="#590">590</a>             is = <strong class="jxr_keyword">new</strong> FileInputStream(file);
-<a class="jxr_linenumber" name="591" href="#591">591</a>             <strong class="jxr_keyword">final</strong> String proxy = IOUtils.toString(is);
-<a class="jxr_linenumber" name="592" href="#592">592</a>             <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/FallbackProxy.html">FallbackProxy</a> fp = om.readValue(proxy, FallbackProxy.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="593" href="#593">593</a>             
-<a class="jxr_linenumber" name="594" href="#594">594</a>             fallbackServerHost = fp.getIp();
-<a class="jxr_linenumber" name="595" href="#595">595</a>             fallbackServerPort = fp.getPort();
-<a class="jxr_linenumber" name="596" href="#596">596</a>             log.debug(<span class="jxr_string">"Set fallback proxy to {}"</span>, fallbackServerHost);
-<a class="jxr_linenumber" name="597" href="#597">597</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
-<a class="jxr_linenumber" name="598" href="#598">598</a>             log.error(<span class="jxr_string">"Could not load fallback"</span>, e);
-<a class="jxr_linenumber" name="599" href="#599">599</a>         } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="600" href="#600">600</a>             IOUtils.closeQuietly(is);
-<a class="jxr_linenumber" name="601" href="#601">601</a>         }
-<a class="jxr_linenumber" name="602" href="#602">602</a>     }
-<a class="jxr_linenumber" name="603" href="#603">603</a> 
-<a class="jxr_linenumber" name="604" href="#604">604</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> copyFallback() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="605" href="#605">605</a>         log.debug(<span class="jxr_string">"Copying fallback file"</span>);
-<a class="jxr_linenumber" name="606" href="#606">606</a>         <strong class="jxr_keyword">final</strong> File from;
-<a class="jxr_linenumber" name="607" href="#607">607</a>         
-<a class="jxr_linenumber" name="608" href="#608">608</a>         <strong class="jxr_keyword">final</strong> File cur = 
-<a class="jxr_linenumber" name="609" href="#609">609</a>             <strong class="jxr_keyword">new</strong> File(<strong class="jxr_keyword">new</strong> File(SystemUtils.USER_DIR), <span class="jxr_string">"fallback.json"</span>);
-<a class="jxr_linenumber" name="610" href="#610">610</a>         <strong class="jxr_keyword">if</strong> (cur.isFile()) {
-<a class="jxr_linenumber" name="611" href="#611">611</a>             from = cur;
-<a class="jxr_linenumber" name="612" href="#612">612</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="613" href="#613">613</a>             log.debug(<span class="jxr_string">"No fallback proxy found in home - checking cur..."</span>);
-<a class="jxr_linenumber" name="614" href="#614">614</a>             <strong class="jxr_keyword">final</strong> File home = <strong class="jxr_keyword">new</strong> File(<strong class="jxr_keyword">new</strong> File(SystemUtils.USER_HOME), <span class="jxr_string">"fallback.json"</span>);
-<a class="jxr_linenumber" name="615" href="#615">615</a>             <strong class="jxr_keyword">if</strong> (home.isFile()) {
-<a class="jxr_linenumber" name="616" href="#616">616</a>                 from = home;
-<a class="jxr_linenumber" name="617" href="#617">617</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="618" href="#618">618</a>                 log.warn(<span class="jxr_string">"Still could not find fallback proxy!"</span>);
-<a class="jxr_linenumber" name="619" href="#619">619</a>                 <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="620" href="#620">620</a>             }
-<a class="jxr_linenumber" name="621" href="#621">621</a>         }
-<a class="jxr_linenumber" name="622" href="#622">622</a>         <strong class="jxr_keyword">final</strong> File par = LanternClientConstants.CONFIG_DIR;
-<a class="jxr_linenumber" name="623" href="#623">623</a>         <strong class="jxr_keyword">final</strong> File to = <strong class="jxr_keyword">new</strong> File(par, from.getName());
-<a class="jxr_linenumber" name="624" href="#624">624</a>         <strong class="jxr_keyword">if</strong> (!par.isDirectory() &amp;&amp; !par.mkdirs()) {
-<a class="jxr_linenumber" name="625" href="#625">625</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IOException(<span class="jxr_string">"Could not make config dir?"</span>);
-<a class="jxr_linenumber" name="626" href="#626">626</a>         }
-<a class="jxr_linenumber" name="627" href="#627">627</a>         log.debug(<span class="jxr_string">"Copying from {} to {}"</span>, from, to);
-<a class="jxr_linenumber" name="628" href="#628">628</a>         Files.copy(from, to);
-<a class="jxr_linenumber" name="629" href="#629">629</a>     }
-<a class="jxr_linenumber" name="630" href="#630">630</a> 
-<a class="jxr_linenumber" name="631" href="#631">631</a> 
-<a class="jxr_linenumber" name="632" href="#632">632</a> }
+<a class="jxr_linenumber" name="569" href="#569">569</a>             fallbackServerHost = fp.getIp();
+<a class="jxr_linenumber" name="570" href="#570">570</a>             fallbackServerPort = fp.getPort();
+<a class="jxr_linenumber" name="571" href="#571">571</a>             LOG.debug(<span class="jxr_string">"Set fallback proxy to {}"</span>, fallbackServerHost);
+<a class="jxr_linenumber" name="572" href="#572">572</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
+<a class="jxr_linenumber" name="573" href="#573">573</a>             LOG.error(<span class="jxr_string">"Could not load fallback"</span>, e);
+<a class="jxr_linenumber" name="574" href="#574">574</a>         } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="575" href="#575">575</a>             IOUtils.closeQuietly(is);
+<a class="jxr_linenumber" name="576" href="#576">576</a>         }
+<a class="jxr_linenumber" name="577" href="#577">577</a>     }
+<a class="jxr_linenumber" name="578" href="#578">578</a> 
+<a class="jxr_linenumber" name="579" href="#579">579</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> copyFallback() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="580" href="#580">580</a>         LOG.debug(<span class="jxr_string">"Copying fallback file"</span>);
+<a class="jxr_linenumber" name="581" href="#581">581</a>         <strong class="jxr_keyword">final</strong> File from;
+<a class="jxr_linenumber" name="582" href="#582">582</a> 
+<a class="jxr_linenumber" name="583" href="#583">583</a>         <strong class="jxr_keyword">final</strong> File cur =
+<a class="jxr_linenumber" name="584" href="#584">584</a>                 <strong class="jxr_keyword">new</strong> File(<strong class="jxr_keyword">new</strong> File(SystemUtils.USER_DIR), <span class="jxr_string">"fallback.json"</span>);
+<a class="jxr_linenumber" name="585" href="#585">585</a>         <strong class="jxr_keyword">if</strong> (cur.isFile()) {
+<a class="jxr_linenumber" name="586" href="#586">586</a>             from = cur;
+<a class="jxr_linenumber" name="587" href="#587">587</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="588" href="#588">588</a>             LOG.debug(<span class="jxr_string">"No fallback proxy found in home - checking cur..."</span>);
+<a class="jxr_linenumber" name="589" href="#589">589</a>             <strong class="jxr_keyword">final</strong> File home = <strong class="jxr_keyword">new</strong> File(<strong class="jxr_keyword">new</strong> File(SystemUtils.USER_HOME),
+<a class="jxr_linenumber" name="590" href="#590">590</a>                     <span class="jxr_string">"fallback.json"</span>);
+<a class="jxr_linenumber" name="591" href="#591">591</a>             <strong class="jxr_keyword">if</strong> (home.isFile()) {
+<a class="jxr_linenumber" name="592" href="#592">592</a>                 from = home;
+<a class="jxr_linenumber" name="593" href="#593">593</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="594" href="#594">594</a>                 LOG.warn(<span class="jxr_string">"Still could not find fallback proxy!"</span>);
+<a class="jxr_linenumber" name="595" href="#595">595</a>                 <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="596" href="#596">596</a>             }
+<a class="jxr_linenumber" name="597" href="#597">597</a>         }
+<a class="jxr_linenumber" name="598" href="#598">598</a>         <strong class="jxr_keyword">final</strong> File par = LanternClientConstants.CONFIG_DIR;
+<a class="jxr_linenumber" name="599" href="#599">599</a>         <strong class="jxr_keyword">final</strong> File to = <strong class="jxr_keyword">new</strong> File(par, from.getName());
+<a class="jxr_linenumber" name="600" href="#600">600</a>         <strong class="jxr_keyword">if</strong> (!par.isDirectory() &amp;&amp; !par.mkdirs()) {
+<a class="jxr_linenumber" name="601" href="#601">601</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IOException(<span class="jxr_string">"Could not make config dir?"</span>);
+<a class="jxr_linenumber" name="602" href="#602">602</a>         }
+<a class="jxr_linenumber" name="603" href="#603">603</a>         LOG.debug(<span class="jxr_string">"Copying from {} to {}"</span>, from, to);
+<a class="jxr_linenumber" name="604" href="#604">604</a>         Files.copy(from, to);
+<a class="jxr_linenumber" name="605" href="#605">605</a>     }
+<a class="jxr_linenumber" name="606" href="#606">606</a> 
+<a class="jxr_linenumber" name="607" href="#607">607</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="608" href="#608">608</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="609" href="#609">609</a> <em class="jxr_javadoccomment">     * Prioritizes proxies based on the following rules (highest to lowest):</em>
+<a class="jxr_linenumber" name="610" href="#610">610</a> <em class="jxr_javadoccomment">     * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="611" href="#611">611</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="612" href="#612">612</a> <em class="jxr_javadoccomment">     * &lt;ol&gt;</em>
+<a class="jxr_linenumber" name="613" href="#613">613</a> <em class="jxr_javadoccomment">     * &lt;li&gt;Prioritize other Lanterns over fallback proxies&lt;/li&gt;</em>
+<a class="jxr_linenumber" name="614" href="#614">614</a> <em class="jxr_javadoccomment">     * &lt;li&gt;Prioritize TCP over UDP&lt;/li&gt;</em>
+<a class="jxr_linenumber" name="615" href="#615">615</a> <em class="jxr_javadoccomment">     * &lt;li&gt;Prioritize proxies to whom we have fewer open sockets&lt;/li&gt;</em>
+<a class="jxr_linenumber" name="616" href="#616">616</a> <em class="jxr_javadoccomment">     * &lt;/ol&gt;</em>
+<a class="jxr_linenumber" name="617" href="#617">617</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="618" href="#618">618</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">class</strong> <a href="../../org/lantern/DefaultProxyTracker.html">ProxyPrioritizer</a> <strong class="jxr_keyword">implements</strong> Comparator&lt;ProxyHolder&gt; {
+<a class="jxr_linenumber" name="619" href="#619">619</a>         @Override
+<a class="jxr_linenumber" name="620" href="#620">620</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> compare(<a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> a, <a href="../../org/lantern/ProxyHolder.html">ProxyHolder</a> b) {
+<a class="jxr_linenumber" name="621" href="#621">621</a>             <em class="jxr_comment">// Prioritize other Lanterns over fallback proxies</em>
+<a class="jxr_linenumber" name="622" href="#622">622</a>             <a href="../../org/lantern/state/Peer.html">Type</a> typeA = a.getType();
+<a class="jxr_linenumber" name="623" href="#623">623</a>             <a href="../../org/lantern/state/Peer.html">Type</a> typeB = b.getType();
+<a class="jxr_linenumber" name="624" href="#624">624</a>             <strong class="jxr_keyword">if</strong> (typeA == pc &amp;&amp; typeB != pc) {
+<a class="jxr_linenumber" name="625" href="#625">625</a>                 <strong class="jxr_keyword">return</strong> -1;
+<a class="jxr_linenumber" name="626" href="#626">626</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (typeB == pc &amp;&amp; typeA != pc) {
+<a class="jxr_linenumber" name="627" href="#627">627</a>                 <strong class="jxr_keyword">return</strong> 1;
+<a class="jxr_linenumber" name="628" href="#628">628</a>             }
+<a class="jxr_linenumber" name="629" href="#629">629</a> 
+<a class="jxr_linenumber" name="630" href="#630">630</a>             <em class="jxr_comment">// Prioritize TCP over UDP</em>
+<a class="jxr_linenumber" name="631" href="#631">631</a>             <strong class="jxr_keyword">int</strong> protocolPriority = 0;
+<a class="jxr_linenumber" name="632" href="#632">632</a>             Protocol protocolA = a.getFiveTuple().getProtocol();
+<a class="jxr_linenumber" name="633" href="#633">633</a>             Protocol protocolB = b.getFiveTuple().getProtocol();
+<a class="jxr_linenumber" name="634" href="#634">634</a>             <strong class="jxr_keyword">if</strong> (protocolA == TCP &amp;&amp; protocolB != TCP) {
+<a class="jxr_linenumber" name="635" href="#635">635</a>                 protocolPriority = -1;
+<a class="jxr_linenumber" name="636" href="#636">636</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (protocolB == TCP &amp;&amp; protocolA != TCP) {
+<a class="jxr_linenumber" name="637" href="#637">637</a>                 protocolPriority = 1;
+<a class="jxr_linenumber" name="638" href="#638">638</a>             }
+<a class="jxr_linenumber" name="639" href="#639">639</a>             <em class="jxr_comment">// Adjust protocolPriority based on configured UDP proxy priority</em>
+<a class="jxr_linenumber" name="640" href="#640">640</a>             protocolPriority = model.getSettings().getUdpProxyPriority()
+<a class="jxr_linenumber" name="641" href="#641">641</a>                     .adjustComparisonResult(protocolPriority);
+<a class="jxr_linenumber" name="642" href="#642">642</a>             <strong class="jxr_keyword">if</strong> (protocolPriority != 0) {
+<a class="jxr_linenumber" name="643" href="#643">643</a>                 <strong class="jxr_keyword">return</strong> protocolPriority;
+<a class="jxr_linenumber" name="644" href="#644">644</a>             }
+<a class="jxr_linenumber" name="645" href="#645">645</a> 
+<a class="jxr_linenumber" name="646" href="#646">646</a>             <em class="jxr_comment">// Prioritize based on least number of open sockets</em>
+<a class="jxr_linenumber" name="647" href="#647">647</a>             <strong class="jxr_keyword">long</strong> numberOfSocketsA = a.getPeer().getNSockets();
+<a class="jxr_linenumber" name="648" href="#648">648</a>             <strong class="jxr_keyword">long</strong> numberOfSocketsB = b.getPeer().getNSockets();
+<a class="jxr_linenumber" name="649" href="#649">649</a>             <strong class="jxr_keyword">if</strong> (numberOfSocketsA &lt; numberOfSocketsB) {
+<a class="jxr_linenumber" name="650" href="#650">650</a>                 <strong class="jxr_keyword">return</strong> -1;
+<a class="jxr_linenumber" name="651" href="#651">651</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (numberOfSocketsB &gt; numberOfSocketsA) {
+<a class="jxr_linenumber" name="652" href="#652">652</a>                 <strong class="jxr_keyword">return</strong> 1;
+<a class="jxr_linenumber" name="653" href="#653">653</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="654" href="#654">654</a>                 <strong class="jxr_keyword">return</strong> 0;
+<a class="jxr_linenumber" name="655" href="#655">655</a>             }
+<a class="jxr_linenumber" name="656" href="#656">656</a>         }
+<a class="jxr_linenumber" name="657" href="#657">657</a>     }
+<a class="jxr_linenumber" name="658" href="#658">658</a> 
+<a class="jxr_linenumber" name="659" href="#659">659</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../org/lantern/DefaultProxyTracker.html">ScheduledNatTraversal</a> {
+<a class="jxr_linenumber" name="660" href="#660">660</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">long</strong> scheduledTime;
+<a class="jxr_linenumber" name="661" href="#661">661</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">long</strong> delay;
+<a class="jxr_linenumber" name="662" href="#662">662</a> 
+<a class="jxr_linenumber" name="663" href="#663">663</a>         <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/DefaultProxyTracker.html">ScheduledNatTraversal</a>(<strong class="jxr_keyword">long</strong> delay) {
+<a class="jxr_linenumber" name="664" href="#664">664</a>             <strong class="jxr_keyword">super</strong>();
+<a class="jxr_linenumber" name="665" href="#665">665</a>             <strong class="jxr_keyword">this</strong>.scheduledTime = System.currentTimeMillis() + delay;
+<a class="jxr_linenumber" name="666" href="#666">666</a>             <strong class="jxr_keyword">this</strong>.delay = delay;
+<a class="jxr_linenumber" name="667" href="#667">667</a>         }
+<a class="jxr_linenumber" name="668" href="#668">668</a> 
+<a class="jxr_linenumber" name="669" href="#669">669</a>     }
+<a class="jxr_linenumber" name="670" href="#670">670</a> }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

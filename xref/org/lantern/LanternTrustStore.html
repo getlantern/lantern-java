@@ -25,309 +25,351 @@
 <a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicReference;
 <a class="jxr_linenumber" name="16" href="#16">16</a>  
 <a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.SSLContext;
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.TrustManagerFactory;
-<a class="jxr_linenumber" name="19" href="#19">19</a>  
-<a class="jxr_linenumber" name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.codec.binary.Base64;
-<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.io.IOUtils;
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.Events;
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.PeerCertEvent;
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
-<a class="jxr_linenumber" name="26" href="#26">26</a>  
-<a class="jxr_linenumber" name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> com.google.common.base.Charsets;
-<a class="jxr_linenumber" name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> com.google.inject.Inject;
-<a class="jxr_linenumber" name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> com.google.inject.Singleton;
-<a class="jxr_linenumber" name="30" href="#30">30</a>  
-<a class="jxr_linenumber" name="31" href="#31">31</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="32" href="#32">32</a>  <em class="jxr_javadoccomment"> * This class manages the local trust store of external entities we trust</em>
-<a class="jxr_linenumber" name="33" href="#33">33</a>  <em class="jxr_javadoccomment"> * for creating SSL connections. This includes both hard coded certificates</em>
-<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment"> * for a small number of services we use as well as dynamically added</em>
-<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment"> * certificates for peers. Peer certificates must be discovered and added</em>
-<a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment"> * through a trusted channel such as one of the hard coded trusted authorities</em>
-<a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment"> * (aka Google Talk with its equifax certificate as of this writing).</em>
-<a class="jxr_linenumber" name="38" href="#38">38</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="39" href="#39">39</a>  @Singleton
-<a class="jxr_linenumber" name="40" href="#40">40</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../org/lantern/LanternTrustStore.html">LanternTrustStore</a> {
-<a class="jxr_linenumber" name="41" href="#41">41</a>  
-<a class="jxr_linenumber" name="42" href="#42">42</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">static</strong> Logger log = 
-<a class="jxr_linenumber" name="43" href="#43">43</a>          LoggerFactory.getLogger(LanternTrustStore.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="44" href="#44">44</a>  
-<a class="jxr_linenumber" name="45" href="#45">45</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicReference&lt;SSLContext&gt; sslContextRef = 
-<a class="jxr_linenumber" name="46" href="#46">46</a>              <strong class="jxr_keyword">new</strong> AtomicReference&lt;SSLContext&gt;();
-<a class="jxr_linenumber" name="47" href="#47">47</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/LanternKeyStoreManager.html">LanternKeyStoreManager</a> ksm;
-<a class="jxr_linenumber" name="48" href="#48">48</a>  
-<a class="jxr_linenumber" name="49" href="#49">49</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> KeyStore trustStore;
-<a class="jxr_linenumber" name="50" href="#50">50</a>  
-<a class="jxr_linenumber" name="51" href="#51">51</a>      <strong class="jxr_keyword">private</strong> TrustManagerFactory tmf;
-<a class="jxr_linenumber" name="52" href="#52">52</a>  
-<a class="jxr_linenumber" name="53" href="#53">53</a>      @Inject
-<a class="jxr_linenumber" name="54" href="#54">54</a>      <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/LanternTrustStore.html">LanternTrustStore</a>(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/LanternKeyStoreManager.html">LanternKeyStoreManager</a> ksm) {
-<a class="jxr_linenumber" name="55" href="#55">55</a>          <strong class="jxr_keyword">this</strong>.ksm = ksm;
-<a class="jxr_linenumber" name="56" href="#56">56</a>          <strong class="jxr_keyword">this</strong>.trustStore = blankTrustStore();
-<a class="jxr_linenumber" name="57" href="#57">57</a>          <strong class="jxr_keyword">this</strong>.tmf = initTrustManagerFactory();
-<a class="jxr_linenumber" name="58" href="#58">58</a>      }
-<a class="jxr_linenumber" name="59" href="#59">59</a>  
-<a class="jxr_linenumber" name="60" href="#60">60</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="61" href="#61">61</a>  <em class="jxr_javadoccomment">     * Every time the trust store changes, we need to recreate particularly</em>
-<a class="jxr_linenumber" name="62" href="#62">62</a>  <em class="jxr_javadoccomment">     * our SSL context because we now trust different servers. We reload only</em>
-<a class="jxr_linenumber" name="63" href="#63">63</a>  <em class="jxr_javadoccomment">     * on trust store changes as an optimization to avoid loading the whole</em>
-<a class="jxr_linenumber" name="64" href="#64">64</a>  <em class="jxr_javadoccomment">     * SSL context from scratch for each new outgoing socket.</em>
-<a class="jxr_linenumber" name="65" href="#65">65</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="66" href="#66">66</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> onTrustStoreChanged() {
-<a class="jxr_linenumber" name="67" href="#67">67</a>          <strong class="jxr_keyword">this</strong>.tmf = initTrustManagerFactory();
-<a class="jxr_linenumber" name="68" href="#68">68</a>          <strong class="jxr_keyword">this</strong>.sslContextRef.set(provideSslContext());
-<a class="jxr_linenumber" name="69" href="#69">69</a>      }
-<a class="jxr_linenumber" name="70" href="#70">70</a>  
-<a class="jxr_linenumber" name="71" href="#71">71</a>      <strong class="jxr_keyword">private</strong> TrustManagerFactory initTrustManagerFactory() {
-<a class="jxr_linenumber" name="72" href="#72">72</a>          <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="73" href="#73">73</a>              <strong class="jxr_keyword">final</strong> TrustManagerFactory trustManagerFactory = 
-<a class="jxr_linenumber" name="74" href="#74">74</a>                      TrustManagerFactory.getInstance(
-<a class="jxr_linenumber" name="75" href="#75">75</a>                      TrustManagerFactory.getDefaultAlgorithm());
-<a class="jxr_linenumber" name="76" href="#76">76</a>              
-<a class="jxr_linenumber" name="77" href="#77">77</a>              <em class="jxr_comment">// We create the trust manager factory with the latest trust store.</em>
-<a class="jxr_linenumber" name="78" href="#78">78</a>              trustManagerFactory.init(<strong class="jxr_keyword">this</strong>.trustStore);
-<a class="jxr_linenumber" name="79" href="#79">79</a>              <strong class="jxr_keyword">return</strong> trustManagerFactory;
-<a class="jxr_linenumber" name="80" href="#80">80</a>          } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> NoSuchAlgorithmException e) {
-<a class="jxr_linenumber" name="81" href="#81">81</a>              log.error(<span class="jxr_string">"Could not load algorithm?"</span>, e);
-<a class="jxr_linenumber" name="82" href="#82">82</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load algorithm"</span>, e);
-<a class="jxr_linenumber" name="83" href="#83">83</a>          } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
-<a class="jxr_linenumber" name="84" href="#84">84</a>              log.error(<span class="jxr_string">"Could not load keystore?"</span>, e);
-<a class="jxr_linenumber" name="85" href="#85">85</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load keystore for tmf"</span>, e);
-<a class="jxr_linenumber" name="86" href="#86">86</a>          }
-<a class="jxr_linenumber" name="87" href="#87">87</a>      }
-<a class="jxr_linenumber" name="88" href="#88">88</a>  
-<a class="jxr_linenumber" name="89" href="#89">89</a>      <strong class="jxr_keyword">private</strong> KeyStore blankTrustStore() {
-<a class="jxr_linenumber" name="90" href="#90">90</a>          <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="91" href="#91">91</a>              <strong class="jxr_keyword">final</strong> KeyStore ks = KeyStore.getInstance(<span class="jxr_string">"JKS"</span>);
-<a class="jxr_linenumber" name="92" href="#92">92</a>              ks.load(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="93" href="#93">93</a>              
-<a class="jxr_linenumber" name="94" href="#94">94</a>              <strong class="jxr_keyword">final</strong> CertificateFactory cf = CertificateFactory.getInstance(<span class="jxr_string">"X.509"</span>);
-<a class="jxr_linenumber" name="95" href="#95">95</a>              addCert(ks, cf, <span class="jxr_string">"littleproxy"</span>, LITTLEPROXY);
-<a class="jxr_linenumber" name="96" href="#96">96</a>              addCert(ks, cf, <span class="jxr_string">"digicerthighassurancerootca"</span>, DIGICERT);
-<a class="jxr_linenumber" name="97" href="#97">97</a>              addCert(ks, cf, <span class="jxr_string">"equifaxsecureca"</span>, EQUIFAX);
-<a class="jxr_linenumber" name="98" href="#98">98</a>              <strong class="jxr_keyword">return</strong> ks;
-<a class="jxr_linenumber" name="99" href="#99">99</a>          } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
-<a class="jxr_linenumber" name="100" href="#100">100</a>             log.error(<span class="jxr_string">"Could not load keystore?"</span>, e);
-<a class="jxr_linenumber" name="101" href="#101">101</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load blank trust store"</span>, e);
-<a class="jxr_linenumber" name="102" href="#102">102</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> NoSuchAlgorithmException e) {
-<a class="jxr_linenumber" name="103" href="#103">103</a>             log.error(<span class="jxr_string">"No such algo?"</span>, e);
-<a class="jxr_linenumber" name="104" href="#104">104</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load blank trust store"</span>, e);
-<a class="jxr_linenumber" name="105" href="#105">105</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> CertificateException e) {
-<a class="jxr_linenumber" name="106" href="#106">106</a>             log.error(<span class="jxr_string">"Bad cert?"</span>, e);
-<a class="jxr_linenumber" name="107" href="#107">107</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load blank trust store"</span>, e);
-<a class="jxr_linenumber" name="108" href="#108">108</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
-<a class="jxr_linenumber" name="109" href="#109">109</a>             log.error(<span class="jxr_string">"Could not load?"</span>, e);
-<a class="jxr_linenumber" name="110" href="#110">110</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load blank trust store"</span>, e);
-<a class="jxr_linenumber" name="111" href="#111">111</a>         } 
-<a class="jxr_linenumber" name="112" href="#112">112</a>     }
-<a class="jxr_linenumber" name="113" href="#113">113</a> 
-<a class="jxr_linenumber" name="114" href="#114">114</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addCert(<strong class="jxr_keyword">final</strong> KeyStore ks, <strong class="jxr_keyword">final</strong> CertificateFactory cf,
-<a class="jxr_linenumber" name="115" href="#115">115</a>         <strong class="jxr_keyword">final</strong> String alias, <strong class="jxr_keyword">final</strong> String pemCert) 
-<a class="jxr_linenumber" name="116" href="#116">116</a>                 <strong class="jxr_keyword">throws</strong> CertificateException, KeyStoreException {
-<a class="jxr_linenumber" name="117" href="#117">117</a>         <strong class="jxr_keyword">final</strong> InputStream bis = 
-<a class="jxr_linenumber" name="118" href="#118">118</a>             <strong class="jxr_keyword">new</strong> ByteArrayInputStream(pemCert.getBytes(Charsets.UTF_8));
-<a class="jxr_linenumber" name="119" href="#119">119</a>         <strong class="jxr_keyword">final</strong> Certificate cert = cf.generateCertificate(bis);
-<a class="jxr_linenumber" name="120" href="#120">120</a>         ks.setCertificateEntry(alias, cert);
-<a class="jxr_linenumber" name="121" href="#121">121</a>     }
-<a class="jxr_linenumber" name="122" href="#122">122</a> 
-<a class="jxr_linenumber" name="123" href="#123">123</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addBase64Cert(<strong class="jxr_keyword">final</strong> URI jid, <strong class="jxr_keyword">final</strong> String base64Cert) {
-<a class="jxr_linenumber" name="124" href="#124">124</a>         log.debug(<span class="jxr_string">"Adding base 64 cert for {} to trust store"</span>, jid);
-<a class="jxr_linenumber" name="125" href="#125">125</a>         Events.asyncEventBus().post(<strong class="jxr_keyword">new</strong> PeerCertEvent(jid, base64Cert));
-<a class="jxr_linenumber" name="126" href="#126">126</a> 
-<a class="jxr_linenumber" name="127" href="#127">127</a>         <strong class="jxr_keyword">final</strong> byte[] decoded = Base64.decodeBase64(base64Cert);
-<a class="jxr_linenumber" name="128" href="#128">128</a>         <strong class="jxr_keyword">final</strong> InputStream is = <strong class="jxr_keyword">new</strong> ByteArrayInputStream(decoded);
-<a class="jxr_linenumber" name="129" href="#129">129</a>         addCert(jid.toASCIIString(), is);
-<a class="jxr_linenumber" name="130" href="#130">130</a>     }
-<a class="jxr_linenumber" name="131" href="#131">131</a>     
-<a class="jxr_linenumber" name="132" href="#132">132</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addCert(<strong class="jxr_keyword">final</strong> String alias, <strong class="jxr_keyword">final</strong> InputStream is) {
-<a class="jxr_linenumber" name="133" href="#133">133</a>         log.debug(<span class="jxr_string">"Importing cert"</span>);
-<a class="jxr_linenumber" name="134" href="#134">134</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="135" href="#135">135</a>             <strong class="jxr_keyword">final</strong> CertificateFactory cf = CertificateFactory.getInstance(<span class="jxr_string">"X.509"</span>);
-<a class="jxr_linenumber" name="136" href="#136">136</a>             <strong class="jxr_keyword">final</strong> Certificate certificate = cf.generateCertificate(is);
-<a class="jxr_linenumber" name="137" href="#137">137</a>             <strong class="jxr_keyword">this</strong>.trustStore.setCertificateEntry(alias, certificate);
-<a class="jxr_linenumber" name="138" href="#138">138</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> CertificateException e) {
-<a class="jxr_linenumber" name="139" href="#139">139</a>             log.error(<span class="jxr_string">"Could not load cert - cert error?"</span>, e);
-<a class="jxr_linenumber" name="140" href="#140">140</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
-<a class="jxr_linenumber" name="141" href="#141">141</a>             log.error(<span class="jxr_string">"Could not load cert into keystore?"</span>, e);
-<a class="jxr_linenumber" name="142" href="#142">142</a>         } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="143" href="#143">143</a>             IOUtils.closeQuietly(is);
-<a class="jxr_linenumber" name="144" href="#144">144</a>         }
-<a class="jxr_linenumber" name="145" href="#145">145</a>         
-<a class="jxr_linenumber" name="146" href="#146">146</a>         onTrustStoreChanged();
-<a class="jxr_linenumber" name="147" href="#147">147</a>     }
-<a class="jxr_linenumber" name="148" href="#148">148</a>     
-<a class="jxr_linenumber" name="149" href="#149">149</a> 
-<a class="jxr_linenumber" name="150" href="#150">150</a> 
-<a class="jxr_linenumber" name="151" href="#151">151</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="152" href="#152">152</a> <em class="jxr_javadoccomment">     * Accessor for the SSL context. This is regenerated whenever</em>
-<a class="jxr_linenumber" name="153" href="#153">153</a> <em class="jxr_javadoccomment">     * we receive new certificates.</em>
-<a class="jxr_linenumber" name="154" href="#154">154</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="155" href="#155">155</a> <em class="jxr_javadoccomment">     * @return The SSL context.</em>
-<a class="jxr_linenumber" name="156" href="#156">156</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="157" href="#157">157</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">synchronized</strong> SSLContext getSslContext() {
-<a class="jxr_linenumber" name="158" href="#158">158</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.sslContextRef.get() == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="159" href="#159">159</a>             <strong class="jxr_keyword">this</strong>.sslContextRef.set(provideSslContext());
-<a class="jxr_linenumber" name="160" href="#160">160</a>         }
-<a class="jxr_linenumber" name="161" href="#161">161</a>         <strong class="jxr_keyword">return</strong> sslContextRef.get();
-<a class="jxr_linenumber" name="162" href="#162">162</a>     }
-<a class="jxr_linenumber" name="163" href="#163">163</a> 
-<a class="jxr_linenumber" name="164" href="#164">164</a>     <strong class="jxr_keyword">private</strong> SSLContext provideSslContext() {
-<a class="jxr_linenumber" name="165" href="#165">165</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="166" href="#166">166</a>             <strong class="jxr_keyword">final</strong> SSLContext context = SSLContext.getInstance(<span class="jxr_string">"TLS"</span>);
-<a class="jxr_linenumber" name="167" href="#167">167</a>             
-<a class="jxr_linenumber" name="168" href="#168">168</a>             <em class="jxr_comment">// Create the context with the latest trust manager factory.</em>
-<a class="jxr_linenumber" name="169" href="#169">169</a>             context.init(<strong class="jxr_keyword">this</strong>.ksm.getKeyManagerFactory().getKeyManagers(), 
-<a class="jxr_linenumber" name="170" href="#170">170</a>                 <strong class="jxr_keyword">this</strong>.tmf.getTrustManagers(), <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="171" href="#171">171</a>             <strong class="jxr_keyword">return</strong> context;
-<a class="jxr_linenumber" name="172" href="#172">172</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> Exception e) {
-<a class="jxr_linenumber" name="173" href="#173">173</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(
-<a class="jxr_linenumber" name="174" href="#174">174</a>                     <span class="jxr_string">"Failed to initialize the client-side SSLContext"</span>, e);
-<a class="jxr_linenumber" name="175" href="#175">175</a>         }
-<a class="jxr_linenumber" name="176" href="#176">176</a>     }
-<a class="jxr_linenumber" name="177" href="#177">177</a> 
-<a class="jxr_linenumber" name="178" href="#178">178</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> deleteCert(<strong class="jxr_keyword">final</strong> String alias) {
-<a class="jxr_linenumber" name="179" href="#179">179</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="180" href="#180">180</a>             <strong class="jxr_keyword">this</strong>.trustStore.deleteEntry(alias);
-<a class="jxr_linenumber" name="181" href="#181">181</a>             onTrustStoreChanged();
-<a class="jxr_linenumber" name="182" href="#182">182</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
-<a class="jxr_linenumber" name="183" href="#183">183</a>             log.debug(<span class="jxr_string">"Error removing entry -- doesn't exist?"</span>, e);
-<a class="jxr_linenumber" name="184" href="#184">184</a>         }
-<a class="jxr_linenumber" name="185" href="#185">185</a>     }
-<a class="jxr_linenumber" name="186" href="#186">186</a> 
-<a class="jxr_linenumber" name="187" href="#187">187</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="188" href="#188">188</a> <em class="jxr_javadoccomment">     * Checks if the trust store contains exactly this certificate. This </em>
-<a class="jxr_linenumber" name="189" href="#189">189</a> <em class="jxr_javadoccomment">     * doesn't worry about certificate chaining or anything like that -- </em>
-<a class="jxr_linenumber" name="190" href="#190">190</a> <em class="jxr_javadoccomment">     * this trust store must instead contain the actual certificate.</em>
-<a class="jxr_linenumber" name="191" href="#191">191</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="192" href="#192">192</a> <em class="jxr_javadoccomment">     * @param cert The certificate to check.</em>
-<a class="jxr_linenumber" name="193" href="#193">193</a> <em class="jxr_javadoccomment">     * @return &lt;code&gt;true&lt;/code&gt; if the trust store contains the certificate,</em>
-<a class="jxr_linenumber" name="194" href="#194">194</a> <em class="jxr_javadoccomment">     * otherwise &lt;code&gt;false&lt;/code&gt;.</em>
-<a class="jxr_linenumber" name="195" href="#195">195</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="196" href="#196">196</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> containsCertificate(<strong class="jxr_keyword">final</strong> X509Certificate cert) {
-<a class="jxr_linenumber" name="197" href="#197">197</a>         log.debug(<span class="jxr_string">"Loading trust store..."</span>);
-<a class="jxr_linenumber" name="198" href="#198">198</a>         
-<a class="jxr_linenumber" name="199" href="#199">199</a>         <em class="jxr_comment">// We could use getCertificateAlias here, but that will iterate through</em>
-<a class="jxr_linenumber" name="200" href="#200">200</a>         <em class="jxr_comment">// everything, potentially causing issues when there are a lot of certs.</em>
-<a class="jxr_linenumber" name="201" href="#201">201</a>         <strong class="jxr_keyword">final</strong> String alias = 
-<a class="jxr_linenumber" name="202" href="#202">202</a>             cert.getIssuerDN().getName().substring(3).toLowerCase();
-<a class="jxr_linenumber" name="203" href="#203">203</a>         log.debug(<span class="jxr_string">"Looking for alias {}"</span>, alias);
-<a class="jxr_linenumber" name="204" href="#204">204</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="205" href="#205">205</a>             <strong class="jxr_keyword">final</strong> Certificate existingCert = <strong class="jxr_keyword">this</strong>.trustStore.getCertificate(alias);
-<a class="jxr_linenumber" name="206" href="#206">206</a>             <strong class="jxr_keyword">return</strong> existingCert.equals(cert);
-<a class="jxr_linenumber" name="207" href="#207">207</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
-<a class="jxr_linenumber" name="208" href="#208">208</a>             log.warn(<span class="jxr_string">"Exception accessing keystore"</span>, e);
-<a class="jxr_linenumber" name="209" href="#209">209</a>             <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="210" href="#210">210</a>         }
-<a class="jxr_linenumber" name="211" href="#211">211</a>     }
-<a class="jxr_linenumber" name="212" href="#212">212</a>     
-<a class="jxr_linenumber" name="213" href="#213">213</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> listEntries(<strong class="jxr_keyword">final</strong> KeyStore ks) {
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.SSLEngine;
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.TrustManagerFactory;
+<a class="jxr_linenumber" name="20" href="#20">20</a>  
+<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.codec.binary.Base64;
+<a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.io.IOUtils;
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.Events;
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.lantern.event.PeerCertEvent;
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="27" href="#27">27</a>  
+<a class="jxr_linenumber" name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> com.google.common.base.Charsets;
+<a class="jxr_linenumber" name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> com.google.inject.Inject;
+<a class="jxr_linenumber" name="30" href="#30">30</a>  <strong class="jxr_keyword">import</strong> com.google.inject.Singleton;
+<a class="jxr_linenumber" name="31" href="#31">31</a>  
+<a class="jxr_linenumber" name="32" href="#32">32</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="33" href="#33">33</a>  <em class="jxr_javadoccomment"> * This class manages the local trust store of external entities we trust</em>
+<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment"> * for creating SSL connections. This includes both hard coded certificates</em>
+<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment"> * for a small number of services we use as well as dynamically added</em>
+<a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment"> * certificates for peers. Peer certificates must be discovered and added</em>
+<a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment"> * through a trusted channel such as one of the hard coded trusted authorities</em>
+<a class="jxr_linenumber" name="38" href="#38">38</a>  <em class="jxr_javadoccomment"> * (aka Google Talk with its equifax certificate as of this writing).</em>
+<a class="jxr_linenumber" name="39" href="#39">39</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="40" href="#40">40</a>  @Singleton
+<a class="jxr_linenumber" name="41" href="#41">41</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../org/lantern/LanternTrustStore.html">LanternTrustStore</a> {
+<a class="jxr_linenumber" name="42" href="#42">42</a>  
+<a class="jxr_linenumber" name="43" href="#43">43</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">static</strong> Logger log = 
+<a class="jxr_linenumber" name="44" href="#44">44</a>          LoggerFactory.getLogger(LanternTrustStore.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="45" href="#45">45</a>      
+<a class="jxr_linenumber" name="46" href="#46">46</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicReference&lt;SSLContext&gt; sslContextRef = 
+<a class="jxr_linenumber" name="47" href="#47">47</a>              <strong class="jxr_keyword">new</strong> AtomicReference&lt;SSLContext&gt;();
+<a class="jxr_linenumber" name="48" href="#48">48</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../org/lantern/LanternKeyStoreManager.html">LanternKeyStoreManager</a> ksm;
+<a class="jxr_linenumber" name="49" href="#49">49</a>  
+<a class="jxr_linenumber" name="50" href="#50">50</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> KeyStore trustStore;
+<a class="jxr_linenumber" name="51" href="#51">51</a>  
+<a class="jxr_linenumber" name="52" href="#52">52</a>      <strong class="jxr_keyword">private</strong> TrustManagerFactory tmf;
+<a class="jxr_linenumber" name="53" href="#53">53</a>      
+<a class="jxr_linenumber" name="54" href="#54">54</a>      @Inject
+<a class="jxr_linenumber" name="55" href="#55">55</a>      <strong class="jxr_keyword">public</strong> <a href="../../org/lantern/LanternTrustStore.html">LanternTrustStore</a>(<strong class="jxr_keyword">final</strong> <a href="../../org/lantern/LanternKeyStoreManager.html">LanternKeyStoreManager</a> ksm) {
+<a class="jxr_linenumber" name="56" href="#56">56</a>          <strong class="jxr_keyword">this</strong>.ksm = ksm;
+<a class="jxr_linenumber" name="57" href="#57">57</a>          <strong class="jxr_keyword">this</strong>.trustStore = blankTrustStore();
+<a class="jxr_linenumber" name="58" href="#58">58</a>          <strong class="jxr_keyword">this</strong>.tmf = initTrustManagerFactory();
+<a class="jxr_linenumber" name="59" href="#59">59</a>      }
+<a class="jxr_linenumber" name="60" href="#60">60</a>  
+<a class="jxr_linenumber" name="61" href="#61">61</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="62" href="#62">62</a>  <em class="jxr_javadoccomment">     * Every time the trust store changes, we need to recreate particularly</em>
+<a class="jxr_linenumber" name="63" href="#63">63</a>  <em class="jxr_javadoccomment">     * our SSL context because we now trust different servers. We reload only</em>
+<a class="jxr_linenumber" name="64" href="#64">64</a>  <em class="jxr_javadoccomment">     * on trust store changes as an optimization to avoid loading the whole</em>
+<a class="jxr_linenumber" name="65" href="#65">65</a>  <em class="jxr_javadoccomment">     * SSL context from scratch for each new outgoing socket.</em>
+<a class="jxr_linenumber" name="66" href="#66">66</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="67" href="#67">67</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> onTrustStoreChanged() {
+<a class="jxr_linenumber" name="68" href="#68">68</a>          <strong class="jxr_keyword">this</strong>.tmf = initTrustManagerFactory();
+<a class="jxr_linenumber" name="69" href="#69">69</a>          <strong class="jxr_keyword">this</strong>.sslContextRef.set(provideSslContext());
+<a class="jxr_linenumber" name="70" href="#70">70</a>      }
+<a class="jxr_linenumber" name="71" href="#71">71</a>  
+<a class="jxr_linenumber" name="72" href="#72">72</a>      <strong class="jxr_keyword">private</strong> TrustManagerFactory initTrustManagerFactory() {
+<a class="jxr_linenumber" name="73" href="#73">73</a>          <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="74" href="#74">74</a>              <strong class="jxr_keyword">final</strong> TrustManagerFactory trustManagerFactory = 
+<a class="jxr_linenumber" name="75" href="#75">75</a>                      TrustManagerFactory.getInstance(
+<a class="jxr_linenumber" name="76" href="#76">76</a>                      TrustManagerFactory.getDefaultAlgorithm());
+<a class="jxr_linenumber" name="77" href="#77">77</a>              
+<a class="jxr_linenumber" name="78" href="#78">78</a>              <em class="jxr_comment">// We create the trust manager factory with the latest trust store.</em>
+<a class="jxr_linenumber" name="79" href="#79">79</a>              trustManagerFactory.init(<strong class="jxr_keyword">this</strong>.trustStore);
+<a class="jxr_linenumber" name="80" href="#80">80</a>              <strong class="jxr_keyword">return</strong> trustManagerFactory;
+<a class="jxr_linenumber" name="81" href="#81">81</a>          } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> NoSuchAlgorithmException e) {
+<a class="jxr_linenumber" name="82" href="#82">82</a>              log.error(<span class="jxr_string">"Could not load algorithm?"</span>, e);
+<a class="jxr_linenumber" name="83" href="#83">83</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load algorithm"</span>, e);
+<a class="jxr_linenumber" name="84" href="#84">84</a>          } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
+<a class="jxr_linenumber" name="85" href="#85">85</a>              log.error(<span class="jxr_string">"Could not load keystore?"</span>, e);
+<a class="jxr_linenumber" name="86" href="#86">86</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load keystore for tmf"</span>, e);
+<a class="jxr_linenumber" name="87" href="#87">87</a>          }
+<a class="jxr_linenumber" name="88" href="#88">88</a>      }
+<a class="jxr_linenumber" name="89" href="#89">89</a>  
+<a class="jxr_linenumber" name="90" href="#90">90</a>      <strong class="jxr_keyword">private</strong> KeyStore blankTrustStore() {
+<a class="jxr_linenumber" name="91" href="#91">91</a>          <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="92" href="#92">92</a>              <strong class="jxr_keyword">final</strong> KeyStore ks = KeyStore.getInstance(<span class="jxr_string">"JKS"</span>);
+<a class="jxr_linenumber" name="93" href="#93">93</a>              ks.load(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="94" href="#94">94</a>              
+<a class="jxr_linenumber" name="95" href="#95">95</a>              <strong class="jxr_keyword">final</strong> CertificateFactory cf = CertificateFactory.getInstance(<span class="jxr_string">"X.509"</span>);
+<a class="jxr_linenumber" name="96" href="#96">96</a>              addCert(ks, cf, <span class="jxr_string">"littleproxy"</span>, LITTLEPROXY);
+<a class="jxr_linenumber" name="97" href="#97">97</a>              addCert(ks, cf, <span class="jxr_string">"digicerthighassurancerootca"</span>, DIGICERT);
+<a class="jxr_linenumber" name="98" href="#98">98</a>              addCert(ks, cf, <span class="jxr_string">"equifaxsecureca"</span>, EQUIFAX);
+<a class="jxr_linenumber" name="99" href="#99">99</a>              addCert(ks, cf, <span class="jxr_string">"equifaxsecureca2"</span>, EQUIFAX2);
+<a class="jxr_linenumber" name="100" href="#100">100</a>             <strong class="jxr_keyword">return</strong> ks;
+<a class="jxr_linenumber" name="101" href="#101">101</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
+<a class="jxr_linenumber" name="102" href="#102">102</a>             log.error(<span class="jxr_string">"Could not load keystore?"</span>, e);
+<a class="jxr_linenumber" name="103" href="#103">103</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load blank trust store"</span>, e);
+<a class="jxr_linenumber" name="104" href="#104">104</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> NoSuchAlgorithmException e) {
+<a class="jxr_linenumber" name="105" href="#105">105</a>             log.error(<span class="jxr_string">"No such algo?"</span>, e);
+<a class="jxr_linenumber" name="106" href="#106">106</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load blank trust store"</span>, e);
+<a class="jxr_linenumber" name="107" href="#107">107</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> CertificateException e) {
+<a class="jxr_linenumber" name="108" href="#108">108</a>             log.error(<span class="jxr_string">"Bad cert?"</span>, e);
+<a class="jxr_linenumber" name="109" href="#109">109</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load blank trust store"</span>, e);
+<a class="jxr_linenumber" name="110" href="#110">110</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
+<a class="jxr_linenumber" name="111" href="#111">111</a>             log.error(<span class="jxr_string">"Could not load?"</span>, e);
+<a class="jxr_linenumber" name="112" href="#112">112</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(<span class="jxr_string">"Could not load blank trust store"</span>, e);
+<a class="jxr_linenumber" name="113" href="#113">113</a>         } 
+<a class="jxr_linenumber" name="114" href="#114">114</a>     }
+<a class="jxr_linenumber" name="115" href="#115">115</a> 
+<a class="jxr_linenumber" name="116" href="#116">116</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addCert(<strong class="jxr_keyword">final</strong> KeyStore ks, <strong class="jxr_keyword">final</strong> CertificateFactory cf,
+<a class="jxr_linenumber" name="117" href="#117">117</a>         <strong class="jxr_keyword">final</strong> String alias, <strong class="jxr_keyword">final</strong> String pemCert) 
+<a class="jxr_linenumber" name="118" href="#118">118</a>                 <strong class="jxr_keyword">throws</strong> CertificateException, KeyStoreException {
+<a class="jxr_linenumber" name="119" href="#119">119</a>         <strong class="jxr_keyword">final</strong> InputStream bis = 
+<a class="jxr_linenumber" name="120" href="#120">120</a>             <strong class="jxr_keyword">new</strong> ByteArrayInputStream(pemCert.getBytes(Charsets.UTF_8));
+<a class="jxr_linenumber" name="121" href="#121">121</a>         <strong class="jxr_keyword">final</strong> Certificate cert = cf.generateCertificate(bis);
+<a class="jxr_linenumber" name="122" href="#122">122</a>         ks.setCertificateEntry(alias, cert);
+<a class="jxr_linenumber" name="123" href="#123">123</a>     }
+<a class="jxr_linenumber" name="124" href="#124">124</a> 
+<a class="jxr_linenumber" name="125" href="#125">125</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addBase64Cert(<strong class="jxr_keyword">final</strong> URI jid, <strong class="jxr_keyword">final</strong> String base64Cert) {
+<a class="jxr_linenumber" name="126" href="#126">126</a>         log.debug(<span class="jxr_string">"Adding base 64 cert for {} to trust store"</span>, jid);
+<a class="jxr_linenumber" name="127" href="#127">127</a>         Events.asyncEventBus().post(<strong class="jxr_keyword">new</strong> PeerCertEvent(jid, base64Cert));
+<a class="jxr_linenumber" name="128" href="#128">128</a> 
+<a class="jxr_linenumber" name="129" href="#129">129</a>         <strong class="jxr_keyword">final</strong> byte[] decoded = Base64.decodeBase64(base64Cert);
+<a class="jxr_linenumber" name="130" href="#130">130</a>         <strong class="jxr_keyword">final</strong> InputStream is = <strong class="jxr_keyword">new</strong> ByteArrayInputStream(decoded);
+<a class="jxr_linenumber" name="131" href="#131">131</a>         addCert(jid.toASCIIString(), is);
+<a class="jxr_linenumber" name="132" href="#132">132</a>     }
+<a class="jxr_linenumber" name="133" href="#133">133</a>     
+<a class="jxr_linenumber" name="134" href="#134">134</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addCert(<strong class="jxr_keyword">final</strong> String alias, <strong class="jxr_keyword">final</strong> InputStream is) {
+<a class="jxr_linenumber" name="135" href="#135">135</a>         log.debug(<span class="jxr_string">"Importing cert"</span>);
+<a class="jxr_linenumber" name="136" href="#136">136</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="137" href="#137">137</a>             <strong class="jxr_keyword">final</strong> CertificateFactory cf = CertificateFactory.getInstance(<span class="jxr_string">"X.509"</span>);
+<a class="jxr_linenumber" name="138" href="#138">138</a>             <strong class="jxr_keyword">final</strong> Certificate certificate = cf.generateCertificate(is);
+<a class="jxr_linenumber" name="139" href="#139">139</a>             <strong class="jxr_keyword">this</strong>.trustStore.setCertificateEntry(alias, certificate);
+<a class="jxr_linenumber" name="140" href="#140">140</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> CertificateException e) {
+<a class="jxr_linenumber" name="141" href="#141">141</a>             log.error(<span class="jxr_string">"Could not load cert - cert error?"</span>, e);
+<a class="jxr_linenumber" name="142" href="#142">142</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
+<a class="jxr_linenumber" name="143" href="#143">143</a>             log.error(<span class="jxr_string">"Could not load cert into keystore?"</span>, e);
+<a class="jxr_linenumber" name="144" href="#144">144</a>         } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="145" href="#145">145</a>             IOUtils.closeQuietly(is);
+<a class="jxr_linenumber" name="146" href="#146">146</a>         }
+<a class="jxr_linenumber" name="147" href="#147">147</a>         
+<a class="jxr_linenumber" name="148" href="#148">148</a>         onTrustStoreChanged();
+<a class="jxr_linenumber" name="149" href="#149">149</a>     }
+<a class="jxr_linenumber" name="150" href="#150">150</a>     
+<a class="jxr_linenumber" name="151" href="#151">151</a> 
+<a class="jxr_linenumber" name="152" href="#152">152</a> 
+<a class="jxr_linenumber" name="153" href="#153">153</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="154" href="#154">154</a> <em class="jxr_javadoccomment">     * Accessor for the SSL context. This is regenerated whenever</em>
+<a class="jxr_linenumber" name="155" href="#155">155</a> <em class="jxr_javadoccomment">     * we receive new certificates.</em>
+<a class="jxr_linenumber" name="156" href="#156">156</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="157" href="#157">157</a> <em class="jxr_javadoccomment">     * @return The SSL context.</em>
+<a class="jxr_linenumber" name="158" href="#158">158</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="159" href="#159">159</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">synchronized</strong> SSLContext getSslContext() {
+<a class="jxr_linenumber" name="160" href="#160">160</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.sslContextRef.get() == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="161" href="#161">161</a>             <strong class="jxr_keyword">this</strong>.sslContextRef.set(provideSslContext());
+<a class="jxr_linenumber" name="162" href="#162">162</a>         }
+<a class="jxr_linenumber" name="163" href="#163">163</a>         <strong class="jxr_keyword">return</strong> sslContextRef.get();
+<a class="jxr_linenumber" name="164" href="#164">164</a>     }
+<a class="jxr_linenumber" name="165" href="#165">165</a>     
+<a class="jxr_linenumber" name="166" href="#166">166</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="167" href="#167">167</a> <em class="jxr_javadoccomment">     * Return an new/unused {@link SSLEngine} reflecting our {@link SSLContext}.</em>
+<a class="jxr_linenumber" name="168" href="#168">168</a> <em class="jxr_javadoccomment">     * For performance, these are created eagerly ahead of time.</em>
+<a class="jxr_linenumber" name="169" href="#169">169</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="170" href="#170">170</a>     <strong class="jxr_keyword">public</strong> SSLEngine newSSLEngine() {
+<a class="jxr_linenumber" name="171" href="#171">171</a>         <strong class="jxr_keyword">return</strong> getSslContext().createSSLEngine();
+<a class="jxr_linenumber" name="172" href="#172">172</a>     }
+<a class="jxr_linenumber" name="173" href="#173">173</a> 
+<a class="jxr_linenumber" name="174" href="#174">174</a>     <strong class="jxr_keyword">private</strong> SSLContext provideSslContext() {
+<a class="jxr_linenumber" name="175" href="#175">175</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="176" href="#176">176</a>             <strong class="jxr_keyword">final</strong> SSLContext context = SSLContext.getInstance(<span class="jxr_string">"TLS"</span>);
+<a class="jxr_linenumber" name="177" href="#177">177</a>             
+<a class="jxr_linenumber" name="178" href="#178">178</a>             <em class="jxr_comment">// Create the context with the latest trust manager factory.</em>
+<a class="jxr_linenumber" name="179" href="#179">179</a>             context.init(<strong class="jxr_keyword">this</strong>.ksm.getKeyManagerFactory().getKeyManagers(), 
+<a class="jxr_linenumber" name="180" href="#180">180</a>                 <strong class="jxr_keyword">this</strong>.tmf.getTrustManagers(), <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="181" href="#181">181</a>             <strong class="jxr_keyword">return</strong> context;
+<a class="jxr_linenumber" name="182" href="#182">182</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> Exception e) {
+<a class="jxr_linenumber" name="183" href="#183">183</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Error(
+<a class="jxr_linenumber" name="184" href="#184">184</a>                     <span class="jxr_string">"Failed to initialize the client-side SSLContext"</span>, e);
+<a class="jxr_linenumber" name="185" href="#185">185</a>         }
+<a class="jxr_linenumber" name="186" href="#186">186</a>     }
+<a class="jxr_linenumber" name="187" href="#187">187</a>     
+<a class="jxr_linenumber" name="188" href="#188">188</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> deleteCert(<strong class="jxr_keyword">final</strong> String alias) {
+<a class="jxr_linenumber" name="189" href="#189">189</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="190" href="#190">190</a>             <strong class="jxr_keyword">this</strong>.trustStore.deleteEntry(alias);
+<a class="jxr_linenumber" name="191" href="#191">191</a>             onTrustStoreChanged();
+<a class="jxr_linenumber" name="192" href="#192">192</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
+<a class="jxr_linenumber" name="193" href="#193">193</a>             log.debug(<span class="jxr_string">"Error removing entry -- doesn't exist?"</span>, e);
+<a class="jxr_linenumber" name="194" href="#194">194</a>         }
+<a class="jxr_linenumber" name="195" href="#195">195</a>     }
+<a class="jxr_linenumber" name="196" href="#196">196</a> 
+<a class="jxr_linenumber" name="197" href="#197">197</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="198" href="#198">198</a> <em class="jxr_javadoccomment">     * Checks if the trust store contains exactly this certificate. This </em>
+<a class="jxr_linenumber" name="199" href="#199">199</a> <em class="jxr_javadoccomment">     * doesn't worry about certificate chaining or anything like that -- </em>
+<a class="jxr_linenumber" name="200" href="#200">200</a> <em class="jxr_javadoccomment">     * this trust store must instead contain the actual certificate.</em>
+<a class="jxr_linenumber" name="201" href="#201">201</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="202" href="#202">202</a> <em class="jxr_javadoccomment">     * @param cert The certificate to check.</em>
+<a class="jxr_linenumber" name="203" href="#203">203</a> <em class="jxr_javadoccomment">     * @return &lt;code&gt;true&lt;/code&gt; if the trust store contains the certificate,</em>
+<a class="jxr_linenumber" name="204" href="#204">204</a> <em class="jxr_javadoccomment">     * otherwise &lt;code&gt;false&lt;/code&gt;.</em>
+<a class="jxr_linenumber" name="205" href="#205">205</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="206" href="#206">206</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> containsCertificate(<strong class="jxr_keyword">final</strong> X509Certificate cert) {
+<a class="jxr_linenumber" name="207" href="#207">207</a>         log.debug(<span class="jxr_string">"Loading trust store..."</span>);
+<a class="jxr_linenumber" name="208" href="#208">208</a>         
+<a class="jxr_linenumber" name="209" href="#209">209</a>         <em class="jxr_comment">// We could use getCertificateAlias here, but that will iterate through</em>
+<a class="jxr_linenumber" name="210" href="#210">210</a>         <em class="jxr_comment">// everything, potentially causing issues when there are a lot of certs.</em>
+<a class="jxr_linenumber" name="211" href="#211">211</a>         <strong class="jxr_keyword">final</strong> String alias = 
+<a class="jxr_linenumber" name="212" href="#212">212</a>             cert.getIssuerDN().getName().substring(3).toLowerCase();
+<a class="jxr_linenumber" name="213" href="#213">213</a>         log.debug(<span class="jxr_string">"Looking for alias {}"</span>, alias);
 <a class="jxr_linenumber" name="214" href="#214">214</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="215" href="#215">215</a>             <strong class="jxr_keyword">final</strong> Enumeration&lt;String&gt; aliases = ks.aliases();
-<a class="jxr_linenumber" name="216" href="#216">216</a>             <strong class="jxr_keyword">while</strong> (aliases.hasMoreElements()) {
-<a class="jxr_linenumber" name="217" href="#217">217</a>                 <strong class="jxr_keyword">final</strong> String alias = aliases.nextElement();
-<a class="jxr_linenumber" name="218" href="#218">218</a>                 <em class="jxr_comment">//System.err.println(alias+": "+ks.getCertificate(alias));</em>
-<a class="jxr_linenumber" name="219" href="#219">219</a>                 System.err.println(alias);
-<a class="jxr_linenumber" name="220" href="#220">220</a>                 log.debug(alias);
+<a class="jxr_linenumber" name="215" href="#215">215</a>             <strong class="jxr_keyword">if</strong> (log.isDebugEnabled()) {
+<a class="jxr_linenumber" name="216" href="#216">216</a>                 log.debug(<span class="jxr_string">"All aliases"</span>);
+<a class="jxr_linenumber" name="217" href="#217">217</a>                 Enumeration&lt;String&gt; aliases = <strong class="jxr_keyword">this</strong>.trustStore.aliases();
+<a class="jxr_linenumber" name="218" href="#218">218</a>                 <strong class="jxr_keyword">while</strong> (aliases.hasMoreElements()) {
+<a class="jxr_linenumber" name="219" href="#219">219</a>                     log.debug(aliases.nextElement());
+<a class="jxr_linenumber" name="220" href="#220">220</a>                 }
 <a class="jxr_linenumber" name="221" href="#221">221</a>             }
-<a class="jxr_linenumber" name="222" href="#222">222</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
-<a class="jxr_linenumber" name="223" href="#223">223</a>             log.warn(<span class="jxr_string">"KeyStore error"</span>, e);
-<a class="jxr_linenumber" name="224" href="#224">224</a>         }
-<a class="jxr_linenumber" name="225" href="#225">225</a>     }
-<a class="jxr_linenumber" name="226" href="#226">226</a>     
-<a class="jxr_linenumber" name="227" href="#227">227</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> listEntries() {
-<a class="jxr_linenumber" name="228" href="#228">228</a>         listEntries(trustStore);
+<a class="jxr_linenumber" name="222" href="#222">222</a>             <strong class="jxr_keyword">final</strong> Certificate existingCert = <strong class="jxr_keyword">this</strong>.trustStore.getCertificate(alias);
+<a class="jxr_linenumber" name="223" href="#223">223</a>             log.trace(<span class="jxr_string">"Existing certificate: {}"</span>, (existingCert));
+<a class="jxr_linenumber" name="224" href="#224">224</a>             <strong class="jxr_keyword">return</strong> existingCert != <strong class="jxr_keyword">null</strong> &amp;&amp; existingCert.equals(cert);
+<a class="jxr_linenumber" name="225" href="#225">225</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
+<a class="jxr_linenumber" name="226" href="#226">226</a>             log.warn(<span class="jxr_string">"Exception accessing keystore"</span>, e);
+<a class="jxr_linenumber" name="227" href="#227">227</a>             <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="228" href="#228">228</a>         }
 <a class="jxr_linenumber" name="229" href="#229">229</a>     }
-<a class="jxr_linenumber" name="230" href="#230">230</a> 
-<a class="jxr_linenumber" name="231" href="#231">231</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String EQUIFAX =
-<a class="jxr_linenumber" name="232" href="#232">232</a>             <span class="jxr_string">"-----BEGIN CERTIFICATE-----\n"</span>
-<a class="jxr_linenumber" name="233" href="#233">233</a>             + <span class="jxr_string">"MIIDIDCCAomgAwIBAgIENd70zzANBgkqhkiG9w0BAQUFADBOMQswCQYDVQQGEwJV\n"</span>
-<a class="jxr_linenumber" name="234" href="#234">234</a>             + <span class="jxr_string">"UzEQMA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2Vy\n"</span>
-<a class="jxr_linenumber" name="235" href="#235">235</a>             + <span class="jxr_string">"dGlmaWNhdGUgQXV0aG9yaXR5MB4XDTk4MDgyMjE2NDE1MVoXDTE4MDgyMjE2NDE1\n"</span>
-<a class="jxr_linenumber" name="236" href="#236">236</a>             + <span class="jxr_string">"MVowTjELMAkGA1UEBhMCVVMxEDAOBgNVBAoTB0VxdWlmYXgxLTArBgNVBAsTJEVx\n"</span>
-<a class="jxr_linenumber" name="237" href="#237">237</a>             + <span class="jxr_string">"dWlmYXggU2VjdXJlIENlcnRpZmljYXRlIEF1dGhvcml0eTCBnzANBgkqhkiG9w0B\n"</span>
-<a class="jxr_linenumber" name="238" href="#238">238</a>             + <span class="jxr_string">"AQEFAAOBjQAwgYkCgYEAwV2xWGcIYu6gmi0fCG2RFGiYCh7+2gRvE4RiIcPRfM6f\n"</span>
-<a class="jxr_linenumber" name="239" href="#239">239</a>             + <span class="jxr_string">"BeC4AfBONOziipUEZKzxa1NfBbPLZ4C/QgKO/t0BCezhABRP/PvwDN1Dulsr4R+A\n"</span>
-<a class="jxr_linenumber" name="240" href="#240">240</a>             + <span class="jxr_string">"cJkVV5MW8Q+XarfCaCMczE1ZMKxRHjuvK9buY0V7xdlfUNLjUA86iOe/FP3gx7kC\n"</span>
-<a class="jxr_linenumber" name="241" href="#241">241</a>             + <span class="jxr_string">"AwEAAaOCAQkwggEFMHAGA1UdHwRpMGcwZaBjoGGkXzBdMQswCQYDVQQGEwJVUzEQ\n"</span>
-<a class="jxr_linenumber" name="242" href="#242">242</a>             + <span class="jxr_string">"MA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2VydGlm\n"</span>
-<a class="jxr_linenumber" name="243" href="#243">243</a>             + <span class="jxr_string">"aWNhdGUgQXV0aG9yaXR5MQ0wCwYDVQQDEwRDUkwxMBoGA1UdEAQTMBGBDzIwMTgw\n"</span>
-<a class="jxr_linenumber" name="244" href="#244">244</a>             + <span class="jxr_string">"ODIyMTY0MTUxWjALBgNVHQ8EBAMCAQYwHwYDVR0jBBgwFoAUSOZo+SvSspXXR9gj\n"</span>
-<a class="jxr_linenumber" name="245" href="#245">245</a>             + <span class="jxr_string">"IBBPM5iQn9QwHQYDVR0OBBYEFEjmaPkr0rKV10fYIyAQTzOYkJ/UMAwGA1UdEwQF\n"</span>
-<a class="jxr_linenumber" name="246" href="#246">246</a>             + <span class="jxr_string">"MAMBAf8wGgYJKoZIhvZ9B0EABA0wCxsFVjMuMGMDAgbAMA0GCSqGSIb3DQEBBQUA\n"</span>
-<a class="jxr_linenumber" name="247" href="#247">247</a>             + <span class="jxr_string">"A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y\n"</span>
-<a class="jxr_linenumber" name="248" href="#248">248</a>             + <span class="jxr_string">"7qj/WsjTVbJmcVfewCHrPSqnI0kBBIZCe/zuf6IWUrVnZ9NA2zsmWLIodz2uFHdh\n"</span>
-<a class="jxr_linenumber" name="249" href="#249">249</a>             + <span class="jxr_string">"1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4\n"</span>
-<a class="jxr_linenumber" name="250" href="#250">250</a>             + <span class="jxr_string">"-----END CERTIFICATE-----"</span>;
-<a class="jxr_linenumber" name="251" href="#251">251</a>     
-<a class="jxr_linenumber" name="252" href="#252">252</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String DIGICERT =
-<a class="jxr_linenumber" name="253" href="#253">253</a>             <span class="jxr_string">"-----BEGIN CERTIFICATE-----\n"</span>
-<a class="jxr_linenumber" name="254" href="#254">254</a>             + <span class="jxr_string">"MIIGWDCCBUCgAwIBAgIQCl8RTQNbF5EX0u/UA4w/OzANBgkqhkiG9w0BAQUFADBs\n"</span>
-<a class="jxr_linenumber" name="255" href="#255">255</a>             + <span class="jxr_string">"MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n"</span>
-<a class="jxr_linenumber" name="256" href="#256">256</a>             + <span class="jxr_string">"d3cuZGlnaWNlcnQuY29tMSswKQYDVQQDEyJEaWdpQ2VydCBIaWdoIEFzc3VyYW5j\n"</span>
-<a class="jxr_linenumber" name="257" href="#257">257</a>             + <span class="jxr_string">"ZSBFViBSb290IENBMB4XDTA4MDQwMjEyMDAwMFoXDTIyMDQwMzAwMDAwMFowZjEL\n"</span>
-<a class="jxr_linenumber" name="258" href="#258">258</a>             + <span class="jxr_string">"MAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3\n"</span>
-<a class="jxr_linenumber" name="259" href="#259">259</a>             + <span class="jxr_string">"LmRpZ2ljZXJ0LmNvbTElMCMGA1UEAxMcRGlnaUNlcnQgSGlnaCBBc3N1cmFuY2Ug\n"</span>
-<a class="jxr_linenumber" name="260" href="#260">260</a>             + <span class="jxr_string">"Q0EtMzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL9hCikQH17+NDdR\n"</span>
-<a class="jxr_linenumber" name="261" href="#261">261</a>             + <span class="jxr_string">"CPge+yLtYb4LDXBMUGMmdRW5QYiXtvCgFbsIYOBC6AUpEIc2iihlqO8xB3RtNpcv\n"</span>
-<a class="jxr_linenumber" name="262" href="#262">262</a>             + <span class="jxr_string">"KEZmBMcqeSZ6mdWOw21PoF6tvD2Rwll7XjZswFPPAAgyPhBkWBATaccM7pxCUQD5\n"</span>
-<a class="jxr_linenumber" name="263" href="#263">263</a>             + <span class="jxr_string">"BUTuJM56H+2MEb0SqPMV9Bx6MWkBG6fmXcCabH4JnudSREoQOiPkm7YDr6ictFuf\n"</span>
-<a class="jxr_linenumber" name="264" href="#264">264</a>             + <span class="jxr_string">"1EutkozOtREqqjcYjbTCuNhcBoz4/yO9NV7UfD5+gw6RlgWYw7If48hl66l7XaAs\n"</span>
-<a class="jxr_linenumber" name="265" href="#265">265</a>             + <span class="jxr_string">"zPw82W3tzPpLQ4zJ1LilYRyyQLYoEt+5+F/+07LJ7z20Hkt8HEyZNp496+ynaF4d\n"</span>
-<a class="jxr_linenumber" name="266" href="#266">266</a>             + <span class="jxr_string">"32duXvsCAwEAAaOCAvowggL2MA4GA1UdDwEB/wQEAwIBhjCCAcYGA1UdIASCAb0w\n"</span>
-<a class="jxr_linenumber" name="267" href="#267">267</a>             + <span class="jxr_string">"ggG5MIIBtQYLYIZIAYb9bAEDAAIwggGkMDoGCCsGAQUFBwIBFi5odHRwOi8vd3d3\n"</span>
-<a class="jxr_linenumber" name="268" href="#268">268</a>             + <span class="jxr_string">"LmRpZ2ljZXJ0LmNvbS9zc2wtY3BzLXJlcG9zaXRvcnkuaHRtMIIBZAYIKwYBBQUH\n"</span>
-<a class="jxr_linenumber" name="269" href="#269">269</a>             + <span class="jxr_string">"AgIwggFWHoIBUgBBAG4AeQAgAHUAcwBlACAAbwBmACAAdABoAGkAcwAgAEMAZQBy\n"</span>
-<a class="jxr_linenumber" name="270" href="#270">270</a>             + <span class="jxr_string">"AHQAaQBmAGkAYwBhAHQAZQAgAGMAbwBuAHMAdABpAHQAdQB0AGUAcwAgAGEAYwBj\n"</span>
-<a class="jxr_linenumber" name="271" href="#271">271</a>             + <span class="jxr_string">"AGUAcAB0AGEAbgBjAGUAIABvAGYAIAB0AGgAZQAgAEQAaQBnAGkAQwBlAHIAdAAg\n"</span>
-<a class="jxr_linenumber" name="272" href="#272">272</a>             + <span class="jxr_string">"AEMAUAAvAEMAUABTACAAYQBuAGQAIAB0AGgAZQAgAFIAZQBsAHkAaQBuAGcAIABQ\n"</span>
-<a class="jxr_linenumber" name="273" href="#273">273</a>             + <span class="jxr_string">"AGEAcgB0AHkAIABBAGcAcgBlAGUAbQBlAG4AdAAgAHcAaABpAGMAaAAgAGwAaQBt\n"</span>
-<a class="jxr_linenumber" name="274" href="#274">274</a>             + <span class="jxr_string">"AGkAdAAgAGwAaQBhAGIAaQBsAGkAdAB5ACAAYQBuAGQAIABhAHIAZQAgAGkAbgBj\n"</span>
-<a class="jxr_linenumber" name="275" href="#275">275</a>             + <span class="jxr_string">"AG8AcgBwAG8AcgBhAHQAZQBkACAAaABlAHIAZQBpAG4AIABiAHkAIAByAGUAZgBl\n"</span>
-<a class="jxr_linenumber" name="276" href="#276">276</a>             + <span class="jxr_string">"AHIAZQBuAGMAZQAuMBIGA1UdEwEB/wQIMAYBAf8CAQAwNAYIKwYBBQUHAQEEKDAm\n"</span>
-<a class="jxr_linenumber" name="277" href="#277">277</a>             + <span class="jxr_string">"MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wgY8GA1UdHwSB\n"</span>
-<a class="jxr_linenumber" name="278" href="#278">278</a>             + <span class="jxr_string">"hzCBhDBAoD6gPIY6aHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0SGln\n"</span>
-<a class="jxr_linenumber" name="279" href="#279">279</a>             + <span class="jxr_string">"aEFzc3VyYW5jZUVWUm9vdENBLmNybDBAoD6gPIY6aHR0cDovL2NybDQuZGlnaWNl\n"</span>
-<a class="jxr_linenumber" name="280" href="#280">280</a>             + <span class="jxr_string">"cnQuY29tL0RpZ2lDZXJ0SGlnaEFzc3VyYW5jZUVWUm9vdENBLmNybDAfBgNVHSME\n"</span>
-<a class="jxr_linenumber" name="281" href="#281">281</a>             + <span class="jxr_string">"GDAWgBSxPsNpA/i/RwHUmCYaCALvY2QrwzAdBgNVHQ4EFgQUUOpzidsp+xCPnuUB\n"</span>
-<a class="jxr_linenumber" name="282" href="#282">282</a>             + <span class="jxr_string">"INTeeZlIg/cwDQYJKoZIhvcNAQEFBQADggEBAB7ipUiebNtTOA/vphoqrOIDQ+2a\n"</span>
-<a class="jxr_linenumber" name="283" href="#283">283</a>             + <span class="jxr_string">"vD6OdRvw/S4iWawTwGHi5/rpmc2HCXVUKL9GYNy+USyS8xuRfDEIcOI3ucFbqL2j\n"</span>
-<a class="jxr_linenumber" name="284" href="#284">284</a>             + <span class="jxr_string">"CwD7GhX9A61YasXHJJlIR0YxHpLvtF9ONMeQvzHB+LGEhtCcAarfilYGzjrpDq6X\n"</span>
-<a class="jxr_linenumber" name="285" href="#285">285</a>             + <span class="jxr_string">"dF3XcZpCdF/ejUN83ulV7WkAywXgemFhM9EZTfkI7qA5xSU1tyvED7Ld8aW3DiTE\n"</span>
-<a class="jxr_linenumber" name="286" href="#286">286</a>             + <span class="jxr_string">"JiiNeXf1L/BXunwH1OH8zVowV36GEEfdMR/X/KLCvzB8XSSq6PmuX2p0ws5rs0bY\n"</span>
-<a class="jxr_linenumber" name="287" href="#287">287</a>             + <span class="jxr_string">"Ib4p1I5eFdZCSucyb6Sxa1GDWL4/bcf72gMhy2oWGU4K8K2Eyl2Us1p292E=\n"</span>
-<a class="jxr_linenumber" name="288" href="#288">288</a>             + <span class="jxr_string">"-----END CERTIFICATE-----"</span>;
-<a class="jxr_linenumber" name="289" href="#289">289</a>     
-<a class="jxr_linenumber" name="290" href="#290">290</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String LITTLEPROXY =
-<a class="jxr_linenumber" name="291" href="#291">291</a>             <span class="jxr_string">"-----BEGIN CERTIFICATE-----\n"</span>
-<a class="jxr_linenumber" name="292" href="#292">292</a>             + <span class="jxr_string">"MIIEqjCCApKgAwIBAgIETSOp+zANBgkqhkiG9w0BAQUFADAWMRQwEgYDVQQDEwts\n"</span>
-<a class="jxr_linenumber" name="293" href="#293">293</a>             + <span class="jxr_string">"aXR0bGVwcm94eTAgFw0xMTAxMDQyMzE1MDdaGA8yMTEwMTIxMTIzMTUwN1owFjEU\n"</span>
-<a class="jxr_linenumber" name="294" href="#294">294</a>             + <span class="jxr_string">"MBIGA1UEAxMLbGl0dGxlcHJveHkwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIK\n"</span>
-<a class="jxr_linenumber" name="295" href="#295">295</a>             + <span class="jxr_string">"AoICAQCm4Ulsi69ZqgeSf+aVDFlVMkMWzYKomTcDFCX9rpys+nKiLpKbzXKruBUM\n"</span>
-<a class="jxr_linenumber" name="296" href="#296">296</a>             + <span class="jxr_string">"Ud9BSG1I3eiJ9jJP77f5DpW0z2bptOHSRi0a9GOpx6I8AjKBvKH2CtV8cnGsopN8\n"</span>
-<a class="jxr_linenumber" name="297" href="#297">297</a>             + <span class="jxr_string">"JMMop6tZ7hVRo3M0BmGh9SgAQaX46nVIwcA3oUSLQKEqAsw8WVmbYJhwNWpPAl5M\n"</span>
-<a class="jxr_linenumber" name="298" href="#298">298</a>             + <span class="jxr_string">"0BT/ElEKG2LPaB0ha+8mFeT3haq4Jeuxeb5MfnpuEnLQ4FTre27f7bO3r/QaxVpu\n"</span>
-<a class="jxr_linenumber" name="299" href="#299">299</a>             + <span class="jxr_string">"UHF6MyMjoQCcjUO99Fo6a0poo6XX7ys9jnPEl44Pt36ygced2S3U4ZtchWWf634B\n"</span>
-<a class="jxr_linenumber" name="300" href="#300">300</a>             + <span class="jxr_string">"Wh5jmHtrcdOo94emzHGdah+XnTJI5BYUyNgNeI/8D3OyTlVWxUDU4f/9XqxVtc1F\n"</span>
-<a class="jxr_linenumber" name="301" href="#301">301</a>             + <span class="jxr_string">"KjMe33eT6kL2s5GWaT+1R9dJ4TCFizPQrWrwu2IDbyDj2sJGdSrjj+w2kHQ/V17q\n"</span>
-<a class="jxr_linenumber" name="302" href="#302">302</a>             + <span class="jxr_string">"AD2TmDlMmIvrqRc1lptBhcSpdTp5EoZEvgwTyRM7jpwDj5rAUXV8eu/93NcImJY2\n"</span>
-<a class="jxr_linenumber" name="303" href="#303">303</a>             + <span class="jxr_string">"QkGxAamB2vFWwxxYShKUqyG1zxyIF1cvWnAywgZuE4t5TGiZ9AIor5XkNDcaE0pj\n"</span>
-<a class="jxr_linenumber" name="304" href="#304">304</a>             + <span class="jxr_string">"6yJtblOFhSKiJgSUR49dl0D39fzy++gkkWmjgUuRTMglx0wAFPxFa/TGhfK0Ukze\n"</span>
-<a class="jxr_linenumber" name="305" href="#305">305</a>             + <span class="jxr_string">"WpJxoWHR06+EPN0kj/nagk5q4Ovz8EOZratTwToCEi9Doe5N8wIDAQABMA0GCSqG\n"</span>
-<a class="jxr_linenumber" name="306" href="#306">306</a>             + <span class="jxr_string">"SIb3DQEBBQUAA4ICAQBiLlzTzBfFsvtfz6ll8mU8jptS6A3YV7Zldon25I/xQlik\n"</span>
-<a class="jxr_linenumber" name="307" href="#307">307</a>             + <span class="jxr_string">"72hS25+s2U3mzcIz1kkdSYhyTa8B1JhXygnUYkJV+AShP5+tlcYXWq1YMx9GrKC2\n"</span>
-<a class="jxr_linenumber" name="308" href="#308">308</a>             + <span class="jxr_string">"SEOrsmt2tHLJS03oyCZfYcKdoJMRoTXnKe8WDs7M4iFSXGeaFn1SePbdjNMGHCVT\n"</span>
-<a class="jxr_linenumber" name="309" href="#309">309</a>             + <span class="jxr_string">"Cr58PhCxigXushNAVy5GZFh0gcFeMIYJIUqJADbw4IyicXpcUdQJHs7DkvXxquXZ\n"</span>
-<a class="jxr_linenumber" name="310" href="#310">310</a>             + <span class="jxr_string">"rNv2NKWlqQI2iwn2Aow8V0c7mud/kGdzLFM18NZVfZQsWWBWXP3CxUPGGrfaxiCH\n"</span>
-<a class="jxr_linenumber" name="311" href="#311">311</a>             + <span class="jxr_string">"aLo1i9KnD6yEw9x/0mcajy3VN4y8QdJpgPhGDQXMMvqDWIEouy05sES4V0GVTksQ\n"</span>
-<a class="jxr_linenumber" name="312" href="#312">312</a>             + <span class="jxr_string">"42SscqVWyT0HNRgmvOQHEc9Oh9mkCuspEzSA+LH1CGYc+dSTUTZUO+MmcfMDYpj4\n"</span>
-<a class="jxr_linenumber" name="313" href="#313">313</a>             + <span class="jxr_string">"NkLH/AgVwKPiFyD5MUYi7isLJnfpkmZcgJOL/FXtGmLeD8nt8eRPRS4YZMLDtd/9\n"</span>
-<a class="jxr_linenumber" name="314" href="#314">314</a>             + <span class="jxr_string">"FVo6KC1mlaiosLys7wUBuu15HdyJrkD+k4ZNrkx/oMlcLOgPdz2Qkue3Rqa9DRuX\n"</span>
-<a class="jxr_linenumber" name="315" href="#315">315</a>             + <span class="jxr_string">"jwwv90xVufuOJ5mYcQ2VA80x8YT+XTq194BGSqYAAU8Rq1/5fAMg5cwhg4BDjmY2\n"</span>
-<a class="jxr_linenumber" name="316" href="#316">316</a>             + <span class="jxr_string">"ok2U3fCl58xbiwp6owpamVoPblrq7Zl4ylyF33H6ewM+f5XA+L1iC5KWs9q8Kw==\n"</span>
-<a class="jxr_linenumber" name="317" href="#317">317</a>             + <span class="jxr_string">"-----END CERTIFICATE-----"</span>;
-<a class="jxr_linenumber" name="318" href="#318">318</a> 
-<a class="jxr_linenumber" name="319" href="#319">319</a> 
-<a class="jxr_linenumber" name="320" href="#320">320</a> }
+<a class="jxr_linenumber" name="230" href="#230">230</a>     
+<a class="jxr_linenumber" name="231" href="#231">231</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> listEntries(<strong class="jxr_keyword">final</strong> KeyStore ks) {
+<a class="jxr_linenumber" name="232" href="#232">232</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="233" href="#233">233</a>             <strong class="jxr_keyword">final</strong> Enumeration&lt;String&gt; aliases = ks.aliases();
+<a class="jxr_linenumber" name="234" href="#234">234</a>             <strong class="jxr_keyword">while</strong> (aliases.hasMoreElements()) {
+<a class="jxr_linenumber" name="235" href="#235">235</a>                 <strong class="jxr_keyword">final</strong> String alias = aliases.nextElement();
+<a class="jxr_linenumber" name="236" href="#236">236</a>                 <em class="jxr_comment">//System.err.println(alias+": "+ks.getCertificate(alias));</em>
+<a class="jxr_linenumber" name="237" href="#237">237</a>                 System.err.println(alias);
+<a class="jxr_linenumber" name="238" href="#238">238</a>                 log.debug(alias);
+<a class="jxr_linenumber" name="239" href="#239">239</a>             }
+<a class="jxr_linenumber" name="240" href="#240">240</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> KeyStoreException e) {
+<a class="jxr_linenumber" name="241" href="#241">241</a>             log.warn(<span class="jxr_string">"KeyStore error"</span>, e);
+<a class="jxr_linenumber" name="242" href="#242">242</a>         }
+<a class="jxr_linenumber" name="243" href="#243">243</a>     }
+<a class="jxr_linenumber" name="244" href="#244">244</a>     
+<a class="jxr_linenumber" name="245" href="#245">245</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> listEntries() {
+<a class="jxr_linenumber" name="246" href="#246">246</a>         listEntries(trustStore);
+<a class="jxr_linenumber" name="247" href="#247">247</a>     }
+<a class="jxr_linenumber" name="248" href="#248">248</a> 
+<a class="jxr_linenumber" name="249" href="#249">249</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String EQUIFAX =
+<a class="jxr_linenumber" name="250" href="#250">250</a>             <span class="jxr_string">"-----BEGIN CERTIFICATE-----\n"</span>
+<a class="jxr_linenumber" name="251" href="#251">251</a>             + <span class="jxr_string">"MIIDIDCCAomgAwIBAgIENd70zzANBgkqhkiG9w0BAQUFADBOMQswCQYDVQQGEwJV\n"</span>
+<a class="jxr_linenumber" name="252" href="#252">252</a>             + <span class="jxr_string">"UzEQMA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2Vy\n"</span>
+<a class="jxr_linenumber" name="253" href="#253">253</a>             + <span class="jxr_string">"dGlmaWNhdGUgQXV0aG9yaXR5MB4XDTk4MDgyMjE2NDE1MVoXDTE4MDgyMjE2NDE1\n"</span>
+<a class="jxr_linenumber" name="254" href="#254">254</a>             + <span class="jxr_string">"MVowTjELMAkGA1UEBhMCVVMxEDAOBgNVBAoTB0VxdWlmYXgxLTArBgNVBAsTJEVx\n"</span>
+<a class="jxr_linenumber" name="255" href="#255">255</a>             + <span class="jxr_string">"dWlmYXggU2VjdXJlIENlcnRpZmljYXRlIEF1dGhvcml0eTCBnzANBgkqhkiG9w0B\n"</span>
+<a class="jxr_linenumber" name="256" href="#256">256</a>             + <span class="jxr_string">"AQEFAAOBjQAwgYkCgYEAwV2xWGcIYu6gmi0fCG2RFGiYCh7+2gRvE4RiIcPRfM6f\n"</span>
+<a class="jxr_linenumber" name="257" href="#257">257</a>             + <span class="jxr_string">"BeC4AfBONOziipUEZKzxa1NfBbPLZ4C/QgKO/t0BCezhABRP/PvwDN1Dulsr4R+A\n"</span>
+<a class="jxr_linenumber" name="258" href="#258">258</a>             + <span class="jxr_string">"cJkVV5MW8Q+XarfCaCMczE1ZMKxRHjuvK9buY0V7xdlfUNLjUA86iOe/FP3gx7kC\n"</span>
+<a class="jxr_linenumber" name="259" href="#259">259</a>             + <span class="jxr_string">"AwEAAaOCAQkwggEFMHAGA1UdHwRpMGcwZaBjoGGkXzBdMQswCQYDVQQGEwJVUzEQ\n"</span>
+<a class="jxr_linenumber" name="260" href="#260">260</a>             + <span class="jxr_string">"MA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2VydGlm\n"</span>
+<a class="jxr_linenumber" name="261" href="#261">261</a>             + <span class="jxr_string">"aWNhdGUgQXV0aG9yaXR5MQ0wCwYDVQQDEwRDUkwxMBoGA1UdEAQTMBGBDzIwMTgw\n"</span>
+<a class="jxr_linenumber" name="262" href="#262">262</a>             + <span class="jxr_string">"ODIyMTY0MTUxWjALBgNVHQ8EBAMCAQYwHwYDVR0jBBgwFoAUSOZo+SvSspXXR9gj\n"</span>
+<a class="jxr_linenumber" name="263" href="#263">263</a>             + <span class="jxr_string">"IBBPM5iQn9QwHQYDVR0OBBYEFEjmaPkr0rKV10fYIyAQTzOYkJ/UMAwGA1UdEwQF\n"</span>
+<a class="jxr_linenumber" name="264" href="#264">264</a>             + <span class="jxr_string">"MAMBAf8wGgYJKoZIhvZ9B0EABA0wCxsFVjMuMGMDAgbAMA0GCSqGSIb3DQEBBQUA\n"</span>
+<a class="jxr_linenumber" name="265" href="#265">265</a>             + <span class="jxr_string">"A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y\n"</span>
+<a class="jxr_linenumber" name="266" href="#266">266</a>             + <span class="jxr_string">"7qj/WsjTVbJmcVfewCHrPSqnI0kBBIZCe/zuf6IWUrVnZ9NA2zsmWLIodz2uFHdh\n"</span>
+<a class="jxr_linenumber" name="267" href="#267">267</a>             + <span class="jxr_string">"1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4\n"</span>
+<a class="jxr_linenumber" name="268" href="#268">268</a>             + <span class="jxr_string">"-----END CERTIFICATE-----"</span>;
+<a class="jxr_linenumber" name="269" href="#269">269</a>     
+<a class="jxr_linenumber" name="270" href="#270">270</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String EQUIFAX2 =
+<a class="jxr_linenumber" name="271" href="#271">271</a>     <em class="jxr_comment">//i:/C=US/O=Equifax/OU=Equifax Secure Certificate Authority</em>
+<a class="jxr_linenumber" name="272" href="#272">272</a>             <span class="jxr_string">"-----BEGIN CERTIFICATE-----\n"</span>
+<a class="jxr_linenumber" name="273" href="#273">273</a>             + <span class="jxr_string">"MIIDfTCCAuagAwIBAgIDErvmMA0GCSqGSIb3DQEBBQUAME4xCzAJBgNVBAYTAlVT\n"</span>
+<a class="jxr_linenumber" name="274" href="#274">274</a>             + <span class="jxr_string">"MRAwDgYDVQQKEwdFcXVpZmF4MS0wKwYDVQQLEyRFcXVpZmF4IFNlY3VyZSBDZXJ0\n"</span>
+<a class="jxr_linenumber" name="275" href="#275">275</a>             + <span class="jxr_string">"aWZpY2F0ZSBBdXRob3JpdHkwHhcNMDIwNTIxMDQwMDAwWhcNMTgwODIxMDQwMDAw\n"</span>
+<a class="jxr_linenumber" name="276" href="#276">276</a>             + <span class="jxr_string">"WjBCMQswCQYDVQQGEwJVUzEWMBQGA1UEChMNR2VvVHJ1c3QgSW5jLjEbMBkGA1UE\n"</span>
+<a class="jxr_linenumber" name="277" href="#277">277</a>             + <span class="jxr_string">"AxMSR2VvVHJ1c3QgR2xvYmFsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB\n"</span>
+<a class="jxr_linenumber" name="278" href="#278">278</a>             + <span class="jxr_string">"CgKCAQEA2swYYzD99BcjGlZ+W988bDjkcbd4kdS8odhM+KhDtgPpTSEHCIjaWC9m\n"</span>
+<a class="jxr_linenumber" name="279" href="#279">279</a>             + <span class="jxr_string">"OSm9BXiLnTjoBbdqfnGk5sRgprDvgOSJKA+eJdbtg/OtppHHmMlCGDUUna2YRpIu\n"</span>
+<a class="jxr_linenumber" name="280" href="#280">280</a>             + <span class="jxr_string">"T8rxh0PBFpVXLVDviS2Aelet8u5fa9IAjbkU+BQVNdnARqN7csiRv8lVK83Qlz6c\n"</span>
+<a class="jxr_linenumber" name="281" href="#281">281</a>             + <span class="jxr_string">"JmTM386DGXHKTubU1XupGc1V3sjs0l44U+VcT4wt/lAjNvxm5suOpDkZALeVAjmR\n"</span>
+<a class="jxr_linenumber" name="282" href="#282">282</a>             + <span class="jxr_string">"Cw7+OC7RHQWa9k0+bw8HHa8sHo9gOeL6NlMTOdReJivbPagUvTLrGAMoUgRx5asz\n"</span>
+<a class="jxr_linenumber" name="283" href="#283">283</a>             + <span class="jxr_string">"PeE4uwc2hGKceeoWMPRfwCvocWvk+QIDAQABo4HwMIHtMB8GA1UdIwQYMBaAFEjm\n"</span>
+<a class="jxr_linenumber" name="284" href="#284">284</a>             + <span class="jxr_string">"aPkr0rKV10fYIyAQTzOYkJ/UMB0GA1UdDgQWBBTAephojYn7qwVkDBF9qn1luMrM\n"</span>
+<a class="jxr_linenumber" name="285" href="#285">285</a>             + <span class="jxr_string">"TjAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBBjA6BgNVHR8EMzAxMC+g\n"</span>
+<a class="jxr_linenumber" name="286" href="#286">286</a>             + <span class="jxr_string">"LaArhilodHRwOi8vY3JsLmdlb3RydXN0LmNvbS9jcmxzL3NlY3VyZWNhLmNybDBO\n"</span>
+<a class="jxr_linenumber" name="287" href="#287">287</a>             + <span class="jxr_string">"BgNVHSAERzBFMEMGBFUdIAAwOzA5BggrBgEFBQcCARYtaHR0cHM6Ly93d3cuZ2Vv\n"</span>
+<a class="jxr_linenumber" name="288" href="#288">288</a>             + <span class="jxr_string">"dHJ1c3QuY29tL3Jlc291cmNlcy9yZXBvc2l0b3J5MA0GCSqGSIb3DQEBBQUAA4GB\n"</span>
+<a class="jxr_linenumber" name="289" href="#289">289</a>             + <span class="jxr_string">"AHbhEm5OSxYShjAGsoEIz/AIx8dxfmbuwu3UOx//8PDITtZDOLC5MH0Y0FWDomrL\n"</span>
+<a class="jxr_linenumber" name="290" href="#290">290</a>             + <span class="jxr_string">"NhGc6Ehmo21/uBPUR/6LWlxz/K7ZGzIZOKuXNBSqltLroxwUCEm2u+WR74M26x1W\n"</span>
+<a class="jxr_linenumber" name="291" href="#291">291</a>             + <span class="jxr_string">"b8ravHNjkOR/ez4iyz0H7V84dJzjA1BOoa+Y7mHyhD8S\n"</span>
+<a class="jxr_linenumber" name="292" href="#292">292</a>             + <span class="jxr_string">"-----END CERTIFICATE-----"</span>;
+<a class="jxr_linenumber" name="293" href="#293">293</a>     
+<a class="jxr_linenumber" name="294" href="#294">294</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String DIGICERT =
+<a class="jxr_linenumber" name="295" href="#295">295</a>             <span class="jxr_string">"-----BEGIN CERTIFICATE-----\n"</span>
+<a class="jxr_linenumber" name="296" href="#296">296</a>             + <span class="jxr_string">"MIIGWDCCBUCgAwIBAgIQCl8RTQNbF5EX0u/UA4w/OzANBgkqhkiG9w0BAQUFADBs\n"</span>
+<a class="jxr_linenumber" name="297" href="#297">297</a>             + <span class="jxr_string">"MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n"</span>
+<a class="jxr_linenumber" name="298" href="#298">298</a>             + <span class="jxr_string">"d3cuZGlnaWNlcnQuY29tMSswKQYDVQQDEyJEaWdpQ2VydCBIaWdoIEFzc3VyYW5j\n"</span>
+<a class="jxr_linenumber" name="299" href="#299">299</a>             + <span class="jxr_string">"ZSBFViBSb290IENBMB4XDTA4MDQwMjEyMDAwMFoXDTIyMDQwMzAwMDAwMFowZjEL\n"</span>
+<a class="jxr_linenumber" name="300" href="#300">300</a>             + <span class="jxr_string">"MAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3\n"</span>
+<a class="jxr_linenumber" name="301" href="#301">301</a>             + <span class="jxr_string">"LmRpZ2ljZXJ0LmNvbTElMCMGA1UEAxMcRGlnaUNlcnQgSGlnaCBBc3N1cmFuY2Ug\n"</span>
+<a class="jxr_linenumber" name="302" href="#302">302</a>             + <span class="jxr_string">"Q0EtMzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL9hCikQH17+NDdR\n"</span>
+<a class="jxr_linenumber" name="303" href="#303">303</a>             + <span class="jxr_string">"CPge+yLtYb4LDXBMUGMmdRW5QYiXtvCgFbsIYOBC6AUpEIc2iihlqO8xB3RtNpcv\n"</span>
+<a class="jxr_linenumber" name="304" href="#304">304</a>             + <span class="jxr_string">"KEZmBMcqeSZ6mdWOw21PoF6tvD2Rwll7XjZswFPPAAgyPhBkWBATaccM7pxCUQD5\n"</span>
+<a class="jxr_linenumber" name="305" href="#305">305</a>             + <span class="jxr_string">"BUTuJM56H+2MEb0SqPMV9Bx6MWkBG6fmXcCabH4JnudSREoQOiPkm7YDr6ictFuf\n"</span>
+<a class="jxr_linenumber" name="306" href="#306">306</a>             + <span class="jxr_string">"1EutkozOtREqqjcYjbTCuNhcBoz4/yO9NV7UfD5+gw6RlgWYw7If48hl66l7XaAs\n"</span>
+<a class="jxr_linenumber" name="307" href="#307">307</a>             + <span class="jxr_string">"zPw82W3tzPpLQ4zJ1LilYRyyQLYoEt+5+F/+07LJ7z20Hkt8HEyZNp496+ynaF4d\n"</span>
+<a class="jxr_linenumber" name="308" href="#308">308</a>             + <span class="jxr_string">"32duXvsCAwEAAaOCAvowggL2MA4GA1UdDwEB/wQEAwIBhjCCAcYGA1UdIASCAb0w\n"</span>
+<a class="jxr_linenumber" name="309" href="#309">309</a>             + <span class="jxr_string">"ggG5MIIBtQYLYIZIAYb9bAEDAAIwggGkMDoGCCsGAQUFBwIBFi5odHRwOi8vd3d3\n"</span>
+<a class="jxr_linenumber" name="310" href="#310">310</a>             + <span class="jxr_string">"LmRpZ2ljZXJ0LmNvbS9zc2wtY3BzLXJlcG9zaXRvcnkuaHRtMIIBZAYIKwYBBQUH\n"</span>
+<a class="jxr_linenumber" name="311" href="#311">311</a>             + <span class="jxr_string">"AgIwggFWHoIBUgBBAG4AeQAgAHUAcwBlACAAbwBmACAAdABoAGkAcwAgAEMAZQBy\n"</span>
+<a class="jxr_linenumber" name="312" href="#312">312</a>             + <span class="jxr_string">"AHQAaQBmAGkAYwBhAHQAZQAgAGMAbwBuAHMAdABpAHQAdQB0AGUAcwAgAGEAYwBj\n"</span>
+<a class="jxr_linenumber" name="313" href="#313">313</a>             + <span class="jxr_string">"AGUAcAB0AGEAbgBjAGUAIABvAGYAIAB0AGgAZQAgAEQAaQBnAGkAQwBlAHIAdAAg\n"</span>
+<a class="jxr_linenumber" name="314" href="#314">314</a>             + <span class="jxr_string">"AEMAUAAvAEMAUABTACAAYQBuAGQAIAB0AGgAZQAgAFIAZQBsAHkAaQBuAGcAIABQ\n"</span>
+<a class="jxr_linenumber" name="315" href="#315">315</a>             + <span class="jxr_string">"AGEAcgB0AHkAIABBAGcAcgBlAGUAbQBlAG4AdAAgAHcAaABpAGMAaAAgAGwAaQBt\n"</span>
+<a class="jxr_linenumber" name="316" href="#316">316</a>             + <span class="jxr_string">"AGkAdAAgAGwAaQBhAGIAaQBsAGkAdAB5ACAAYQBuAGQAIABhAHIAZQAgAGkAbgBj\n"</span>
+<a class="jxr_linenumber" name="317" href="#317">317</a>             + <span class="jxr_string">"AG8AcgBwAG8AcgBhAHQAZQBkACAAaABlAHIAZQBpAG4AIABiAHkAIAByAGUAZgBl\n"</span>
+<a class="jxr_linenumber" name="318" href="#318">318</a>             + <span class="jxr_string">"AHIAZQBuAGMAZQAuMBIGA1UdEwEB/wQIMAYBAf8CAQAwNAYIKwYBBQUHAQEEKDAm\n"</span>
+<a class="jxr_linenumber" name="319" href="#319">319</a>             + <span class="jxr_string">"MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wgY8GA1UdHwSB\n"</span>
+<a class="jxr_linenumber" name="320" href="#320">320</a>             + <span class="jxr_string">"hzCBhDBAoD6gPIY6aHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0SGln\n"</span>
+<a class="jxr_linenumber" name="321" href="#321">321</a>             + <span class="jxr_string">"aEFzc3VyYW5jZUVWUm9vdENBLmNybDBAoD6gPIY6aHR0cDovL2NybDQuZGlnaWNl\n"</span>
+<a class="jxr_linenumber" name="322" href="#322">322</a>             + <span class="jxr_string">"cnQuY29tL0RpZ2lDZXJ0SGlnaEFzc3VyYW5jZUVWUm9vdENBLmNybDAfBgNVHSME\n"</span>
+<a class="jxr_linenumber" name="323" href="#323">323</a>             + <span class="jxr_string">"GDAWgBSxPsNpA/i/RwHUmCYaCALvY2QrwzAdBgNVHQ4EFgQUUOpzidsp+xCPnuUB\n"</span>
+<a class="jxr_linenumber" name="324" href="#324">324</a>             + <span class="jxr_string">"INTeeZlIg/cwDQYJKoZIhvcNAQEFBQADggEBAB7ipUiebNtTOA/vphoqrOIDQ+2a\n"</span>
+<a class="jxr_linenumber" name="325" href="#325">325</a>             + <span class="jxr_string">"vD6OdRvw/S4iWawTwGHi5/rpmc2HCXVUKL9GYNy+USyS8xuRfDEIcOI3ucFbqL2j\n"</span>
+<a class="jxr_linenumber" name="326" href="#326">326</a>             + <span class="jxr_string">"CwD7GhX9A61YasXHJJlIR0YxHpLvtF9ONMeQvzHB+LGEhtCcAarfilYGzjrpDq6X\n"</span>
+<a class="jxr_linenumber" name="327" href="#327">327</a>             + <span class="jxr_string">"dF3XcZpCdF/ejUN83ulV7WkAywXgemFhM9EZTfkI7qA5xSU1tyvED7Ld8aW3DiTE\n"</span>
+<a class="jxr_linenumber" name="328" href="#328">328</a>             + <span class="jxr_string">"JiiNeXf1L/BXunwH1OH8zVowV36GEEfdMR/X/KLCvzB8XSSq6PmuX2p0ws5rs0bY\n"</span>
+<a class="jxr_linenumber" name="329" href="#329">329</a>             + <span class="jxr_string">"Ib4p1I5eFdZCSucyb6Sxa1GDWL4/bcf72gMhy2oWGU4K8K2Eyl2Us1p292E=\n"</span>
+<a class="jxr_linenumber" name="330" href="#330">330</a>             + <span class="jxr_string">"-----END CERTIFICATE-----"</span>;
+<a class="jxr_linenumber" name="331" href="#331">331</a>     
+<a class="jxr_linenumber" name="332" href="#332">332</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String LITTLEPROXY =
+<a class="jxr_linenumber" name="333" href="#333">333</a>             <span class="jxr_string">"-----BEGIN CERTIFICATE-----\n"</span>
+<a class="jxr_linenumber" name="334" href="#334">334</a>             + <span class="jxr_string">"MIIEqjCCApKgAwIBAgIETSOp+zANBgkqhkiG9w0BAQUFADAWMRQwEgYDVQQDEwts\n"</span>
+<a class="jxr_linenumber" name="335" href="#335">335</a>             + <span class="jxr_string">"aXR0bGVwcm94eTAgFw0xMTAxMDQyMzE1MDdaGA8yMTEwMTIxMTIzMTUwN1owFjEU\n"</span>
+<a class="jxr_linenumber" name="336" href="#336">336</a>             + <span class="jxr_string">"MBIGA1UEAxMLbGl0dGxlcHJveHkwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIK\n"</span>
+<a class="jxr_linenumber" name="337" href="#337">337</a>             + <span class="jxr_string">"AoICAQCm4Ulsi69ZqgeSf+aVDFlVMkMWzYKomTcDFCX9rpys+nKiLpKbzXKruBUM\n"</span>
+<a class="jxr_linenumber" name="338" href="#338">338</a>             + <span class="jxr_string">"Ud9BSG1I3eiJ9jJP77f5DpW0z2bptOHSRi0a9GOpx6I8AjKBvKH2CtV8cnGsopN8\n"</span>
+<a class="jxr_linenumber" name="339" href="#339">339</a>             + <span class="jxr_string">"JMMop6tZ7hVRo3M0BmGh9SgAQaX46nVIwcA3oUSLQKEqAsw8WVmbYJhwNWpPAl5M\n"</span>
+<a class="jxr_linenumber" name="340" href="#340">340</a>             + <span class="jxr_string">"0BT/ElEKG2LPaB0ha+8mFeT3haq4Jeuxeb5MfnpuEnLQ4FTre27f7bO3r/QaxVpu\n"</span>
+<a class="jxr_linenumber" name="341" href="#341">341</a>             + <span class="jxr_string">"UHF6MyMjoQCcjUO99Fo6a0poo6XX7ys9jnPEl44Pt36ygced2S3U4ZtchWWf634B\n"</span>
+<a class="jxr_linenumber" name="342" href="#342">342</a>             + <span class="jxr_string">"Wh5jmHtrcdOo94emzHGdah+XnTJI5BYUyNgNeI/8D3OyTlVWxUDU4f/9XqxVtc1F\n"</span>
+<a class="jxr_linenumber" name="343" href="#343">343</a>             + <span class="jxr_string">"KjMe33eT6kL2s5GWaT+1R9dJ4TCFizPQrWrwu2IDbyDj2sJGdSrjj+w2kHQ/V17q\n"</span>
+<a class="jxr_linenumber" name="344" href="#344">344</a>             + <span class="jxr_string">"AD2TmDlMmIvrqRc1lptBhcSpdTp5EoZEvgwTyRM7jpwDj5rAUXV8eu/93NcImJY2\n"</span>
+<a class="jxr_linenumber" name="345" href="#345">345</a>             + <span class="jxr_string">"QkGxAamB2vFWwxxYShKUqyG1zxyIF1cvWnAywgZuE4t5TGiZ9AIor5XkNDcaE0pj\n"</span>
+<a class="jxr_linenumber" name="346" href="#346">346</a>             + <span class="jxr_string">"6yJtblOFhSKiJgSUR49dl0D39fzy++gkkWmjgUuRTMglx0wAFPxFa/TGhfK0Ukze\n"</span>
+<a class="jxr_linenumber" name="347" href="#347">347</a>             + <span class="jxr_string">"WpJxoWHR06+EPN0kj/nagk5q4Ovz8EOZratTwToCEi9Doe5N8wIDAQABMA0GCSqG\n"</span>
+<a class="jxr_linenumber" name="348" href="#348">348</a>             + <span class="jxr_string">"SIb3DQEBBQUAA4ICAQBiLlzTzBfFsvtfz6ll8mU8jptS6A3YV7Zldon25I/xQlik\n"</span>
+<a class="jxr_linenumber" name="349" href="#349">349</a>             + <span class="jxr_string">"72hS25+s2U3mzcIz1kkdSYhyTa8B1JhXygnUYkJV+AShP5+tlcYXWq1YMx9GrKC2\n"</span>
+<a class="jxr_linenumber" name="350" href="#350">350</a>             + <span class="jxr_string">"SEOrsmt2tHLJS03oyCZfYcKdoJMRoTXnKe8WDs7M4iFSXGeaFn1SePbdjNMGHCVT\n"</span>
+<a class="jxr_linenumber" name="351" href="#351">351</a>             + <span class="jxr_string">"Cr58PhCxigXushNAVy5GZFh0gcFeMIYJIUqJADbw4IyicXpcUdQJHs7DkvXxquXZ\n"</span>
+<a class="jxr_linenumber" name="352" href="#352">352</a>             + <span class="jxr_string">"rNv2NKWlqQI2iwn2Aow8V0c7mud/kGdzLFM18NZVfZQsWWBWXP3CxUPGGrfaxiCH\n"</span>
+<a class="jxr_linenumber" name="353" href="#353">353</a>             + <span class="jxr_string">"aLo1i9KnD6yEw9x/0mcajy3VN4y8QdJpgPhGDQXMMvqDWIEouy05sES4V0GVTksQ\n"</span>
+<a class="jxr_linenumber" name="354" href="#354">354</a>             + <span class="jxr_string">"42SscqVWyT0HNRgmvOQHEc9Oh9mkCuspEzSA+LH1CGYc+dSTUTZUO+MmcfMDYpj4\n"</span>
+<a class="jxr_linenumber" name="355" href="#355">355</a>             + <span class="jxr_string">"NkLH/AgVwKPiFyD5MUYi7isLJnfpkmZcgJOL/FXtGmLeD8nt8eRPRS4YZMLDtd/9\n"</span>
+<a class="jxr_linenumber" name="356" href="#356">356</a>             + <span class="jxr_string">"FVo6KC1mlaiosLys7wUBuu15HdyJrkD+k4ZNrkx/oMlcLOgPdz2Qkue3Rqa9DRuX\n"</span>
+<a class="jxr_linenumber" name="357" href="#357">357</a>             + <span class="jxr_string">"jwwv90xVufuOJ5mYcQ2VA80x8YT+XTq194BGSqYAAU8Rq1/5fAMg5cwhg4BDjmY2\n"</span>
+<a class="jxr_linenumber" name="358" href="#358">358</a>             + <span class="jxr_string">"ok2U3fCl58xbiwp6owpamVoPblrq7Zl4ylyF33H6ewM+f5XA+L1iC5KWs9q8Kw==\n"</span>
+<a class="jxr_linenumber" name="359" href="#359">359</a>             + <span class="jxr_string">"-----END CERTIFICATE-----"</span>;
+<a class="jxr_linenumber" name="360" href="#360">360</a> 
+<a class="jxr_linenumber" name="361" href="#361">361</a> 
+<a class="jxr_linenumber" name="362" href="#362">362</a> }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

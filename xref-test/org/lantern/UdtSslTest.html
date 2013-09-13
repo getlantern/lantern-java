@@ -76,7 +76,7 @@
 <a class="jxr_linenumber" name="66" href="#66">66</a>          <em class="jxr_comment">//final Socket sock = new Socket(myHost, SERVER_PORT);</em>
 <a class="jxr_linenumber" name="67" href="#67">67</a>          
 <a class="jxr_linenumber" name="68" href="#68">68</a>          <strong class="jxr_keyword">final</strong> SSLSocketFactory sslSocketFactory = 
-<a class="jxr_linenumber" name="69" href="#69">69</a>                  util.newTlsSocketFactory();
+<a class="jxr_linenumber" name="69" href="#69">69</a>                  util.newTlsSocketFactoryJavaCipherSuites();
 <a class="jxr_linenumber" name="70" href="#70">70</a>              <em class="jxr_comment">//(SSLSocketFactory)SSLSocketFactory.getDefault();</em>
 <a class="jxr_linenumber" name="71" href="#71">71</a>          <strong class="jxr_keyword">final</strong> SSLSocket sslSocket =
 <a class="jxr_linenumber" name="72" href="#72">72</a>              (SSLSocket)sslSocketFactory.createSocket(sock, 
@@ -136,7 +136,7 @@
 <a class="jxr_linenumber" name="126" href="#126">126</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> accept(<strong class="jxr_keyword">final</strong> ServerSocket server, 
 <a class="jxr_linenumber" name="127" href="#127">127</a>         <strong class="jxr_keyword">final</strong> LanternSocketsUtil util) <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="128" href="#128">128</a>         <strong class="jxr_keyword">final</strong> Socket socket = server.accept();
-<a class="jxr_linenumber" name="129" href="#129">129</a>         <strong class="jxr_keyword">final</strong> SSLSocketFactory sslSocketFactory = util.newTlsSocketFactory();
+<a class="jxr_linenumber" name="129" href="#129">129</a>         <strong class="jxr_keyword">final</strong> SSLSocketFactory sslSocketFactory = util.newTlsSocketFactoryJavaCipherSuites();
 <a class="jxr_linenumber" name="130" href="#130">130</a>         <em class="jxr_comment">//final ServerSocket server = factory.createServerSocket();</em>
 <a class="jxr_linenumber" name="131" href="#131">131</a>         <em class="jxr_comment">//server.bind(new InetSocketAddress(SERVER_PORT));</em>
 <a class="jxr_linenumber" name="132" href="#132">132</a>         

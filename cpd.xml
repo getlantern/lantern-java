@@ -151,42 +151,6 @@
 ]]>
 </codefragment>
 </duplication>
-<duplication lines="28" tokens="132">
-<file line="581" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/DefaultProxyTracker.java"/>
-<file line="318" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/Diagnostics.java"/>
-<codefragment>
-<![CDATA[
-        }
-        if (!file.isFile()) {
-            log.error("No fallback proxy to load!");
-            return;
-        }
-
-        final ObjectMapper om = new ObjectMapper();
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-            final String proxy = IOUtils.toString(is);
-            final FallbackProxy fp = om.readValue(proxy, FallbackProxy.class);
-            
-            fallbackServerHost = fp.getIp();
-            fallbackServerPort = fp.getPort();
-            log.debug("Set fallback proxy to {}", fallbackServerHost);
-        } catch (final IOException e) {
-            log.error("Could not load fallback", e);
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-    }
-
-    private void copyFallback() throws IOException {
-        log.debug("Copying fallback file");
-        final File from;
-        
-        final File cur = 
-]]>
-</codefragment>
-</duplication>
 <duplication lines="22" tokens="111">
 <file line="120" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/win/WindowsRegCommand.java"/>
 <file line="174" path="/Users/afisk/new-clone-test/lantern/src/main/java/org/lantern/win/WindowsRegCommand.java"/>
