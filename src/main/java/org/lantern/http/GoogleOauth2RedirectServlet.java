@@ -124,7 +124,8 @@ public class GoogleOauth2RedirectServlet extends HttpServlet {
                 Arrays.asList(
                     "https://www.googleapis.com/auth/googletalk",
                     "https://www.googleapis.com/auth/userinfo.email",
-                    "https://www.googleapis.com/auth/userinfo.profile");
+                    "https://www.googleapis.com/auth/userinfo.profile",
+                    "https://www.googleapis.com/auth/plus.login");
             
             final GoogleBrowserClientRequestUrl gbc = 
                 new GoogleBrowserClientRequestUrl(clientSecrets, 

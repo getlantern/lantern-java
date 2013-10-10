@@ -375,6 +375,11 @@
 	    <artifactId>metrics-librato</artifactId>
 	    <version>3.0.1.RC1</version>
 	</dependency>
+	<dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-plus</artifactId>
+      <version>v1-rev99-1.17.0-rc</version>
+    </dependency>
   </dependencies>
 
   <prerequisites>
