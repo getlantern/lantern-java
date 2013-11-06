@@ -101,6 +101,7 @@
 -keepclassmembers class org.lantern.** {
     *;
 }
+-include keeps.pro
 
 -dontobfuscate
 -dontoptimize
