@@ -54,7 +54,7 @@ public class GoogleOauth2CallbackServer {
     public GoogleOauth2CallbackServer(final XmppHandler xmppHandler,
         final Model model, final InternalState internalState,
         final ModelIo modelIo, final ProxyService proxifier,
-        final HIttpClientFactory httpClientFactory,
+        final IHttpClientFactory httpClientFactory,
         final ModelUtils modelUtils, final Messages msgs) {
         this.xmppHandler = xmppHandler;
         this.model = model;
