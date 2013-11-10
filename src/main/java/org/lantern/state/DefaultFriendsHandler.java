@@ -29,7 +29,7 @@ import org.lantern.MessageKey;
 import org.lantern.Messages;
 import org.lantern.Roster;
 import org.lantern.XmppHandler;
-import org.lantern.endpoints.FriendApi;
+import org.lantern.endpoints.IFriendApi;
 import org.lantern.event.Events;
 import org.lantern.event.FriendStatusChangedEvent;
 import org.lantern.event.ProxyConnectionEvent;
@@ -61,7 +61,7 @@ public class DefaultFriendsHandler implements FriendsHandler {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     
-    private final FriendApi api;
+    private final IFriendApi api;
     private final Model model;
 
     private final XmppHandler xmppHandler;
@@ -81,7 +81,7 @@ public class DefaultFriendsHandler implements FriendsHandler {
     private final Messages msgs;
     
     @Inject
-    public DefaultFriendsHandler(final Model model, final FriendApi api,
+    public DefaultFriendsHandler(final Model model, final IFriendApi api,
             final XmppHandler xmppHandler, 
             final NotificationManager notificationManager,
             final NetworkTracker<String, URI, ReceivedKScopeAd> networkTracker,

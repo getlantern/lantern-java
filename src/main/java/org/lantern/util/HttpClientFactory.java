@@ -32,7 +32,7 @@ import com.google.inject.Singleton;
  * OauthUtils and to try to connect directly. 
  */
 @Singleton
-public class HttpClientFactory {
+public class HttpClientFactory implements IHttpClientFactory {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Censored censored;
@@ -47,13 +47,10 @@ public class HttpClientFactory {
         this.proxyTracker = proxyTracker;
     }
 
-    /**
-     * Returns a proxied client if we have access to a proxy in get mode.
-     * 
-     * @return The proxied {@link HttpClient} if available in get mode, 
-     * otherwise an unproxied client.
-     * @throws IOException If we could not obtain a proxied client.
+    /* (non-Javadoc)
+     * @see org.lantern.util.IHttpClientFactory#newClient()
      */
+    @Override
     public HttpClient newClient() throws IOException {
         if (this.censored.isCensored() || LanternUtils.isGet()) {
             try {
@@ -68,10 +65,18 @@ public class HttpClientFactory {
         return newClient(null, false);
     }
     
+    /* (non-Javadoc)
+     * @see org.lantern.util.IHttpClientFactory#newDirectClient()
+     */
+    @Override
     public HttpClient newDirectClient() {
         return newClient(null, false);
     }
 
+    /* (non-Javadoc)
+     * @see org.lantern.util.IHttpClientFactory#newProxyBlocking()
+     */
+    @Override
     public HttpHost newProxyBlocking() throws InterruptedException {
         // Can be empty for testing.
         if (this.proxyTracker == null) {
@@ -84,6 +89,10 @@ public class HttpClientFactory {
                 isa.getPort(), "https");
     }
 
+    /* (non-Javadoc)
+     * @see org.lantern.util.IHttpClientFactory#newClient(org.apache.http.HttpHost, boolean)
+     */
+    @Override
     public HttpClient newClient(final HttpHost proxy, final boolean addProxy) {
         final DefaultHttpClient client = new DefaultHttpClient();
         configureDefaults(proxy, client);

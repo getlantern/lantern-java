@@ -28,6 +28,7 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 import org.lantern.util.HttpClientFactory;
+import org.lantern.util.IHttpClientFactory;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class HttpClientFactoryTest {
             new LanternSocketsUtil(null, trustStore);
         
         final Censored censored = new DefaultCensored();
-        final HttpClientFactory factory = 
+        final IHttpClientFactory factory = 
                 new HttpClientFactory(socketsUtil, censored, null);
         
         final HttpHost proxy = new HttpHost("54.254.96.14", 16589, "https");
@@ -94,7 +95,7 @@ public class HttpClientFactoryTest {
             new LanternSocketsUtil(null, trustStore);
         
         final Censored censored = new DefaultCensored();
-        final HttpClientFactory factory = 
+        final IHttpClientFactory factory = 
                 new HttpClientFactory(socketsUtil, censored, TestingUtils.newProxyTracker());
         final HttpClient client = factory.newClient();
 
@@ -114,7 +115,7 @@ public class HttpClientFactoryTest {
         assertEquals(200, code);
     }
 
-    private void testGoogleDocs(final HttpClientFactory clientFactory) 
+    private void testGoogleDocs(final IHttpClientFactory clientFactory) 
         throws Exception {
         final LanternFeedback feedback = spy(new LanternFeedback(clientFactory));
         when(feedback.getHttpPost(anyString())).thenAnswer(new Answer<HttpPost>() {

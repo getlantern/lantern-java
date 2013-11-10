@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.lantern.JsonUtils;
 import org.lantern.LanternClientConstants;
 import org.lantern.LanternUtils;
-import org.lantern.oauth.OauthUtils;
+import org.lantern.oauth.IOauthUtils;
 import org.lantern.state.ClientFriends;
 import org.lantern.state.ClientFriend;
 import org.lantern.state.Friend;
@@ -21,7 +21,7 @@ import com.google.inject.Inject;
 /**
  * API for accessing the remote friends endpoint on the controller.
  */
-public class FriendApi {
+public class FriendApi implements IFriendApi {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     
@@ -34,20 +34,17 @@ public class FriendApi {
      */
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final OauthUtils oauth;
+    private final IOauthUtils oauth;
     
     @Inject
-    public FriendApi(final OauthUtils oauth) {
+    public FriendApi(final IOauthUtils oauth) {
         this.oauth = oauth;
     }
     
-    /**
-     * This method lists all the entities inserted in datastore. It uses HTTP
-     * GET method.
-     * 
-     * @return List of all entities persisted.
-     * @throws IOException If there's an error making the call to the server.
+    /* (non-Javadoc)
+     * @see org.lantern.endpoints.IFriendApi#listFriends()
      */
+    @Override
     public List<ClientFriend> listFriends() throws IOException {
         if (LanternUtils.isFallbackProxy()) {
             log.debug("Ignoring friends call from fallback");
@@ -71,14 +68,10 @@ public class FriendApi {
         return list;
     }
 
-    /**
-     * This method gets the entity having primary key id. It uses HTTP GET
-     * method.
-     * 
-     * @param id The primary key of the java bean.
-     * @return The entity with primary key id.
-     * @throws IOException If there's an error making the call to the server.
+    /* (non-Javadoc)
+     * @see org.lantern.endpoints.IFriendApi#getFriend(long)
      */
+    @Override
     public ClientFriend getFriend(final long id) throws IOException {
         if (LanternUtils.isFallbackProxy()) {
             log.debug("Ignoring friends call from fallback");
@@ -96,14 +89,10 @@ public class FriendApi {
         }
     }
 
-    /**
-     * This inserts the entity into App Engine datastore. It uses HTTP POST
-     * method.
-     * 
-     * @param task The entity to be inserted.
-     * @return The inserted entity.
-     * @throws IOException If there's an error making the call to the server.
+    /* (non-Javadoc)
+     * @see org.lantern.endpoints.IFriendApi#insertFriend(org.lantern.state.ClientFriend)
      */
+    @Override
     public ClientFriend insertFriend(final ClientFriend friend)
             throws IOException {
         if (LanternUtils.isFallbackProxy()) {
@@ -115,13 +104,10 @@ public class FriendApi {
         return post(url, friend);
     }
 
-    /**
-     * This method is used for updating a entity. It uses HTTP PUT method.
-     * 
-     * @param friend The entity to be updated.
-     * @return The updated entity.
-     * @throws IOException If there's an error making the call to the server.
+    /* (non-Javadoc)
+     * @see org.lantern.endpoints.IFriendApi#updateFriend(org.lantern.state.ClientFriend)
      */
+    @Override
     public ClientFriend updateFriend(final ClientFriend friend) throws IOException {
         if (LanternUtils.isFallbackProxy()) {
             log.debug("Ignoring friends call from fallback");
@@ -145,14 +131,10 @@ public class FriendApi {
         }
     }
 
-    /**
-     * This method removes the entity with primary key id. It uses HTTP DELETE
-     * method.
-     * 
-     * @param id The primary key of the entity to be deleted.
-     * @return The deleted entity.
-     * @throws IOException If there's an error making the call to the server.
+    /* (non-Javadoc)
+     * @see org.lantern.endpoints.IFriendApi#removeFriend(long)
      */
+    @Override
     public void removeFriend(final long id) throws IOException {
         if (LanternUtils.isFallbackProxy()) {
             log.debug("Ignoring friends call from fallback");

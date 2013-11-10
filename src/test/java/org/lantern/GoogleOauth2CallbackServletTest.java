@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.lantern.http.GoogleOauth2CallbackServlet;
 import org.lantern.state.Model;
 import org.lantern.util.HttpClientFactory;
+import org.lantern.util.IHttpClientFactory;
 
 public class GoogleOauth2CallbackServletTest {
 
@@ -21,7 +22,7 @@ public class GoogleOauth2CallbackServletTest {
             new LanternSocketsUtil(null, trustStore);
         
         final Censored censored = new DefaultCensored();
-        final HttpClientFactory factory = 
+        final IHttpClientFactory factory = 
                 new HttpClientFactory(socketsUtil, censored, null);
         final GoogleOauth2CallbackServlet servlet = 
             new GoogleOauth2CallbackServlet(null, null, null, null, null, 

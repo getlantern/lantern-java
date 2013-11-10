@@ -24,7 +24,7 @@ import org.lantern.event.RefreshTokenEvent;
 import org.lantern.state.Model;
 import org.lantern.state.ModelIo;
 import org.lantern.state.Settings;
-import org.lantern.util.HttpClientFactory;
+import org.lantern.util.IHttpClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ import com.google.inject.Singleton;
  * Utility methods for OAUTH.
  */
 @Singleton
-public class OauthUtils {
+public class OauthUtils implements IOauthUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(OauthUtils.class);
 
@@ -63,7 +63,7 @@ public class OauthUtils {
     
     private static TokenResponse lastResponse;
 
-    private final HttpClientFactory httpClientFactory;
+    private final IHttpClientFactory httpClientFactory;
 
     private static GoogleClientSecrets secrets = null;
 
@@ -71,13 +71,13 @@ public class OauthUtils {
 
     private final ModelIo modelIo;
     
-    public OauthUtils(final HttpClientFactory httpClientFactory, 
+    public OauthUtils(final IHttpClientFactory httpClientFactory, 
             final Model model, final RefreshToken refreshToken) {
         this(httpClientFactory, model, refreshToken, null); 
     }
     
     @Inject
-    public OauthUtils(final HttpClientFactory httpClientFactory, 
+    public OauthUtils(final IHttpClientFactory httpClientFactory, 
             final Model model, final RefreshToken refreshToken,
             final ModelIo modelIo) {
         this.httpClientFactory = httpClientFactory;
@@ -88,15 +88,10 @@ public class OauthUtils {
         LanternSaslGoogleOAuth2Mechanism.setOauthUtils(this);
     }
 
-    /**
-     * Obtains the oauth tokens. Note the refresh token should already be
-     * set when this is called. This will attempt to obtain the tokens directly
-     * and will then use a proxy if necessary.
-     * 
-     * @return The tokens.
-     * @throws IOException If we cannot access the tokens either directory or
-     * through a fallback proxy.
+    /* (non-Javadoc)
+     * @see org.lantern.oauth.IOauthUtils#oauthTokens()
      */
+    @Override
     public TokenResponse oauthTokens() throws IOException {
         LOG.debug("Refreshing ACCESS token");
         
@@ -193,6 +188,10 @@ public class OauthUtils {
         }
     }
     
+    /* (non-Javadoc)
+     * @see org.lantern.oauth.IOauthUtils#oauthTokens(org.apache.http.client.HttpClient, java.lang.String)
+     */
+    @Override
     public TokenResponse oauthTokens(final HttpClient httpClient, 
             final String refresh) 
             throws IOException {
@@ -261,6 +260,10 @@ public class OauthUtils {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.lantern.oauth.IOauthUtils#postRequest(java.lang.String, java.lang.String)
+     */
+    @Override
     public String postRequest(final String endpoint, final String json) 
             throws IOException {
         
@@ -271,10 +274,18 @@ public class OauthUtils {
         return httpRequest(post);
     }
     
+    /* (non-Javadoc)
+     * @see org.lantern.oauth.IOauthUtils#getRequest(java.lang.String)
+     */
+    @Override
     public String getRequest(final String endpoint) throws IOException {
         return httpRequest(new HttpGet(endpoint));
     }
     
+    /* (non-Javadoc)
+     * @see org.lantern.oauth.IOauthUtils#deleteRequest(java.lang.String)
+     */
+    @Override
     public String deleteRequest(final String endpoint) throws IOException {
         return httpRequest(new HttpDelete(endpoint));
     }
@@ -331,6 +342,10 @@ public class OauthUtils {
         request.setHeader("Accept", "application/json");
     }
 
+    /* (non-Javadoc)
+     * @see org.lantern.oauth.IOauthUtils#accessToken(org.apache.http.client.HttpClient)
+     */
+    @Override
     public String accessToken(final HttpClient httpClient) throws IOException {
         final String refresh = this.refreshToken.refreshToken();
         return oauthTokens(httpClient, refresh).getAccessToken();

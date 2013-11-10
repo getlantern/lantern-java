@@ -23,7 +23,7 @@ public class LanternSaslGoogleOAuth2Mechanism extends SASLMechanism {
 
     private ConnectionConfiguration config;
 
-    private static OauthUtils oauthUtils;
+    private static IOauthUtils oauthUtils;
 
     public LanternSaslGoogleOAuth2Mechanism(SASLAuthentication sa) {
         super(sa);
@@ -78,7 +78,7 @@ public class LanternSaslGoogleOAuth2Mechanism extends SASLMechanism {
         });
     }
     
-    public static void setOauthUtils(final OauthUtils oauthUtils) {
+    public static void setOauthUtils(final IOauthUtils oauthUtils) {
         LanternSaslGoogleOAuth2Mechanism.oauthUtils = oauthUtils;
     }
 }

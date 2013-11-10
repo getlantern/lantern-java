@@ -24,6 +24,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.lantern.event.Events;
 import org.lantern.event.UpdateEvent;
+import org.lantern.http.IJettyLauncher;
 import org.lantern.http.JettyLauncher;
 import org.lantern.state.CometDSyncStrategy;
 import org.lantern.state.Model;
@@ -46,7 +47,7 @@ public class CometDTest {
         final Model model = new Model(countryService);
         final SyncService syncer =
             new SyncService(new CometDSyncStrategy(), model, new Timer(), null);
-        final JettyLauncher jl = new JettyLauncher(syncer, null, null, model, null);
+        final IJettyLauncher jl = new JettyLauncher(syncer, null, null, model, null);
         startJetty(jl, port);
         final HttpClient httpClient = new HttpClient();
         // Here set up Jetty's HttpClient, for example:
@@ -151,7 +152,7 @@ public class CometDTest {
         assertTrue("Expected variable to be true", bool.get());
     }
 
-    private void startJetty(final JettyLauncher jl, final int port) throws Exception {
+    private void startJetty(final IJettyLauncher jl, final int port) throws Exception {
         // The order of getting things from the injector matters unfortunately,
         // so we have to do the below.
         //injector.getInstance(DefaultXmppHandler.class);

@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.XMPPConnection;
 import org.lantern.geoip.GeoIpLookupService;
+import org.lantern.http.IJettyLauncher;
 import org.lantern.http.JettyLauncher;
 import org.lantern.oauth.OauthUtils;
 import org.lantern.privacy.EncryptedFileService;
@@ -29,6 +30,7 @@ import org.lantern.state.Settings;
 import org.lantern.state.Transfers;
 import org.lantern.state.TransfersIo;
 import org.lantern.util.HttpClientFactory;
+import org.lantern.util.IHttpClientFactory;
 import org.lastbamboo.common.portmapping.NatPmpService;
 import org.lastbamboo.common.portmapping.PortMapListener;
 import org.lastbamboo.common.portmapping.PortMappingProtocol;
@@ -66,7 +68,7 @@ public class TestUtils {
     private static LocalCipherProvider localCipherProvider;
     private static EncryptedFileService encryptedFileService;
 
-    private static JettyLauncher jettyLauncher;
+    private static IJettyLauncher jettyLauncher;
     
     private static MessageService messageService;
 
@@ -92,7 +94,7 @@ public class TestUtils {
 
     private static boolean started = false;
 
-    private static HttpClientFactory httpClientFactory;
+    private static IHttpClientFactory httpClientFactory;
 
     private static CountryService countryService;
 
@@ -337,7 +339,7 @@ public class TestUtils {
         return oauth;
     }
 
-    public static JettyLauncher getJettyLauncher() {
+    public static IJettyLauncher getJettyLauncher() {
         if (!loaded) load();
         return jettyLauncher;
     }
@@ -426,7 +428,7 @@ public class TestUtils {
         return new LanternTrustStore(new LanternKeyStoreManager());
     }
 
-    public static HttpClientFactory getHttpClientFactory() {
+    public static IHttpClientFactory getHttpClientFactory() {
         if (!loaded) load();
         return httpClientFactory;
     }

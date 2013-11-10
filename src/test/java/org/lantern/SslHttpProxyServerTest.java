@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.lantern.proxy.CertTrackingSslEngineSource;
 import org.lantern.state.Model;
 import org.lantern.util.HttpClientFactory;
+import org.lantern.util.IHttpClientFactory;
 import org.littleshoot.proxy.HttpProxyServer;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 
@@ -57,7 +58,7 @@ public class SslHttpProxyServerTest {
 
             final LanternSocketsUtil socketsUtil =
                     new LanternSocketsUtil(null, ts);
-            final HttpClientFactory httpFactory =
+            final IHttpClientFactory httpFactory =
                     new HttpClientFactory(socketsUtil, null, null);
 
             final HttpHost host = new HttpHost(

@@ -27,11 +27,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.kaleidoscope.BasicRandomRoutingTable;
 import org.kaleidoscope.RandomRoutingTable;
 import org.lantern.endpoints.FriendApi;
+import org.lantern.endpoints.IFriendApi;
 import org.lantern.geoip.GeoIpLookupService;
 import org.lantern.kscope.DefaultKscopeAdHandler;
 import org.lantern.kscope.KscopeAdHandler;
 import org.lantern.kscope.ReceivedKScopeAd;
 import org.lantern.network.NetworkTracker;
+import org.lantern.oauth.IOauthUtils;
 import org.lantern.oauth.OauthUtils;
 import org.lantern.oauth.RefreshToken;
 import org.lantern.proxy.UdtServerFiveTupleListener;
@@ -45,6 +47,7 @@ import org.lantern.state.Settings;
 import org.lantern.stubs.PeerFactoryStub;
 import org.lantern.stubs.ProxyTrackerStub;
 import org.lantern.util.HttpClientFactory;
+import org.lantern.util.IHttpClientFactory;
 import org.lastbamboo.common.portmapping.NatPmpService;
 import org.lastbamboo.common.portmapping.PortMapListener;
 import org.lastbamboo.common.portmapping.PortMappingProtocol;
@@ -155,9 +158,9 @@ public class TestingUtils {
         final ModelUtils modelUtils = new DefaultModelUtils(model);
         final RandomRoutingTable routingTable = new BasicRandomRoutingTable();
         
-        final HttpClientFactory httpClientFactory = TestingUtils.newHttClientFactory();
-        final OauthUtils oauth = new OauthUtils(httpClientFactory, model, new RefreshToken(model));
-        final FriendApi api = new FriendApi(oauth);
+        final IHttpClientFactory httpClientFactory = TestingUtils.newHttClientFactory();
+        final IOauthUtils oauth = new OauthUtils(httpClientFactory, model, new RefreshToken(model));
+        final IFriendApi api = new FriendApi(oauth);
         
         final NetworkTracker<String, URI, ReceivedKScopeAd> networkTracker = new NetworkTracker<String, URI, ReceivedKScopeAd>();
         final FriendsHandler friendsHandler = 
@@ -234,14 +237,14 @@ public class TestingUtils {
     }
 
 
-    public static HttpClientFactory newHttClientFactory() {
+    public static IHttpClientFactory newHttClientFactory() {
         final LanternKeyStoreManager ksm = TestingUtils.newKeyStoreManager();
         final LanternTrustStore trustStore = new LanternTrustStore(ksm);
         final LanternSocketsUtil socketsUtil =
             new LanternSocketsUtil(null, trustStore);
         
         final Censored censored = new DefaultCensored();
-        final HttpClientFactory factory = 
+        final IHttpClientFactory factory = 
                 new HttpClientFactory(socketsUtil, censored, TestingUtils.newProxyTracker());
         return factory;
     }
@@ -263,11 +266,11 @@ public class TestingUtils {
 
     public static String accessToken() throws IOException {
         final DefaultHttpClient httpClient = new DefaultHttpClient();
-        final OauthUtils utils = newOauthUtils();
+        final IOauthUtils utils = newOauthUtils();
         return utils.oauthTokens(httpClient, getRefreshToken()).getAccessToken();
     }
 
-    private static OauthUtils newOauthUtils() {
+    private static IOauthUtils newOauthUtils() {
         final Model mod = new Model();
         return new OauthUtils(newHttClientFactory(), mod, new RefreshToken(mod));
     }
