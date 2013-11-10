@@ -96,7 +96,7 @@ public class SecretServiceLocalCipherProvider extends AbstractAESLocalCipherProv
                 return false;
             }
         } catch (final Throwable t) {
-            LOG.debug("Could not connect to Secret Service API at:"+SERVICE_PATH, e);
+            LOG.debug("Could not connect to Secret Service API at:"+SERVICE_PATH, t);
             return false;
         } finally {
             closeConnection(conn);
