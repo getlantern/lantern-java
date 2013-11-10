@@ -581,11 +581,11 @@
             </goals>
             <configuration>
               <!-- we have to exclude bouncycastle b/c  it is signed -->
-              <artifactSet>
+              <!-- <artifactSet>
                 <excludes>
                   <exclude>org.bouncycastle:*</exclude>
                 </excludes>
-              </artifactSet>
+              </artifactSet> -->
 
               <filters>
                 <filter>
@@ -599,13 +599,13 @@
                 </filter>
               </filters>
 
-              <transformers>
+             <!--  <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
                     <Main-Class>${main.class}</Main-Class>
                     <Class-Path>. ./bcprov-jdk16-1.46.jar</Class-Path>
                   </manifestEntries>
-                </transformer>
+                </transformer> -->
               </transformers>
             </configuration>
           </execution>
