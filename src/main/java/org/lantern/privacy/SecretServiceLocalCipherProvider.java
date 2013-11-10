@@ -83,9 +83,6 @@ public class SecretServiceLocalCipherProvider extends AbstractAESLocalCipherProv
             
             LOG.debug("Found Secret Service API.");
             return true;
-        } catch (final Exception e) {
-            LOG.debug("Could not connect to Secret Service API at:"+SERVICE_PATH, e);
-            return false;
         } catch (final UnsatisfiedLinkError error) {
             if (LanternUtils.isDevMode()) {
                 LOG.error("Could not load so file? Testing?", error);
@@ -98,6 +95,9 @@ public class SecretServiceLocalCipherProvider extends AbstractAESLocalCipherProv
                 System.exit(1);
                 return false;
             }
+        } catch (final Throwable t) {
+            LOG.debug("Could not connect to Secret Service API at:"+SERVICE_PATH, e);
+            return false;
         } finally {
             closeConnection(conn);
         }
