@@ -75,6 +75,7 @@ public class JettyLauncher implements IJettyLauncher {
     /* (non-Javadoc)
      * @see org.lantern.http.IJettyLauncher#start()
      */
+    @Override
     public void start() {
         start(StaticSettings.getApiPort());
     }
@@ -250,6 +251,7 @@ public class JettyLauncher implements IJettyLauncher {
     /* (non-Javadoc)
      * @see org.lantern.http.IJettyLauncher#stop()
      */
+    @Override
     public void stop() {
         log.info("Stopping Jetty server...");
         try {
