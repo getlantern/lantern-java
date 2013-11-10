@@ -46,10 +46,7 @@ public class DefaultLocalCipherProvider extends AbstractLocalCipherProvider {
     
     @Override
     String getAlgorithm() {
-        // TODO: Going with suggestion from here to use BouncyCastle
-        // http://stackoverflow.com/questions/3982502/sha2-password-storage-with-java
-        // Need to verify that this is ok
-        return "PBEWITHSHA256AND128BITAES-CBC-BC";
+        return "PBEWithSHA1AndDESede";
     }
     
     @Override
