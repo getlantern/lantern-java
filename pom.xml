@@ -681,6 +681,7 @@
                     <execute />
                   </action>
                 </pluginExecution>
+                <!-- 
                 <pluginExecution>
                   <pluginExecutionFilter>
                     <groupId>com.github.wvengen</groupId>
@@ -694,6 +695,7 @@
                     <ignore />
                   </action>
                 </pluginExecution>
+                 -->
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
