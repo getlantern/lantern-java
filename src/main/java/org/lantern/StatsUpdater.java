@@ -17,7 +17,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.lantern.event.Events;
 import org.lantern.state.Model;
 import org.lantern.state.SyncPath;
-import org.lantern.util.HttpClientFactory;
+import org.lantern.util.IHttpClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,11 +32,11 @@ public class StatsUpdater extends Thread {
 
     private static final long SLEEP_INTERVAL = 60 * 1000;
 
-    private final HttpClientFactory httpClientFactory;
+    private final IHttpClientFactory httpClientFactory;
 
     @Inject
     public StatsUpdater(final Model model, 
-            final HttpClientFactory httpClientFactory) {
+            final IHttpClientFactory httpClientFactory) {
         super();
         setDaemon(true);
         setName("Stats-Updating-Thread-"+hashCode());

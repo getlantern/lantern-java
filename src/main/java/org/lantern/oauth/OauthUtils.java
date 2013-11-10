@@ -24,7 +24,7 @@ import org.lantern.event.RefreshTokenEvent;
 import org.lantern.state.Model;
 import org.lantern.state.ModelIo;
 import org.lantern.state.Settings;
-import org.lantern.util.HttpClientFactory;
+import org.lantern.util.IHttpClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +63,7 @@ public class OauthUtils implements IOauthUtils {
     
     private static TokenResponse lastResponse;
 
-    private final HttpClientFactory httpClientFactory;
+    private final IHttpClientFactory httpClientFactory;
 
     private static GoogleClientSecrets secrets = null;
 
@@ -71,13 +71,13 @@ public class OauthUtils implements IOauthUtils {
 
     private final ModelIo modelIo;
     
-    public OauthUtils(final HttpClientFactory httpClientFactory, 
+    public OauthUtils(final IHttpClientFactory httpClientFactory, 
             final Model model, final RefreshToken refreshToken) {
         this(httpClientFactory, model, refreshToken, null); 
     }
     
     @Inject
-    public OauthUtils(final HttpClientFactory httpClientFactory, 
+    public OauthUtils(final IHttpClientFactory httpClientFactory, 
             final Model model, final RefreshToken refreshToken,
             final ModelIo modelIo) {
         this.httpClientFactory = httpClientFactory;
