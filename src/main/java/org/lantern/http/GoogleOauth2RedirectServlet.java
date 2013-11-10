@@ -23,7 +23,7 @@ import org.lantern.state.InternalState;
 import org.lantern.state.Model;
 import org.lantern.state.ModelIo;
 import org.lantern.state.ModelUtils;
-import org.lantern.util.IHttpClientFactory;
+import org.lantern.util.HttpClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class GoogleOauth2RedirectServlet extends HttpServlet {
 
     private final ProxyService proxifier;
 
-    private final IHttpClientFactory httpClientFactory;
+    private final HttpClientFactory httpClientFactory;
 
     private final Censored censored;
 
@@ -61,7 +61,7 @@ public class GoogleOauth2RedirectServlet extends HttpServlet {
     public GoogleOauth2RedirectServlet(final XmppHandler handler, 
         final Model model, final InternalState internalState,
         final ModelIo modelIo, final ProxyService proxifier,
-        final IHttpClientFactory httpClientFactory,
+        final HttpClientFactory httpClientFactory,
         final Censored censored, final ModelUtils modelUtils,
         final Messages msgs) {
         this.handler = handler;

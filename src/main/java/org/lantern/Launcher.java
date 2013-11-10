@@ -51,7 +51,6 @@ import org.lantern.state.ModelUtils;
 import org.lantern.state.Settings;
 import org.lantern.state.SyncService;
 import org.lantern.util.HttpClientFactory;
-import org.lantern.util.IHttpClientFactory;
 import org.lantern.util.Stopwatch;
 import org.lantern.util.StopwatchManager;
 import org.lastbamboo.common.offer.answer.IceConfig;
@@ -127,7 +126,7 @@ public class Launcher {
     private InternalState internalState;
 
     private SyncService syncService;
-    private IHttpClientFactory httpClientFactory;
+    private HttpClientFactory httpClientFactory;
     private final LanternModule lanternModule;
 
     private ProxyTracker proxyTracker;

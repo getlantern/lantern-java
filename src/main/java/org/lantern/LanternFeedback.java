@@ -17,7 +17,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.lantern.util.IHttpClientFactory;
+import org.lantern.util.HttpClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,10 +28,10 @@ import com.google.inject.Singleton;
 public class LanternFeedback {
     
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final IHttpClientFactory httpClientFactory;
+    private final HttpClientFactory httpClientFactory;
 
     @Inject
-    public LanternFeedback(final IHttpClientFactory httpClientFactory) {
+    public LanternFeedback(final HttpClientFactory httpClientFactory) {
         this.httpClientFactory = httpClientFactory;
     }
 

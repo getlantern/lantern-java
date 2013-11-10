@@ -41,11 +41,10 @@ import org.lantern.state.Modal;
 import org.lantern.state.Model;
 import org.lantern.state.ModelIo;
 import org.lantern.state.ModelUtils;
-import org.lantern.state.Notification.MessageType;
 import org.lantern.state.Profile;
 import org.lantern.state.StaticSettings;
 import org.lantern.state.SyncPath;
-import org.lantern.util.IHttpClientFactory;
+import org.lantern.util.HttpClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +71,7 @@ public class GoogleOauth2CallbackServlet extends HttpServlet {
 
     private final ProxyService proxifier;
 
-    private final IHttpClientFactory httpClientFactory;
+    private final HttpClientFactory httpClientFactory;
 
     private final ModelUtils modelUtils;
 
@@ -82,7 +81,7 @@ public class GoogleOauth2CallbackServlet extends HttpServlet {
         final GoogleOauth2CallbackServer googleOauth2CallbackServer,
         final XmppHandler xmppHandler, final Model model,
         final InternalState internalState, final ModelIo modelIo,
-        final ProxyService proxifier, final IHttpClientFactory httpClientFactory,
+        final ProxyService proxifier, final HttpClientFactory httpClientFactory,
         final ModelUtils modelUtils, final Messages msgs) {
         this.googleOauth2CallbackServer = googleOauth2CallbackServer;
         this.xmppHandler = xmppHandler;
