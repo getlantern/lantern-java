@@ -605,8 +605,8 @@
                     <Main-Class>${main.class}</Main-Class>
                     <Class-Path>. ./bcprov-jdk16-1.46.jar</Class-Path>
                   </manifestEntries>
-                </transformer> -->
-              </transformers>
+                </transformer>
+              </transformers> -->
             </configuration>
           </execution>
         </executions>
