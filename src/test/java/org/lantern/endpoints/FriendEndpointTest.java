@@ -1,19 +1,18 @@
 package org.lantern.endpoints;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
 import org.junit.Test;
 import org.lantern.TestingUtils;
-import org.lantern.oauth.IOauthUtils;
 import org.lantern.oauth.OauthUtils;
 import org.lantern.oauth.RefreshToken;
 import org.lantern.state.ClientFriend;
 import org.lantern.state.Friend;
 import org.lantern.state.Mode;
 import org.lantern.state.Model;
-import org.lantern.util.IHttpClientFactory;
+import org.lantern.util.HttpClientFactory;
 import org.lantern.util.Stopwatch;
 import org.lantern.util.StopwatchManager;
 import org.slf4j.Logger;
@@ -28,12 +27,12 @@ public class FriendEndpointTest {
 
     @Test
     public void testFriendEndpiont() throws Exception {
-        final IHttpClientFactory httpClientFactory = 
+        final HttpClientFactory httpClientFactory = 
                 TestingUtils.newHttClientFactory();
         final Model model = TestingUtils.newModel();
         model.getSettings().setMode(Mode.give);
-        final IOauthUtils utils = new OauthUtils(httpClientFactory, model, new RefreshToken(model));
-        final IFriendApi api = new FriendApi(utils);
+        final OauthUtils utils = new OauthUtils(httpClientFactory, model, new RefreshToken(model));
+        final FriendApi api = new FriendApi(utils);
         
         // First just clear the existing friends.
         List<ClientFriend> friends = api.listFriends();

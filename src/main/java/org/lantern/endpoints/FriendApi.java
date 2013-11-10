@@ -9,9 +9,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.lantern.JsonUtils;
 import org.lantern.LanternClientConstants;
 import org.lantern.LanternUtils;
-import org.lantern.oauth.IOauthUtils;
-import org.lantern.state.ClientFriends;
+import org.lantern.oauth.OauthUtils;
 import org.lantern.state.ClientFriend;
+import org.lantern.state.ClientFriends;
 import org.lantern.state.Friend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +34,10 @@ public class FriendApi implements IFriendApi {
      */
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final IOauthUtils oauth;
+    private final OauthUtils oauth;
     
     @Inject
-    public FriendApi(final IOauthUtils oauth) {
+    public FriendApi(final OauthUtils oauth) {
         this.oauth = oauth;
     }
     

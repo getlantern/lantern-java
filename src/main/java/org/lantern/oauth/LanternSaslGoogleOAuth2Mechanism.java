@@ -10,7 +10,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.Base64;
-import org.littleshoot.util.ThreadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +22,7 @@ public class LanternSaslGoogleOAuth2Mechanism extends SASLMechanism {
 
     private ConnectionConfiguration config;
 
-    private static IOauthUtils oauthUtils;
+    private static OauthUtils oauthUtils;
 
     public LanternSaslGoogleOAuth2Mechanism(SASLAuthentication sa) {
         super(sa);
@@ -78,7 +77,7 @@ public class LanternSaslGoogleOAuth2Mechanism extends SASLMechanism {
         });
     }
     
-    public static void setOauthUtils(final IOauthUtils oauthUtils) {
+    public static void setOauthUtils(final OauthUtils oauthUtils) {
         LanternSaslGoogleOAuth2Mechanism.oauthUtils = oauthUtils;
     }
 }
