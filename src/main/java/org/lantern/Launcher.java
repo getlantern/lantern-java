@@ -420,13 +420,19 @@ public class Launcher {
         watch.start();
         
         LOG.debug("Loading {}", name);
-        final T inst = injector.getInstance(clazz);
-        if (Shutdownable.class.isAssignableFrom(clazz)) {
-            addShutdownHook((Shutdownable) inst);
+        T inst = null;
+        try {
+            inst = injector.getInstance(clazz);
+            if (Shutdownable.class.isAssignableFrom(clazz)) {
+                addShutdownHook((Shutdownable) inst);
+            }
+        } catch (Throwable t) {
+            LOG.error("Could not get instance of {}", clazz.getName(), t);
         }
         if (inst == null) {
-            LOG.error("Could not load instance of "+clazz);
-            throw new NullPointerException("Could not load instance of "+clazz);
+            LOG.error("Could not load instance of " + clazz);
+            throw new NullPointerException("Could not load instance of "
+                    + clazz);
         }
         /*
         if (splashScreen != null) {

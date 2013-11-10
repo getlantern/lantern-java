@@ -341,9 +341,8 @@ public class ModelIo extends Storage<Model> {
     private void loadLocalPasswordFile(final String pwFilename) {
         //final LocalCipherProvider lcp = localCipherProvider;
         if (!localCipherProvider.requiresAdditionalUserInput()) {
-            // TODO: find out why this is getting hit
-//            log.error("Settings do not require a password to unlock.");
-//            System.exit(1);
+            log.error("Settings do not require a password to unlock.");
+            System.exit(1);
         }
 
         if (StringUtils.isBlank(pwFilename)) {
