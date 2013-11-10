@@ -37,7 +37,8 @@ public class ChromeRunner {
     public ChromeRunner(final int screenWidth, final int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-        Rectangle monitorBounds = new Display().getPrimaryMonitor().getBounds();
+        
+        Rectangle monitorBounds = Display.getDefault().getBounds();
         this.location[0] = monitorBounds.x;
         this.location[1] = monitorBounds.y;
     }

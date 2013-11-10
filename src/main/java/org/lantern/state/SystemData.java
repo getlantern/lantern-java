@@ -83,8 +83,7 @@ public class SystemData {
         }
         final double[] ss = new double[2];
         try {
-            Monitor primary = new Display().getPrimaryMonitor();
-            Rectangle bounds = primary.getBounds();
+            Rectangle bounds = Display.getDefault().getBounds();
             ss[0] = bounds.width;
             ss[1] = bounds.height;
             this.screenSize = ss;
