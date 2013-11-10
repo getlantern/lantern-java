@@ -29,7 +29,6 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.lantern.BayeuxInitializer;
 import org.lantern.LanternClientConstants;
 import org.lantern.LanternConstants;
-import org.lantern.LanternService;
 import org.lantern.LanternUtils;
 import org.lantern.Proxifier;
 import org.lantern.state.Model;
@@ -251,7 +250,6 @@ public class JettyLauncher implements IJettyLauncher {
     /* (non-Javadoc)
      * @see org.lantern.http.IJettyLauncher#stop()
      */
-    @Override
     public void stop() {
         log.info("Stopping Jetty server...");
         try {
