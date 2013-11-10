@@ -45,7 +45,7 @@ import com.google.inject.Singleton;
  * Launcher and secure path handler for Jetty.
  */
 @Singleton
-public class JettyLauncher implements LanternService, IJettyLauncher {
+public class JettyLauncher implements IJettyLauncher {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
         
@@ -77,7 +77,6 @@ public class JettyLauncher implements LanternService, IJettyLauncher {
      * @see org.lantern.http.IJettyLauncher#start()
      */
     @Override
-    @Override
     public void start() {
         start(StaticSettings.getApiPort());
     }
@@ -85,7 +84,6 @@ public class JettyLauncher implements LanternService, IJettyLauncher {
     /* (non-Javadoc)
      * @see org.lantern.http.IJettyLauncher#start(int)
      */
-    @Override
     public void start(final int port) {
         final QueuedThreadPool qtp = new QueuedThreadPool();
         qtp.setMinThreads(5);
@@ -254,7 +252,6 @@ public class JettyLauncher implements LanternService, IJettyLauncher {
     /* (non-Javadoc)
      * @see org.lantern.http.IJettyLauncher#stop()
      */
-    @Override
     @Override
     public void stop() {
         log.info("Stopping Jetty server...");
