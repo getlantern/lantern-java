@@ -49,10 +49,11 @@ public class StatsReporter implements LanternService {
     private final Model model;
     private final ClientStats stats;
 
-    private final MemoryMXBean memoryMXBean = ManagementFactory
-            .getMemoryMXBean();
-    private final OperatingSystemMXBean osStats = ManagementFactory
-            .getOperatingSystemMXBean();
+    // TODO: restore this
+    private final MemoryMXBean memoryMXBean = null;//ManagementFactory
+//            .getMemoryMXBean();
+    private final OperatingSystemMXBean osStats = null;//ManagementFactory
+//            .getOperatingSystemMXBean();
 
     private final MetricRegistry metrics = new MetricRegistry();
 

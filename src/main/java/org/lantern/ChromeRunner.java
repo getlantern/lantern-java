@@ -1,6 +1,5 @@
 package org.lantern;
 
-import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +16,8 @@ import java.util.Map.Entry;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
 import org.lantern.state.StaticSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ import com.sun.jna.platform.win32.ShlObj;
 public class ChromeRunner {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final Point location;
+    private final double[] location = new double[] {0, 0};
     
     private volatile Process process;
     private final int screenWidth;
@@ -36,8 +37,9 @@ public class ChromeRunner {
     public ChromeRunner(final int screenWidth, final int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-        this.location = 
-            LanternUtils.getScreenCenter(screenWidth, screenHeight);
+        Rectangle monitorBounds = new Display().getPrimaryMonitor().getBounds();
+        this.location[0] = monitorBounds.x;
+        this.location[1] = monitorBounds.y;
     }
 
 
@@ -138,7 +140,7 @@ public class ChromeRunner {
             commands.add("--user-data-dir="
                     + LanternClientConstants.CONFIG_DIR.getAbsolutePath());
             commands.add("--window-size=" + screenWidth + "," + screenHeight);
-            commands.add("--window-position=" + location.x + "," + location.y);
+            commands.add("--window-position=" + location[0] + "," + location[1]);
             commands.add("--disable-translate");
             commands.add("--disable-sync");
             commands.add("--no-default-browser-check");

@@ -1,17 +1,15 @@
 package org.lantern.state;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 
 import org.apache.commons.io.FileSystemUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.codehaus.jackson.map.annotate.JsonView;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Monitor;
 import org.lantern.annotation.Keep;
 import org.lantern.state.Model.Run;
-
-import com.sun.management.OperatingSystemMXBean;
 
 /**
  * Class containing data about the users system.
@@ -21,7 +19,7 @@ public class SystemData {
 
     private final String os;
     private long bytesFree;
-    private final long memory;
+    private final long memory = 50; // TODO: make this work again
     private double[] screenSize;
     
     public SystemData() {
@@ -38,9 +36,9 @@ public class SystemData {
         } catch (final IOException e) {
             bytesFree = 1000000000L;
         }
-        final OperatingSystemMXBean operatingSystemMXBean = 
-            (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-        memory = operatingSystemMXBean.getTotalPhysicalMemorySize();
+//        final OperatingSystemMXBean operatingSystemMXBean = 
+//            (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+//        memory = operatingSystemMXBean.getTotalPhysicalMemorySize();
     }
     
     @JsonView({Run.class})
@@ -85,10 +83,10 @@ public class SystemData {
         }
         final double[] ss = new double[2];
         try {
-            final Toolkit toolkit =  Toolkit.getDefaultToolkit ();
-            final Dimension screen  = toolkit.getScreenSize();
-            ss[0] = screen.getWidth();
-            ss[1] = screen.getHeight();
+            Monitor primary = new Display().getPrimaryMonitor();
+            Rectangle bounds = primary.getBounds();
+            ss[0] = bounds.width;
+            ss[1] = bounds.height;
             this.screenSize = ss;
         } catch (final Exception e) {
             // We might not be able to get the screen size if we're running
