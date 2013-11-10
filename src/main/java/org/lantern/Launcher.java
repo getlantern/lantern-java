@@ -191,7 +191,12 @@ public class Launcher {
             StopwatchManager.getStopwatch("Guice-Injector", 
                 STOPWATCH_LOG, STOPWATCH_GROUP);
         injectorWatch.start();
-        injector = Guice.createInjector(this.lanternModule);
+        try {
+            injector = Guice.createInjector(this.lanternModule);
+        } catch (Throwable t) {
+            LOG.error("Unable to create injector", t);
+            throw new RuntimeException(t);
+        }
         injectorWatch.stop();
         LOG.debug("Creating display...");
 
