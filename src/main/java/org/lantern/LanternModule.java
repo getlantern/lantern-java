@@ -12,6 +12,8 @@ import org.apache.commons.lang3.SystemUtils;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.kaleidoscope.BasicRandomRoutingTable;
 import org.kaleidoscope.RandomRoutingTable;
+import org.lantern.endpoints.FriendApi;
+import org.lantern.endpoints.IFriendApi;
 import org.lantern.geoip.GeoIpLookupService;
 import org.lantern.http.GeoIp;
 import org.lantern.http.GoogleOauth2RedirectServlet;
@@ -22,7 +24,9 @@ import org.lantern.kscope.DefaultKscopeAdHandler;
 import org.lantern.kscope.KscopeAdHandler;
 import org.lantern.monitoring.StatsReporter;
 import org.lantern.network.NetworkTracker;
+import org.lantern.oauth.IOauthUtils;
 import org.lantern.oauth.LanternSaslGoogleOAuth2Mechanism;
+import org.lantern.oauth.OauthUtils;
 import org.lantern.privacy.DefaultEncryptedFileService;
 import org.lantern.privacy.DefaultLocalCipherProvider;
 import org.lantern.privacy.EncryptedFileService;
@@ -51,6 +55,8 @@ import org.lantern.state.Transfers;
 import org.lantern.state.TransfersIo;
 import org.lantern.ui.NotificationManager;
 import org.lantern.ui.SwtMessageService;
+import org.lantern.util.HttpClientFactory;
+import org.lantern.util.IHttpClientFactory;
 import org.lastbamboo.common.portmapping.NatPmpService;
 import org.lastbamboo.common.portmapping.UpnpService;
 import org.littleshoot.proxy.ChainedProxyManager;
@@ -137,6 +143,10 @@ public class LanternModule extends AbstractModule {
         bind(GiveModeProxy.class);
         bind(UdtServerFiveTupleListener.class);
 
+        bind(IHttpClientFactory.class).to(HttpClientFactory.class);
+        bind(IFriendApi.class).to(FriendApi.class);
+        bind(IOauthUtils.class).to(OauthUtils.class);
+        
         try {
             copyFireFoxExtension();
         } catch (final IOException e) {

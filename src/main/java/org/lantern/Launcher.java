@@ -50,7 +50,6 @@ import org.lantern.state.ModelIo;
 import org.lantern.state.ModelUtils;
 import org.lantern.state.Settings;
 import org.lantern.state.SyncService;
-import org.lantern.util.HttpClientFactory;
 import org.lantern.util.IHttpClientFactory;
 import org.lantern.util.Stopwatch;
 import org.lantern.util.StopwatchManager;
@@ -299,7 +298,7 @@ public class Launcher {
         instance(LocalCipherProvider.class);
 
         internalState = instance(InternalState.class);
-        httpClientFactory = instance(HttpClientFactory.class);
+        httpClientFactory = instance(IHttpClientFactory.class);
         syncService = instance(SyncService.class);
 
         proxyTracker = instance(ProxyTracker.class);
