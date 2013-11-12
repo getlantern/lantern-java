@@ -757,6 +757,7 @@ public class Transport
    }
    public void connect(BusAddress address, int timeout) throws IOException
    {
+       try {
       if (Debug.debug) Debug.print(Debug.INFO, "Connecting to "+address);
       OutputStream out = null;
       InputStream in = null;
@@ -820,6 +821,11 @@ public class Transport
       }
       mout = new MessageWriter(out);
       min = new MessageReader(in);
+       } catch (Throwable t) {
+           System.err.println("Unable to connect");
+           t.printStackTrace(System.err);
+           throw new RuntimeException(t);
+       }
    }
    public void disconnect() throws IOException
    {
