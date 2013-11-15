@@ -9,9 +9,9 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
-import org.lantern.LanternUtils;
 import org.lantern.Messages;
 import org.lantern.ProxyService;
+import org.lantern.Shutdownable;
 import org.lantern.XmppHandler;
 import org.lantern.state.InternalState;
 import org.lantern.state.Model;
@@ -21,13 +21,17 @@ import org.lantern.util.HttpClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 /**
  * This is a special server that runs on the port we have registered for
  * OAuth callbacks with Google. It should be started every time we know we
  * need OAuth (every time the OAuth redirect page is hit), and should stop it
  * as soon as the callback is done.
  */
-public class GoogleOauth2CallbackServer {
+@Singleton
+public class GoogleOauth2CallbackServer implements Shutdownable {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     
@@ -51,6 +55,7 @@ public class GoogleOauth2CallbackServer {
 
     private final Messages msgs;
     
+    @Inject
     public GoogleOauth2CallbackServer(final XmppHandler xmppHandler,
         final Model model, final InternalState internalState,
         final ModelIo modelIo, final ProxyService proxifier,

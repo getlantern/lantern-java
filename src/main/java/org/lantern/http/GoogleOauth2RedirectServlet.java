@@ -57,13 +57,15 @@ public class GoogleOauth2RedirectServlet extends HttpServlet {
 
     private final Messages msgs;
     
+    private final GoogleOauth2CallbackServer callbackServer;
+    
     @Inject
     public GoogleOauth2RedirectServlet(final XmppHandler handler, 
         final Model model, final InternalState internalState,
         final ModelIo modelIo, final ProxyService proxifier,
         final HttpClientFactory httpClientFactory,
         final Censored censored, final ModelUtils modelUtils,
-        final Messages msgs) {
+        final Messages msgs, final GoogleOauth2CallbackServer callbackServer) {
         this.handler = handler;
         this.model = model;
         this.internalState = internalState;
@@ -73,6 +75,7 @@ public class GoogleOauth2RedirectServlet extends HttpServlet {
         this.censored = censored;
         this.modelUtils = modelUtils;
         this.msgs = msgs;
+        this.callbackServer = callbackServer;
     }
     
     @Override
@@ -104,23 +107,13 @@ public class GoogleOauth2RedirectServlet extends HttpServlet {
                 log.error("Could not start proxying", e);
             }
         }
-        // We have to completely recreate the server each time because we
-        // stop it and start it only when we need oauth callbacks. If we
-        // attempt to restart a stopped server, things get funky.
-        GoogleOauth2CallbackServer server =
-            new GoogleOauth2CallbackServer(handler, model, this.internalState, 
-                this.modelIo, this.proxifier, this.httpClientFactory, modelUtils, this.msgs);
-        
-        // Note that this call absolutely ensures the server is started.
-        server.start();
-        
-        final String location = newGtalkOauthUrl(server);
+        final String location = newGtalkOauthUrl();
         
         log.debug("Sending redirect to {}", location);
         resp.sendRedirect(location);
     }
 
-    private String newGtalkOauthUrl(GoogleOauth2CallbackServer server) {
+    private String newGtalkOauthUrl() {
         try {
             
             final GoogleClientSecrets clientSecrets = 
@@ -133,7 +126,7 @@ public class GoogleOauth2RedirectServlet extends HttpServlet {
             
             final GoogleBrowserClientRequestUrl gbc = 
                 new GoogleBrowserClientRequestUrl(clientSecrets, 
-                    OauthUtils.getRedirectUrl(server.getPort()), scopes);
+                    OauthUtils.getRedirectUrl(callbackServer.getPort()), scopes);
             gbc.setApprovalPrompt("auto");
             gbc.setResponseTypes("code");
             final String baseUrl = gbc.build();

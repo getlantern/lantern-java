@@ -38,6 +38,7 @@ import org.lantern.exceptional4j.ExceptionalAppenderCallback;
 import org.lantern.exceptional4j.HttpStrategy;
 import org.lantern.exceptional4j.contrib.IPv4Sanitizer;
 import org.lantern.http.GeoIp;
+import org.lantern.http.GoogleOauth2CallbackServer;
 import org.lantern.http.JettyLauncher;
 import org.lantern.monitoring.StatsReporter;
 import org.lantern.privacy.LocalCipherProvider;
@@ -91,6 +92,7 @@ public class Launcher {
     private GiveModeProxy giveModeProxy;
     private JettyLauncher jettyLauncher;
     private XmppHandler xmpp;
+    private GoogleOauth2CallbackServer oauthCallbackServer;
     private BrowserService browserService;
     private StatsUpdater statsUpdater;
     private StatsReporter statsReporter;
@@ -291,7 +293,10 @@ public class Launcher {
         }
 
         xmpp = instance(DefaultXmppHandler.class);
-
+        
+        oauthCallbackServer = instance(GoogleOauth2CallbackServer.class);
+        oauthCallbackServer.start();
+        
         instance(LocalCipherProvider.class);
 
         internalState = instance(InternalState.class);
