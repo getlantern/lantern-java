@@ -2,41 +2,36 @@ package org.lantern;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.InetSocketAddress;
+import java.net.URL;
 import java.security.Security;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Timer;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.security.auth.login.CredentialException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.DefaultHttpResponseFactory;
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.AsyncAppender;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.LoggingEvent;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Display;
-import org.json.simple.JSONObject;
 import org.lantern.event.Events;
 import org.lantern.event.MessageEvent;
-import org.lantern.exceptional4j.ExceptionalAppender;
-import org.lantern.exceptional4j.ExceptionalAppenderCallback;
-import org.lantern.exceptional4j.HttpStrategy;
-import org.lantern.exceptional4j.contrib.IPv4Sanitizer;
 import org.lantern.http.GeoIp;
 import org.lantern.http.JettyLauncher;
 import org.lantern.monitoring.StatsReporter;
@@ -45,6 +40,7 @@ import org.lantern.proxy.GetModeProxy;
 import org.lantern.proxy.GiveModeProxy;
 import org.lantern.state.FriendsHandler;
 import org.lantern.state.InternalState;
+import org.lantern.state.Location;
 import org.lantern.state.Modal;
 import org.lantern.state.Model;
 import org.lantern.state.ModelIo;
@@ -646,6 +642,7 @@ public class Launcher {
         if (props.isFile()) {
             System.out.println("Running from main line");
             PropertyConfigurator.configure(propsPath);
+            configureProductionLogger();
         } else {
             System.out.println("Not on main line...");
             configureProductionLogger();
@@ -654,95 +651,151 @@ public class Launcher {
     }
 
     private void configureProductionLogger() {
-        final File logDir = LanternClientConstants.LOG_DIR;
-        final File logFile = new File(logDir, "java.log");
-        final Properties props = new Properties();
+//        final File logDir = LanternClientConstants.LOG_DIR;
+//        final File logFile = new File(logDir, "java.log");
+//        final Properties props = new Properties();
         try {
-            final String logPath = logFile.getCanonicalPath();
-            props.put("log4j.appender.RollingTextFile.File", logPath);
-            props.put("log4j.rootLogger", "warn, RollingTextFile");
-            props.put("log4j.appender.RollingTextFile",
-                    "org.apache.log4j.RollingFileAppender");
-            props.put("log4j.appender.RollingTextFile.MaxFileSize", "1MB");
-            props.put("log4j.appender.RollingTextFile.MaxBackupIndex", "1");
-            props.put("log4j.appender.RollingTextFile.layout",
-                    "org.apache.log4j.PatternLayout");
-            props.put(
-                    "log4j.appender.RollingTextFile.layout.ConversionPattern",
-                    "%-6r %d{ISO8601} %-5p [%t] %c{2}.%M (%F:%L) - %m%n");
-
-            // This throws and swallows a FileNotFoundException, but it
-            // doesn't matter. Just weird.
-            PropertyConfigurator.configure(props);
-            System.out.println("Set logger file to: " + logPath);
-            final ExceptionalAppenderCallback callback =
-                new ExceptionalAppenderCallback() {
-
-                    @Override
-                    public boolean addData(final JSONObject json,
-                        final LoggingEvent le) {
-                        if (!set.isAutoReport()) {
-                            // Don't report anything if the user doesn't have
-                            // it turned on.
-                            return false;
+//            final String logPath = logFile.getCanonicalPath();
+//            props.put("log4j.appender.RollingTextFile.File", logPath);
+//            props.put("log4j.rootLogger", "warn, RollingTextFile");
+//            props.put("log4j.appender.RollingTextFile",
+//                    "org.apache.log4j.RollingFileAppender");
+//            props.put("log4j.appender.RollingTextFile.MaxFileSize", "1MB");
+//            props.put("log4j.appender.RollingTextFile.MaxBackupIndex", "1");
+//            props.put("log4j.appender.RollingTextFile.layout",
+//                    "org.apache.log4j.PatternLayout");
+//            props.put(
+//                    "log4j.appender.RollingTextFile.layout.ConversionPattern",
+//                    "%-6r %d{ISO8601} %-5p [%t] %c{2}.%M (%F:%L) - %m%n");
+//
+//            // This throws and swallows a FileNotFoundException, but it
+//            // doesn't matter. Just weird.
+//            PropertyConfigurator.configure(props);
+//            System.out.println("Set logger file to: " + logPath);
+//            final ExceptionalAppenderCallback callback =
+//                new ExceptionalAppenderCallback() {
+//
+//                    @Override
+//                    public boolean addData(final JSONObject json,
+//                        final LoggingEvent le) {
+//                        if (!set.isAutoReport()) {
+//                            // Don't report anything if the user doesn't have
+//                            // it turned on.
+//                            return false;
+//                        }
+//                        json.put("fallback", LanternUtils.isFallbackProxy());
+//                        json.put("version", LanternClientConstants.VERSION);
+//                        return true;
+//                    }
+//            };
+//
+//            // We need to do the following because httpClientFactory is still
+//            // null here. We basically do something reasonable while it's still
+//            // null.
+//            final HttpStrategy strategy = new HttpStrategy() {
+//                private final ProtocolVersion ver =
+//                    new ProtocolVersion("HTTP", 1, 1);
+//                private HttpClient client = null;
+//                @Override
+//                public HttpResponse execute(final HttpPost request)
+//                        throws ClientProtocolException, IOException {
+//                    if (httpClientFactory == null) {
+//                        return new DefaultHttpResponseFactory().newHttpResponse(
+//                                ver, 200, null);
+//                    }
+//                    if (client == null) {
+//                        client = httpClientFactory.newClient();
+//                    }
+//                    return client.execute(request);
+//                }
+//
+//                @Override
+//                public HttpResponse execute(final HttpGet request)
+//                        throws ClientProtocolException, IOException {
+//                    if (httpClientFactory == null) {
+//                        return new DefaultHttpResponseFactory().newHttpResponse(
+//                                ver, 200, null);
+//                    }
+//                    if (client == null) {
+//                        client = httpClientFactory.newClient();
+//                    }
+//                    return client.execute(request);
+//                }
+//            };
+//            final ExceptionalAppender bugAppender = new ExceptionalAppender(
+//                LanternClientConstants.GET_EXCEPTIONAL_API_KEY, callback, true,
+//                Level.WARN, strategy);
+//            bugAppender.addSanitizer(new IPv4Sanitizer());
+            
+            Appender logglyAppender = new AppenderSkeleton() {
+                private static final String url = "https://logs-01.loggly.com/inputs/469973d5-6eaf-445a-be71-cf27141316a1/tag/http-client/";
+                private final ObjectMapper mapper = new ObjectMapper();
+                
+                @Override
+                protected void append(LoggingEvent event) {
+                    try {
+                        Location location = null;
+                        if (model != null) {
+                            location = model.getLocation();
                         }
-                        json.put("fallback", LanternUtils.isFallbackProxy());
-                        json.put("version", LanternClientConstants.VERSION);
-                        return true;
+                        String country = null;
+                        if (location != null) {
+                            country = location.getCountry();
+                        }
+                        HttpsURLConnection conn = (HttpsURLConnection) new URL(url).openConnection();
+                        conn.setRequestMethod("POST");
+                        conn.setDoOutput(true);
+                        OutputStream out = conn.getOutputStream();
+                        InputStream in = conn.getInputStream();
+                        try {
+                            mapper.writeValue(out, new LogglyEvent(event, country));
+                            IOUtils.toString(in);
+                        } finally {
+                            try {
+                                out.close();
+                            } catch (IOException ioe) {
+                                ioe.printStackTrace(System.err);
+                            }
+                            try {
+                                in.close();
+                            } catch (IOException ioe) {
+                                ioe.printStackTrace(System.err);
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Unable to submit to Loggly");
+                        e.printStackTrace(System.err);
                     }
-            };
-
-            // We need to do the following because httpClientFactory is still
-            // null here. We basically do something reasonable while it's still
-            // null.
-            final HttpStrategy strategy = new HttpStrategy() {
-                private final ProtocolVersion ver =
-                    new ProtocolVersion("HTTP", 1, 1);
-                private HttpClient client = null;
-                @Override
-                public HttpResponse execute(final HttpPost request)
-                        throws ClientProtocolException, IOException {
-                    if (httpClientFactory == null) {
-                        return new DefaultHttpResponseFactory().newHttpResponse(
-                                ver, 200, null);
-                    }
-                    if (client == null) {
-                        client = httpClientFactory.newClient();
-                    }
-                    return client.execute(request);
                 }
 
                 @Override
-                public HttpResponse execute(final HttpGet request)
-                        throws ClientProtocolException, IOException {
-                    if (httpClientFactory == null) {
-                        return new DefaultHttpResponseFactory().newHttpResponse(
-                                ver, 200, null);
-                    }
-                    if (client == null) {
-                        client = httpClientFactory.newClient();
-                    }
-                    return client.execute(request);
+                public boolean requiresLayout() {
+                    return false;
                 }
-            };
-            final ExceptionalAppender bugAppender = new ExceptionalAppender(
-                LanternClientConstants.GET_EXCEPTIONAL_API_KEY, callback, true,
-                Level.WARN, strategy);
-            bugAppender.addSanitizer(new IPv4Sanitizer());
+                
+                @Override
+                public void close() {
+                }
 
-            BasicConfigurator.configure(bugAppender);
+            };
+            
+            final AsyncAppender asyncAppender = new AsyncAppender();
+            asyncAppender.setBlocking(false);
+            asyncAppender.setBufferSize(500);
+            asyncAppender.addAppender(logglyAppender);
+
+            BasicConfigurator.configure(asyncAppender);
             // When shutting down, we may see exceptions because someone is
             // still using the system while we're shutting down.  Let's now
             // send these to Exceptional.
             Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    org.apache.log4j.Logger.getRootLogger().removeAppender(bugAppender);
+                    org.apache.log4j.Logger.getRootLogger().removeAppender(asyncAppender);
                 }
             }, "Disable-Exceptional4J-Logging-on-Shutdown"));
-        } catch (final IOException e) {
-            System.out.println("Exception setting log4j props with file: "
-                    + logFile);
+        } catch (final Exception e) {
+            System.out.println("Exception setting log4j props with file: ");
             e.printStackTrace();
         }
     }
