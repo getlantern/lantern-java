@@ -29,8 +29,8 @@ public class InternalState {
     };
 
     private final Modal[] modalSeqGet = {
-        Modal.authorize, Modal.lanternFriends, Modal.proxiedSites,
-        Modal.finished, Modal.none,
+        Modal.authorize, Modal.sponsorToContinue, Modal.lanternFriends, 
+        Modal.proxiedSites, Modal.finished, Modal.none,
     };
 
     private final Collection<Modal> modalsCompleted = new HashSet<Modal>();
