@@ -5,13 +5,10 @@ import org.jivesoftware.smack.packet.Message;
 import org.kaleidoscope.TrustGraphAdvertisement;
 import org.kaleidoscope.TrustGraphNode;
 import org.kaleidoscope.TrustGraphNodeId;
-import org.lantern.kscope.LanternKscopeAdvertisement;
-import org.lantern.kscope.LanternTrustGraphNode;
 import org.lantern.JsonUtils;
 import org.lantern.LanternConstants;
 import org.lantern.XmppHandler;
 import org.lastbamboo.common.p2p.P2PConstants;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

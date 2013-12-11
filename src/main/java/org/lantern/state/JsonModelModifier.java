@@ -12,8 +12,6 @@ import org.lantern.LanternUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.lantern.state.ModelService;
-
 /**
  * Class that uses reflection to set properties on the state model.
  */

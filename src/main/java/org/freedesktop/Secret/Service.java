@@ -2,6 +2,7 @@ package org.freedesktop.Secret;
 
 import java.util.List;
 import java.util.Map;
+
 import org.freedesktop.DBus;
 import org.freedesktop.dbus.DBusInterface;
 import org.freedesktop.dbus.DBusSignal;

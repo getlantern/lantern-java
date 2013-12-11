@@ -1,12 +1,12 @@
 package org.lantern;
 
-import static org.lantern.Tr.tr;
+import static org.lantern.Tr.*;
 
 import org.lantern.event.Events;
 import org.lantern.event.MessageEvent;
 import org.lantern.state.Model;
-import org.lantern.state.SyncPath;
 import org.lantern.state.Notification.MessageType;
+import org.lantern.state.SyncPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

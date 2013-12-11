@@ -9,7 +9,6 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
-import org.lantern.LanternUtils;
 import org.lantern.Messages;
 import org.lantern.ProxyService;
 import org.lantern.XmppHandler;

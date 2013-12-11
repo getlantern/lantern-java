@@ -1,6 +1,7 @@
 package org.lantern;
 
-import static org.lantern.Tr.tr;
+import static org.lantern.Tr.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

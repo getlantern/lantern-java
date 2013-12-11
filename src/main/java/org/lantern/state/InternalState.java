@@ -1,6 +1,7 @@
 package org.lantern.state;
 
-import static org.lantern.Tr.tr;
+import static org.lantern.Tr.*;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,8 +30,8 @@ public class InternalState {
     };
 
     private final Modal[] modalSeqGet = {
-        Modal.authorize, Modal.sponsorToContinue, Modal.lanternFriends, 
-        Modal.proxiedSites, Modal.finished, Modal.none,
+        Modal.authorize, Modal.lanternFriends, Modal.proxiedSites,
+        Modal.finished, Modal.none,
     };
 
     private final Collection<Modal> modalsCompleted = new HashSet<Modal>();

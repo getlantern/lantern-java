@@ -47,6 +47,8 @@ public class Model {
 
     private boolean showVis = false;
 
+    private boolean showSponsorToContinue = false;
+
     private Modal modal = Modal.welcome;
 
     private Settings settings = new Settings();

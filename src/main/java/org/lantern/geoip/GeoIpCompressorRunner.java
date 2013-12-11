@@ -3,8 +3,6 @@ package org.lantern.geoip;
 import java.io.File;
 import java.io.IOException;
 
-import org.lantern.geoip.GeoIpCompressor;
-
 public class GeoIpCompressorRunner {
     public static void main(String[] args) {
         Args parsedArgs = parseArgs(args);
