@@ -370,9 +370,9 @@ public class Launcher {
                 syncService.start();
                 statsUpdater.start();
                 
-                if (LanternUtils.isFallbackProxy()) {
+//                if (LanternUtils.isFallbackProxy()) {
                     statsReporter.start();
-                }
+//                }
                 
                 gnomeAutoStart();
                 

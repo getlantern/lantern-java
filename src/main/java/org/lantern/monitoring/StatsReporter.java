@@ -5,25 +5,33 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.eclipse.jetty.util.log.Log;
 import org.lantern.ClientStats;
 import org.lantern.LanternService;
 import org.lantern.Stats;
 import org.lantern.state.Model;
+import org.lantern.util.StatHat;
+import org.lantern.util.Threads;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
 import com.google.inject.Inject;
-import com.librato.metrics.LibratoReporter;
 
 /**
  * <p>
  * This class reports statistics to our centralized statistics registry
- * (currently Librato).
+ * (currently StatHat).
  * </p>
  * 
  * <p>
@@ -39,12 +47,7 @@ public class StatsReporter implements LanternService {
     private static final Logger LOG = LoggerFactory
             .getLogger(StatsReporter.class);
 
-    private static final String LIBRATO_USER_NAME = "ox@getlantern.org";
-    // Note - this token only has access to record/view stats and can't do any
-    // admin stuff
-    private static final String LIBRATO_API_TOKEN = "7c10ebf9e817e301cc578141658284bfa9f4a15bf938143b386142f854be0afe";
-
-    private static final int LIBRATO_REPORTING_INTERVAL = 60;
+    private static final int REPORTING_INTERVAL = 60;
 
     private final Model model;
     private final ClientStats stats;
@@ -56,37 +59,62 @@ public class StatsReporter implements LanternService {
 
     private final MetricRegistry metrics = new MetricRegistry();
 
+    private final ScheduledExecutorService executor;
+
     @Inject
     public StatsReporter(Model model, ClientStats stats) {
         this.model = model;
         this.stats = stats;
+        this.executor = Executors.newSingleThreadScheduledExecutor(Threads
+                .newNonDaemonThreadFactory("StatHat Reporter"));
         initializeSystemMetrics();
         initializeLanternMetrics();
     }
 
     @Override
     public void start() {
-        startReportingMetricsToLibrato();
+        startReportingMetrics();
     }
 
     @Override
     public void stop() {
-        // do nothing
+        executor.shutdownNow();
+        try {
+            executor.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException ie) {
+            Log.info("Executor did not shut down within 10 seconds");
+        }
     }
 
-    private void startReportingMetricsToLibrato() {
-        LOG.debug("Starting to report metrics to Librato every {} seconds",
-                LIBRATO_REPORTING_INTERVAL);
-        LibratoReporter
-                .enable(
-                        LibratoReporter
-                                .builder(
-                                        metrics,
-                                        LIBRATO_USER_NAME,
-                                        LIBRATO_API_TOKEN,
-                                        "Proxy-" + model.getInstanceId()),
-                        LIBRATO_REPORTING_INTERVAL,
-                        TimeUnit.SECONDS);
+    private void startReportingMetrics() {
+        LOG.debug("Starting to report metrics to StatHat every {} seconds",
+                REPORTING_INTERVAL);
+        executor.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Double now = new Double(System.currentTimeMillis() / 1000.0);
+                    List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+                    for (Map.Entry<String, Gauge> gauge : metrics.getGauges()
+                            .entrySet()) {
+                        if (gauge.getValue().getValue() != null) {
+                            Map<String, Object> value = new HashMap<String, Object>();
+                            value.put(
+                                    "stat",
+                                    model.getInstanceId() + ": "
+                                            + gauge.getKey());
+                            value.put("value", ((Number) gauge.getValue()
+                                    .getValue()).doubleValue());
+                            value.put("t", now);
+                            values.add(value);
+                        }
+                    }
+                    StatHat.ezPostValues(values);
+                } catch (Throwable t) {
+                    Log.warn("Unable to report metrics", t);
+                }
+            }
+        }, 0, 60, TimeUnit.SECONDS);
     }
 
     /**
@@ -155,13 +183,15 @@ public class StatsReporter implements LanternService {
      * Add gauges for Lantern-specific statistics
      */
     private void initializeLanternMetrics() {
-        metrics.register("LanternStat_countOfDistinctProxiedClientAddresses", new Gauge<Long>() {
-            @Override
-            public Long getValue() {
-                return stats.getCountOfDistinctProxiedClientAddresses(); 
-            }
-        });
-        // TODO: if we want to report Lantern metrics through Librato, change the
+        metrics.register("LanternStat_countOfDistinctProxiedClientAddresses",
+                new Gauge<Long>() {
+                    @Override
+                    public Long getValue() {
+                        return stats.getCountOfDistinctProxiedClientAddresses();
+                    }
+                });
+        // TODO: if we want to report Lantern metrics through Librato, change
+        // the
         // below to true
         if (false) {
             initializeAllLanternMetrics();
