@@ -65,8 +65,8 @@ public class GiveModeProxy extends AbstractHttpProxyServerAdapter {
                 .withTransportProtocol(model.getSettings().getProxyProtocol())
                 .withAllowLocalOnly(false)
                 .withListenOnAllAddresses(false)
-                .withSslEngineSource(new SimpleSslEngineSource("../too-many-secrets/littleproxy_keystore.jks"))
-                .withAuthenticateSslClients(false && !LanternUtils.isFallbackProxy())
+                .withSslEngineSource(sslEngineSource)
+                .withAuthenticateSslClients(!LanternUtils.isFallbackProxy())
                 .withServerResolver(new DefaultHostResolver() {
                     @Override
                     public InetSocketAddress resolve(String host, int port)
