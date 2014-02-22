@@ -128,6 +128,12 @@ public class DefaultModelService implements ModelService {
             throw new RuntimeException("Error proxying all sites!", e);
         }
     }
+    
+    @Override
+    public void setUseFamilyShield(boolean useFamilyShield) {
+        model.getSettings().setUseFamilyShield(useFamilyShield);
+        Events.sync(SyncPath.USE_FAMILY_SHIELD, useFamilyShield);
+    }
 
     @Override
     public void setSystemProxy(final boolean isSystemProxy) {

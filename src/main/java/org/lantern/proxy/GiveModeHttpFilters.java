@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.lantern.util.FamilyShield;
 import org.lantern.util.RandomLengthString;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.TransportProtocol;
@@ -46,18 +47,21 @@ public class GiveModeHttpFilters extends HttpFiltersAdapter {
     private final String host;
     private final int port;
     private final String expectedAuthToken;
+    private final boolean shouldUseFamilyShield;
 
     public GiveModeHttpFilters(HttpRequest originalRequest,
             ChannelHandlerContext ctx,
             String host,
             int port,
             TransportProtocol transportProtocol,
-            String authToken) {
+            String authToken,
+            boolean shouldUseFamilyShield) {
         super(originalRequest, ctx);
         this.host = host;
         this.port = port;
         this.shouldMimicApache = TransportProtocol.TCP == transportProtocol;
         this.expectedAuthToken = authToken;
+        this.shouldUseFamilyShield = shouldUseFamilyShield;
     }
 
     /**
@@ -74,7 +78,7 @@ public class GiveModeHttpFilters extends HttpFiltersAdapter {
             host = hostAndPort;
         }
         try {
-            final InetAddress ia = InetAddress.getByName(host);
+            final InetAddress ia = lookupHost(host);
             HttpResponse response = checkAuthToken(httpObject);
             if (response == null) {
                 removeRandomLengthHeader(httpObject);
@@ -113,13 +117,22 @@ public class GiveModeHttpFilters extends HttpFiltersAdapter {
         return super.responsePost(httpObject);
     }
 
+    private InetAddress lookupHost(String host) throws UnknownHostException {
+        if (shouldUseFamilyShield) {
+            return FamilyShield.lookup(host);
+        } else {
+            return InetAddress.getByName(host);
+        }
+    }
+
     private HttpResponse checkAuthToken(HttpObject httpObject) {
         if (httpObject instanceof HttpRequest) {
             HttpRequest req = (HttpRequest) httpObject;
             String authToken = req
                     .headers()
                     .get(BaseChainedProxy.X_LANTERN_AUTH_TOKEN);
-            if (expectedAuthToken != null && !expectedAuthToken.equals(authToken)) {
+            if (expectedAuthToken != null
+                    && !expectedAuthToken.equals(authToken)) {
                 if (shouldMimicApache) {
                     return mimicApache(req, port);
                 } else {
