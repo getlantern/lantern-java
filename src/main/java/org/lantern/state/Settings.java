@@ -101,6 +101,8 @@ public class Settings {
 
     private String configUrl;
     
+    private boolean useFamilyShield = false;
+    
     public Settings() {
         whitelist.applyDefaultEntries();
     }
@@ -425,5 +427,14 @@ public class Settings {
 
     public void setConfigUrl(String configUrl) {
         this.configUrl = configUrl;
+    }
+    
+    @JsonView({ Run.class, Persistent.class })
+    public boolean isUseFamilyShield() {
+        return useFamilyShield;
+    }
+
+    public void setUseFamilyShield(boolean useFamilyShield) {
+        this.useFamilyShield = useFamilyShield;
     }
 }

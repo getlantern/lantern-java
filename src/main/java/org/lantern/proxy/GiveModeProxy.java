@@ -3,7 +3,9 @@ package org.lantern.proxy;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpRequest;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
 import javax.net.ssl.SSLSession;
 
@@ -15,7 +17,9 @@ import org.lantern.event.ModeChangedEvent;
 import org.lantern.state.Mode;
 import org.lantern.state.Model;
 import org.lantern.state.Peer;
+import org.lantern.util.FamilyShield;
 import org.littleshoot.proxy.ActivityTrackerAdapter;
+import org.littleshoot.proxy.DefaultHostResolver;
 import org.littleshoot.proxy.FlowContext;
 import org.littleshoot.proxy.FullFlowContext;
 import org.littleshoot.proxy.HttpFilters;
@@ -62,6 +66,18 @@ public class GiveModeProxy extends AbstractHttpProxyServerAdapter {
                 .withListenOnAllAddresses(false)
                 .withSslEngineSource(sslEngineSource)
                 .withAuthenticateSslClients(!LanternUtils.isFallbackProxy())
+                .withServerResolver(new DefaultHostResolver() {
+                    @Override
+                    public InetSocketAddress resolve(String host, int port)
+                            throws UnknownHostException {
+                        if (model.getSettings().isUseFamilyShield()) {
+                            InetAddress addr = FamilyShield.lookup(host);
+                            return new InetSocketAddress(addr, 80);
+                        } else {
+                            return super.resolve(host, port);
+                        }
+                    }
+                })
 
                 // Use a filter to deny requests to non-public ips
                 .withFiltersSource(new HttpFiltersSourceAdapter() {

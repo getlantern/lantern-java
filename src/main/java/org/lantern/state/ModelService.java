@@ -33,6 +33,8 @@ public interface ModelService {
     //void setSavePassword(boolean savePassword);
 
     void setProxyAllSites(boolean proxyAll);
+    
+    void setUseFamilyShield(boolean useFamilyShield);
 
     void setMode(Mode mode);
 

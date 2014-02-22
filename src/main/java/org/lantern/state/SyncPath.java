@@ -27,6 +27,7 @@ public enum SyncPath {
     AUTO_REPORT("settings/autoReport"),
     SHOW_FRIEND_PROMPTS("settings/showFriendPrompts"),
     PROXY_ALL_SITES("settings/proxyAllSites"),
+    USE_FAMILY_SHIELD("settings/useFamilyShield"),
     SYSTEMPROXY("settings/systemProxy"),
     LOCATION("location"),
     TRANSFERS("transfers"),
