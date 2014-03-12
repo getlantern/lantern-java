@@ -72,4 +72,6 @@ public interface XmppHandler extends LanternService {
     //void sendPacket(Packet packet);
     
     ProxyTracker getProxyTracker();
+
+    String getAnonJid();
 }

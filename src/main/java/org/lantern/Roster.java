@@ -383,7 +383,7 @@ public class Roster implements RosterListener {
         final InetAddress address = 
             new PublicIpAddress().getPublicIpAddress();
 
-        final String user = xmppHandler.getJid();
+        final String user = xmppHandler.getAnonJid();
         final LanternKscopeAdvertisement ad;
         final MappedServerSocket ms = xmppHandler.getMappedServer();
         if (ms.isPortMapped()) {

@@ -184,6 +184,10 @@ public class DefaultXmppHandler implements XmppHandler,
 
     private final Censored censored;
 
+    private volatile String anonJid;
+    private static final long ANON_JID_TIMEOUT = 10000;
+
+
     /**
      * Creates a new XMPP handler.
      */
@@ -267,6 +271,7 @@ public class DefaultXmppHandler implements XmppHandler,
                 return;
             }
             this.roster.onRoster(this);
+            this.requestAnonJID();
             break;
         case notConnected:
             this.roster.reset();
@@ -277,6 +282,19 @@ public class DefaultXmppHandler implements XmppHandler,
             this.roster.reset();
             break;
         }
+    }
+
+    private void requestAnonJID() {
+        // XXX TODO: pin the lantern.io cert and make sure the cert served in
+        // our c2s connection matches
+        // XXX in manual testing, gmail.com xmpp servers did not let us
+        // chat to axrelay unless we added it to our roster.
+        // this.addToRoster(LanternClientConstants.AXRELAY_JID);
+        // XXX google apps domains xmpp servers did not let us chat to
+        // axrelay period. maybe required a resource in the jid.
+        Message msg = new Message(LanternClientConstants.AXRELAY_JID);
+        msg.setBody(LanternClientConstants.AXRELAY_CMD_WHOAMI);
+        this.sendPacket(msg);
     }
 
     @Subscribe
@@ -601,12 +619,23 @@ public class DefaultXmppHandler implements XmppHandler,
                     // Allow subscription requests from the lantern bot.
                     if (LanternUtils.isLanternHub(from)) {
                         handleHubMessage(pack, pres, from, type);
+                    } else if (LanternUtils.isAxrelay(from)) {
+                        handleAxrelayMessage(pack, pres, from, type);
                     } else {
                         handlePeerMessage(pack, pres, from, type);
                     }
                 }
             };
             xmppProcessors.execute(runner);
+        }
+
+        private void handleAxrelayMessage(Packet pack, Presence pres, String from, Type type) {
+            // axrelay should only send us regular messages with our anon jid in the body
+            Message msg = (Message) pack;
+            String anonJID = msg.getBody();
+            LOG.debug("Got /whoami response from axrelay: " + anonJID);
+            // TODO: make sure this is in fact an anonymized jid
+            setAnonJid(anonJID);
         }
 
         private void handlePeerMessage(final Packet pack,
@@ -1016,7 +1045,7 @@ public class DefaultXmppHandler implements XmppHandler,
             XmppMessageConstants.INFO_RESPONSE_TYPE);
         //msg.setProperty(P2PConstants.MAC, this.model.getNodeId());
         msg.setProperty(P2PConstants.CERT,
-            this.keyStoreManager.getBase64Cert(getJid()));
+            this.keyStoreManager.getBase64Cert(getAnonJid()));
         this.client.get().getXmppConnection().sendPacket(msg);
     }
 
@@ -1059,6 +1088,29 @@ public class DefaultXmppHandler implements XmppHandler,
         return "";
     }
 
+    public synchronized String getAnonJid() {
+        // XXX uncomment out if google will only allow this to work for
+        // gmail.com addresses
+        //if (!StringUtils.contains(getJid(), "@gmail.com")) {
+        //    return getJid();
+        //}
+        if (StringUtils.isBlank(anonJid)) {
+            try {
+                anonJid.wait(ANON_JID_TIMEOUT);
+                return anonJid;
+            } catch (InterruptedException e) {
+                // XXX TODO: retry with backoff
+                throw new RuntimeException("hit anonJID timeout");
+            }
+        }
+        return anonJid;
+    }
+
+    public synchronized void setAnonJid(String anonJid) {
+        this.anonJid = anonJid;
+        this.anonJid.notifyAll();
+    }
+
     private void sendAndRequestCert(final String peer) {
         LOG.debug("Requesting cert from {}", peer);
         final Message msg = new Message();
@@ -1069,7 +1121,7 @@ public class DefaultXmppHandler implements XmppHandler,
         // Set our certificate in the request as well -- we want to make
         // extra sure these get through!
         //msg.setProperty(P2PConstants.MAC, this.model.getNodeId());
-        String cert = this.keyStoreManager.getBase64Cert(getJid());
+        String cert = this.keyStoreManager.getBase64Cert(getAnonJid());
         msg.setProperty(P2PConstants.CERT, cert);
         if (isLoggedIn()) {
             LOG.debug("Sending cert {}", cert);

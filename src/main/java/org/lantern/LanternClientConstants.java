@@ -139,6 +139,9 @@ public class LanternClientConstants {
     // Not final because it may be set from the command line for debugging.
     public static String LANTERN_JID;
 
+    public static final String AXRELAY_JID = "axr.lantern.io";
+    public static final String AXRELAY_CMD_WHOAMI = "/whoami";
+
     // Not final because it may be set from the command line for debugging.
     public static String STATS_URL;
     

@@ -434,12 +434,21 @@ public class LanternUtils {
         return null;
     }
 
-    public static boolean isLanternHub(final String jabberid) {
+    public static boolean isLanternHub(final String jid) {
+        return isJIDsMatch(jid, LanternClientConstants.LANTERN_JID);
+    }
+
+    public static boolean isAxrelay(final String jid) {
+        return isJIDsMatch(jid, LanternClientConstants.AXRELAY_JID);
+    }
+
+    public static boolean isJIDsMatch(final String jid1, final String jid2) {
         try {
-            final String userid = LanternXmppUtils.jidToEmail(jabberid);
-            return LanternClientConstants.LANTERN_JID.equals(userid);
+            final String email1 = LanternXmppUtils.jidToEmail(jid1);
+            final String email2 = LanternXmppUtils.jidToEmail(jid2);
+            return StringUtils.equals(email1, email2);
         } catch (EmailAddressUtils.NormalizationException e) {
-            LOG.warn("Unnormalizable jabberid: " + jabberid);
+            LOG.warn("Unnormalizable jabberid: " + jid1);
             // Since the controller's id is normalizable, this must be
             // something else.
             return false;
