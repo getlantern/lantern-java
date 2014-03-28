@@ -69,7 +69,7 @@ public class CometDSyncStrategy implements SyncStrategy {
                 ch.publish(ops);
                 long publishTime = System.currentTimeMillis() - prePublish;
                 long delta = System.currentTimeMillis() - start;
-                log.warn("Sync performed for path {} in {} ms.  Jsonification {} bytes took {} ms.  Publishing took {} ms.", path, delta, jsonSize, jsonTime, publishTime);
+                log.warn("Sync performed for path {} in {} ms.  Jsonification of {} bytes took {} ms.  Publishing took {} ms.", path, delta, jsonSize, jsonTime, publishTime);
             }
         });
     }
