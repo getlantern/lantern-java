@@ -122,7 +122,6 @@ public class ProxyInfo {
                 boundFrom, true, protocol, authToken, cert, pt);
     }
 
-    //@JsonIgnore
     public URI getJid() {
         return jid;
     }
@@ -148,10 +147,12 @@ public class ProxyInfo {
      * 
      * @return
      */
+    @JsonIgnore
     public InetSocketAddress getAddress() {
         return useLanAddress ? getLanAddress() : getWanAddress();
     }
 
+    @JsonIgnore
     public InetSocketAddress getWanAddress() {
         if (wanHost == null || wanPort == 0) {
             return null;
@@ -190,6 +191,7 @@ public class ProxyInfo {
         this.wanPort = port;
     }
 
+    @JsonIgnore
     public InetSocketAddress getLanAddress() {
         if (wanHost == null || wanPort == 0) {
             return null;
@@ -219,6 +221,7 @@ public class ProxyInfo {
         this.lanPort = lanPort;
     }
 
+    @JsonIgnore
     public InetSocketAddress getBoundFrom() {
         return boundFrom;
     }
