@@ -51,7 +51,7 @@ public class CometDSyncStrategy implements SyncStrategy {
         final SyncData data = new SyncData(op.toString().toLowerCase(), path, value);
         final List<SyncData> ops = Arrays.asList(data);
         long preJson = System.currentTimeMillis();
-        final String json = JsonUtils.jsonify(ops);
+        final String json = JsonUtils.jsonify(ops, CometDSyncStrategy.class);
         final long jsonTime = System.currentTimeMillis() - preJson;
         final int jsonSize = json.length(); 
 
