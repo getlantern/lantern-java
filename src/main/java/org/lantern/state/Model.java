@@ -111,19 +111,22 @@ public class Model {
 //        return this.peerCollector.getPeers().values();
 //    }
 
+    @JsonIgnore
     public SystemData getSystem() {
         return system;
     }
 
+    @JsonIgnore
     public Version getVersion() {
         return version;
     }
 
+    @JsonIgnore
     public Location getLocation() {
         return location;
     }
 
-    
+    @JsonIgnore
     @JsonView({Persistent.class})
     public Modal getModal() {
         return modal;
@@ -133,7 +136,7 @@ public class Model {
         this.modal = modal;
     }
 
-    
+    @JsonIgnore
     public Settings getSettings() {
         return settings;
     }
@@ -142,7 +145,7 @@ public class Model {
         this.settings = settings;
     }
 
-    
+    @JsonIgnore
     @JsonView({Persistent.class})
     public boolean isShowVis() {
         return showVis;
@@ -152,7 +155,7 @@ public class Model {
         this.showVis = showVis;
     }
 
-    
+    @JsonIgnore
     public Connectivity getConnectivity() {
         return connectivity;
     }
@@ -161,7 +164,7 @@ public class Model {
         this.connectivity = connectivity;
     }
 
-    
+    @JsonIgnore
     //@JsonView({Run.class})
     public boolean isDev() {
         return LanternUtils.isDevMode();
@@ -181,7 +184,7 @@ public class Model {
         }
     }
 
-    
+    @JsonIgnore
     @JsonView({Persistent.class})
     public Profile getProfile() {
         return profile;
@@ -191,7 +194,7 @@ public class Model {
         this.profile = profile;
     }
 
-    
+    @JsonIgnore
     public boolean isLaunchd() {
         return launchd;
     }
@@ -200,7 +203,7 @@ public class Model {
         this.launchd = launchd;
     }
 
-    
+    @JsonIgnore
     @JsonView({Persistent.class})
     public String getNodeId() {
         return nodeId;
@@ -210,7 +213,7 @@ public class Model {
         this.nodeId = nodeId;
     }
 
-    
+    @JsonIgnore
     //@JsonView({Run.class})
     public int getNproxiedSitesMax() {
         return nproxiedSitesMax;
@@ -239,7 +242,7 @@ public class Model {
 //    }
 
     /*
-    
+    @JsonIgnore
     public FriendsHandler getFriends() {
         return friends;
     }
@@ -249,7 +252,7 @@ public class Model {
     }
     */
 
-    
+    @JsonIgnore
     @JsonView({Persistent.class})
     public Peers getPeerCollector() {
         return peerCollector;
@@ -263,7 +266,7 @@ public class Model {
         notifications.remove(notification);
     }
 
-    
+    @JsonIgnore
     public Map<Integer, Notification> getNotifications() {
         return notifications;
     }
@@ -291,7 +294,7 @@ public class Model {
         notifications.clear();
     }
 
-    
+    @JsonIgnore
     //@JsonView({Run.class})
     public Roster getRoster() {
         return roster;
@@ -321,7 +324,7 @@ public class Model {
 
     }
 
-    
+    @JsonIgnore
     public boolean isEverGetMode() {
         return isEverGetMode;
     }
@@ -330,7 +333,7 @@ public class Model {
         this.isEverGetMode = b;
     }
 
-    //
+    @JsonIgnore
     public String getXsrfToken() {
         if (xsrfToken == null) {
             byte[] bytes = new byte[16];
@@ -344,7 +347,7 @@ public class Model {
         xsrfToken = token;
     }
 
-    
+    @JsonIgnore
     public CountryService getCountryService() {
         return countryService;
     }
@@ -353,7 +356,7 @@ public class Model {
         this.countryService = countryService;
     }
 
-    
+    @JsonIgnore
     @JsonView({Persistent.class})
     public boolean isWelcomeMessageShown() {
         return welcomeMessageShown;
@@ -370,7 +373,7 @@ public class Model {
         return Hex.encodeHexString(instanceIdBytes);
     }
 
-    //
+    //@JsonIgnore
     @JsonView({Persistent.class})
     public String getInstanceId() {
         if (instanceId == null) {
@@ -388,7 +391,7 @@ public class Model {
      * 
      * @return
      */
-    
+    @JsonIgnore
     @JsonView({ Persistent.class })
     public String getUserGuid() {
         return userGuid;
@@ -398,7 +401,7 @@ public class Model {
         this.userGuid = userGuid;
     }
 
-    
+    @JsonIgnore
     @JsonView({Persistent.class})
     public String getReportIp() {
         return reportIp;
@@ -412,7 +415,7 @@ public class Model {
         this.friends = friends;
     }
     
-    
+    @JsonIgnore
     //@JsonView({Run.class})
     public Collection<ClientFriend> getFriends() {
         return this.friends;
