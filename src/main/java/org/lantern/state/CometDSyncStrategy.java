@@ -53,23 +53,12 @@ public class CometDSyncStrategy implements SyncStrategy {
             public void run() {
                 final SyncData data = new SyncData(op.toString().toLowerCase(), path, value);
                 final List<SyncData> ops = Arrays.asList(data);
-                long preJson = System.currentTimeMillis();
-                final String json = JsonUtils.jsonify(ops, Run.class);
-                final long jsonTime = System.currentTimeMillis() - preJson;
-                final int jsonSize = json.length(); 
-
-                if (!path.equals(SyncPath.ROSTER.getPath())) {
-                    log.debug("Sending state to frontend:\n{}", json);
-                    log.debug("Synced object: {}", value);
-                } else {
-                    log.debug("SYNCING ROSTER -- NOT LOGGING FULL");
-                    log.debug("Sending state to frontend:\n{}", json);
-                }
+                
                 long prePublish = System.currentTimeMillis();
                 ch.publish(ops);
                 long publishTime = System.currentTimeMillis() - prePublish;
                 long delta = System.currentTimeMillis() - start;
-                log.warn("Sync performed for path {} in {} ms.  Jsonification of {} bytes took {} ms.  Publishing took {} ms.", path, delta, jsonSize, jsonTime, publishTime);
+                log.warn("Sync performed for path {} in {} ms.  Publishing took {} ms.", path, delta, publishTime);
             }
         });
     }
