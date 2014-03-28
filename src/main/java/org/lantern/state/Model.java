@@ -212,10 +212,10 @@ public class Model {
         this.nproxiedSitesMax = nproxiedSitesMax;
     }
 
-    @JsonView({Run.class})
-    public Map<String, Country> getCountries() {
-        return countryService.allCountries();
-    }
+//    @JsonView({Run.class})
+//    public Map<String, Country> getCountries() {
+//        return countryService.allCountries();
+//    }
 
     public void setCountries(Map<String, Country> countries) {
         //nothing to do here; we want to use the countryService
