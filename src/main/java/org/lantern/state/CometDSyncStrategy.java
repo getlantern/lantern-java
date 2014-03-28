@@ -37,6 +37,7 @@ public class CometDSyncStrategy implements SyncStrategy {
 
     @Override
     public void sync(final ServerSession session, final SyncType op, final String path, final Object value) {
+        final long start = System.currentTimeMillis();
         log.info("SYNCING");
         if (session == null) {
             log.info("No session...not syncing");
@@ -62,7 +63,8 @@ public class CometDSyncStrategy implements SyncStrategy {
             @Override
             public void run() {
                 ch.publish(ops);
-                log.debug("Sync performed");
+                long delta = System.currentTimeMillis() - start;
+                log.warn("Sync performed for path {} in {} ms", path, delta);
             }
         });
     }
