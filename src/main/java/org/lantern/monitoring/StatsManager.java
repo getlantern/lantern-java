@@ -90,13 +90,13 @@ public class StatsManager implements LanternService {
                             "country");
                     if (countryDim != null) {
 //                        model.setGlobalStats(countryDim.get("total"));
-                        for (Country country : model.getCountries().values()) {
-                            country.setStats(countryDim.get(
-                                    country.getCode().toLowerCase()));
-                        }
+//                        for (Country country : model.getCountries().values()) {
+//                            country.setStats(countryDim.get(
+//                                    country.getCode().toLowerCase()));
+//                        }
 //                        Events.sync(SyncPath.GLOBAL_STATS,
 //                                model.getGlobalStats());
-                        Events.sync(SyncPath.COUNTRIES, model.getCountries());
+//                        Events.sync(SyncPath.COUNTRIES, model.getCountries());
                     }
                 }
             } catch (Exception e) {
