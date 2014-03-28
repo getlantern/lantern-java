@@ -122,6 +122,7 @@ public class ProxyInfo {
                 boundFrom, true, protocol, authToken, cert, pt);
     }
 
+    //@JsonIgnore
     public URI getJid() {
         return jid;
     }

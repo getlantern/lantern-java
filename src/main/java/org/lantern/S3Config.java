@@ -3,7 +3,6 @@ package org.lantern;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.lantern.proxy.FallbackProxy;
 
@@ -31,7 +30,6 @@ public class S3Config {
     public int getMaxpoll() {
         return maxpoll;
     }
-    @JsonIgnore
     public Collection<FallbackProxy> getFallbacks() {
         return fallbacks;
     }
