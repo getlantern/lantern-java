@@ -123,7 +123,7 @@ public class Model {
         return location;
     }
 
-    @JsonView({Run.class, Persistent.class})
+    @JsonView({Persistent.class})
     public Modal getModal() {
         return modal;
     }
