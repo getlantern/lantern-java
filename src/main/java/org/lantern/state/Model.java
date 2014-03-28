@@ -157,12 +157,12 @@ public class Model {
         this.connectivity = connectivity;
     }
 
-    @JsonView({Run.class})
+    //@JsonView({Run.class})
     public boolean isDev() {
         return LanternUtils.isDevMode();
     }
 
-    @JsonView({Run.class, Persistent.class})
+    @JsonView({Persistent.class})
     public boolean isSetupComplete() {
         return setupComplete;
     }
@@ -176,7 +176,7 @@ public class Model {
         }
     }
 
-    @JsonView({Run.class, Persistent.class})
+    @JsonView({Persistent.class})
     public Profile getProfile() {
         return profile;
     }
@@ -194,7 +194,7 @@ public class Model {
         this.launchd = launchd;
     }
 
-    @JsonView({Run.class, Persistent.class})
+    @JsonView({Persistent.class})
     public String getNodeId() {
         return nodeId;
     }
@@ -203,7 +203,7 @@ public class Model {
         this.nodeId = nodeId;
     }
 
-    @JsonView({Run.class})
+    //@JsonView({Run.class})
     public int getNproxiedSitesMax() {
         return nproxiedSitesMax;
     }
@@ -281,7 +281,7 @@ public class Model {
         notifications.clear();
     }
 
-    @JsonView({Run.class})
+    //@JsonView({Run.class})
     @JsonSerialize(using=RosterSerializer.class)
     @JsonDeserialize(using=RosterDeserializer.class)
     public Roster getRoster() {
@@ -397,7 +397,7 @@ public class Model {
         this.friends = friends;
     }
     
-    @JsonView({Run.class})
+    //@JsonView({Run.class})
     public Collection<ClientFriend> getFriends() {
         return this.friends;
     }
