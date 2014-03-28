@@ -62,9 +62,11 @@ public class CometDSyncStrategy implements SyncStrategy {
         this.exec.execute(new Runnable() {
             @Override
             public void run() {
+                long prePublish = System.currentTimeMillis();
                 ch.publish(ops);
+                long publishTime = System.currentTimeMillis() - prePublish;
                 long delta = System.currentTimeMillis() - start;
-                log.warn("Sync performed for path {} in {} ms", path, delta);
+                log.warn("Sync performed for path {} in {} ms.  Publishing took {} ms.", path, delta, publishTime);
             }
         });
     }
