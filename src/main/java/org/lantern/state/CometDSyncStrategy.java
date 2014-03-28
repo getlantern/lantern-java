@@ -48,23 +48,23 @@ public class CometDSyncStrategy implements SyncStrategy {
         final ClientSessionChannel ch =
             session.getLocalSession().getChannel("/sync");
 
-        final SyncData data = new SyncData(op.toString().toLowerCase(), path, value);
-        final List<SyncData> ops = Arrays.asList(data);
-        long preJson = System.currentTimeMillis();
-        final String json = JsonUtils.jsonify(ops, CometDSyncStrategy.class);
-        final long jsonTime = System.currentTimeMillis() - preJson;
-        final int jsonSize = json.length(); 
-
-        if (!path.equals(SyncPath.ROSTER.getPath())) {
-            log.debug("Sending state to frontend:\n{}", json);
-            log.debug("Synced object: {}", value);
-        } else {
-            log.debug("SYNCING ROSTER -- NOT LOGGING FULL");
-            log.debug("Sending state to frontend:\n{}", json);
-        }
         this.exec.execute(new Runnable() {
             @Override
             public void run() {
+                final SyncData data = new SyncData(op.toString().toLowerCase(), path, value);
+                final List<SyncData> ops = Arrays.asList(data);
+                long preJson = System.currentTimeMillis();
+                final String json = JsonUtils.jsonify(ops, Run.class);
+                final long jsonTime = System.currentTimeMillis() - preJson;
+                final int jsonSize = json.length(); 
+
+                if (!path.equals(SyncPath.ROSTER.getPath())) {
+                    log.debug("Sending state to frontend:\n{}", json);
+                    log.debug("Synced object: {}", value);
+                } else {
+                    log.debug("SYNCING ROSTER -- NOT LOGGING FULL");
+                    log.debug("Sending state to frontend:\n{}", json);
+                }
                 long prePublish = System.currentTimeMillis();
                 ch.publish(ops);
                 long publishTime = System.currentTimeMillis() - prePublish;
