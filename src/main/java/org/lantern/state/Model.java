@@ -373,7 +373,7 @@ public class Model {
         return Hex.encodeHexString(instanceIdBytes);
     }
 
-    //@JsonIgnore
+    @JsonIgnore
     @JsonView({Persistent.class})
     public String getInstanceId() {
         if (instanceId == null) {
