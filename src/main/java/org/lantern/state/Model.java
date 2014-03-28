@@ -140,7 +140,7 @@ public class Model {
         this.settings = settings;
     }
 
-    @JsonView({Run.class, Persistent.class})
+    @JsonView({Persistent.class})
     public boolean isShowVis() {
         return showVis;
     }
