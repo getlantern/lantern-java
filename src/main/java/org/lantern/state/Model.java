@@ -429,7 +429,6 @@ public class Model {
         this.remainingFriendingQuota = remainingFriendingQuota;
     }
 
-    @JsonIgnore
     public S3Config getS3Config() {
         return this.s3Config;
     }
