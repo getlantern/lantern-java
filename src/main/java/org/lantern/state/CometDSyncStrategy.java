@@ -53,6 +53,7 @@ public class CometDSyncStrategy implements SyncStrategy {
         long preJson = System.currentTimeMillis();
         final String json = JsonUtils.jsonify(ops, Run.class);
         final long jsonTime = System.currentTimeMillis() - preJson;
+        final int jsonSize = json.length(); 
 
         if (!path.equals(SyncPath.ROSTER.getPath())) {
             log.debug("Sending state to frontend:\n{}", json);
@@ -68,7 +69,7 @@ public class CometDSyncStrategy implements SyncStrategy {
                 ch.publish(ops);
                 long publishTime = System.currentTimeMillis() - prePublish;
                 long delta = System.currentTimeMillis() - start;
-                log.warn("Sync performed for path {} in {} ms.  Jsonification took {} ms.  Publishing took {} ms.", path, delta, jsonTime, publishTime);
+                log.warn("Sync performed for path {} in {} ms.  Jsonification {} bytes took {} ms.  Publishing took {} ms.", path, delta, jsonSize, jsonTime, publishTime);
             }
         });
     }
