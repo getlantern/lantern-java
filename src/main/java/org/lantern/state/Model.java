@@ -71,7 +71,7 @@ public class Model {
 
     private Roster roster;
 
-    private volatile InstanceStats instanceStats = new InstanceStats();
+    //private volatile InstanceStats instanceStats = new InstanceStats();
 
     private boolean isEverGetMode;
 
@@ -101,11 +101,10 @@ public class Model {
 
     private S3Config s3Config = new S3Config();
     
-    @JsonIgnore
-    @JsonView({Run.class, Persistent.class})
-    public InstanceStats getInstanceStats() {
-        return instanceStats;
-    }
+//    @JsonView({Run.class, Persistent.class})
+//    public InstanceStats getInstanceStats() {
+//        return instanceStats;
+//    }
 
     @JsonView({Run.class})
     public Collection<Peer> getPeers() {
@@ -293,9 +292,9 @@ public class Model {
         this.roster = roster;
     }
 
-    public void setInstanceStats(InstanceStats instanceStats) {
-        this.instanceStats = instanceStats;
-    }
+//    public void setInstanceStats(InstanceStats instanceStats) {
+//        this.instanceStats = instanceStats;
+//    }
 
     @SuppressWarnings("unchecked")
     public void loadFrom(Model newModel) {

@@ -198,7 +198,7 @@ public class Upnp implements org.lastbamboo.common.portmapping.UpnpService {
                     + zeroTerminatedString(intPort.array()) + " ("
                     + zeroTerminatedString(desc.array()) + ")");
 
-            model.getInstanceStats().setUsingUPnP(true);
+            //model.getInstanceStats().setUsingUPnP(true);
             
             final UpnpMapping mapping = new UpnpMapping();
             mapping.prot = prot;

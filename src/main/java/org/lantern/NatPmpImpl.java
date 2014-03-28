@@ -193,12 +193,12 @@ public class NatPmpImpl implements NatPmpService {
                     localPort, response.mappedpublicport);
             map.externalPort = response.mappedpublicport;
             portMapListener.onPortMap(map.externalPort);
-            model.getInstanceStats().setUsingNATPMP(true);
+            //model.getInstanceStats().setUsingNATPMP(true);
         } else {
             log.debug("Did not receive port mapping response for local {}", 
                     localPort);
             portMapListener.onPortMapError();
-            model.getInstanceStats().setUsingNATPMP(false);
+            //model.getInstanceStats().setUsingNATPMP(false);
         }
         // We have to add it whether it succeeded or not to keep the indices
         // in sync.

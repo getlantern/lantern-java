@@ -60,7 +60,7 @@ public class GiveModeProxy extends AbstractHttpProxyServerAdapter {
             final SslEngineSource sslEngineSource,
             final PeerFactory peerFactory,
             final GeoIpLookupService lookupService) {
-        final InstanceStats stats = model.getInstanceStats();
+        final InstanceStats stats = new InstanceStats();
         final Settings settings = model.getSettings();
         int serverPort = settings.getServerPort();
         boolean allowLocalOnly = false;

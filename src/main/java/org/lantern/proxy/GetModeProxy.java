@@ -24,7 +24,7 @@ public class GetModeProxy extends AbstractHttpProxyServerAdapter {
     public GetModeProxy(
             Model model,
             ChainedProxyManager chainedProxyManager) {
-        final InstanceStats stats = model.getInstanceStats(); 
+        final InstanceStats stats = new InstanceStats(); 
         setBootstrap(DefaultHttpProxyServer
                 .bootstrap()
                 .withName("GetModeProxy")
