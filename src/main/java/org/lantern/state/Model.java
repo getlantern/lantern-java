@@ -333,7 +333,7 @@ public class Model {
         this.isEverGetMode = b;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     public String getXsrfToken() {
         if (xsrfToken == null) {
             byte[] bytes = new byte[16];
@@ -373,7 +373,7 @@ public class Model {
         return Hex.encodeHexString(instanceIdBytes);
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     @JsonView({Persistent.class})
     public String getInstanceId() {
         if (instanceId == null) {
