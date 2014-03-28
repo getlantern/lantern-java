@@ -61,7 +61,7 @@ public class Model {
 
     private String nodeId = String.valueOf(new SecureRandom().nextLong());
 
-    private Stats globalStats = new Stats();
+    //private Stats globalStats = new Stats();
 
     private Peers peerCollector = new Peers();
 
@@ -106,10 +106,10 @@ public class Model {
 //        return instanceStats;
 //    }
 
-    @JsonView({Run.class})
-    public Collection<Peer> getPeers() {
-        return this.peerCollector.getPeers().values();
-    }
+//    @JsonView({Run.class})
+//    public Collection<Peer> getPeers() {
+//        return this.peerCollector.getPeers().values();
+//    }
 
     public SystemData getSystem() {
         return system;
@@ -222,13 +222,13 @@ public class Model {
         return;
     }
 
-    public Stats getGlobalStats() {
-        return globalStats;
-    }
-    
-    public void setGlobalStats(Stats globalStats) {
-        this.globalStats = globalStats;
-    }
+//    public Stats getGlobalStats() {
+//        return globalStats;
+//    }
+//    
+//    public void setGlobalStats(Stats globalStats) {
+//        this.globalStats = globalStats;
+//    }
 
     /*
     @JsonIgnore

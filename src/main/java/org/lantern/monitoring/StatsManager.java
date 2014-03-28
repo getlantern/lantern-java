@@ -89,13 +89,13 @@ public class StatsManager implements LanternService {
                     Map<String, Stats> countryDim = resp.getDims().get(
                             "country");
                     if (countryDim != null) {
-                        model.setGlobalStats(countryDim.get("total"));
+//                        model.setGlobalStats(countryDim.get("total"));
                         for (Country country : model.getCountries().values()) {
                             country.setStats(countryDim.get(
                                     country.getCode().toLowerCase()));
                         }
-                        Events.sync(SyncPath.GLOBAL_STATS,
-                                model.getGlobalStats());
+//                        Events.sync(SyncPath.GLOBAL_STATS,
+//                                model.getGlobalStats());
                         Events.sync(SyncPath.COUNTRIES, model.getCountries());
                     }
                 }

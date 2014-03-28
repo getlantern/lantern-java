@@ -69,8 +69,8 @@ public class SyncService implements LanternService {
                 @Override
                 public void run() {
                     //sync();
-                    delegateSync(SyncType.ADD, SyncPath.PEERS,
-                        model.getPeers());
+//                    delegateSync(SyncType.ADD, SyncPath.PEERS,
+//                        model.getPeers());
 //                    delegateSync(SyncType.ADD, SyncPath.INSTANCE_STATS,
 //                            model.getInstanceStats());
                 }
