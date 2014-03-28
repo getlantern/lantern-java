@@ -282,9 +282,8 @@ public class Model {
     }
 
     //@JsonView({Run.class})
-    @JsonIgnore
-//    @JsonSerialize(using=RosterSerializer.class)
-//    @JsonDeserialize(using=RosterDeserializer.class)
+    @JsonSerialize(using=RosterSerializer.class)
+    @JsonDeserialize(using=RosterDeserializer.class)
     public Roster getRoster() {
         return roster;
     }
