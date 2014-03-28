@@ -421,6 +421,7 @@ public class Model {
         return this.friends;
     }
     
+    @JsonIgnore
     public int getRemainingFriendingQuota() {
         return Math.max(remainingFriendingQuota, 0);
     }
@@ -429,7 +430,6 @@ public class Model {
         this.remainingFriendingQuota = remainingFriendingQuota;
     }
 
-    @JsonIgnore
     public S3Config getS3Config() {
         return this.s3Config;
     }
