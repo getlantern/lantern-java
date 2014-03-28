@@ -71,7 +71,7 @@ public class Model {
 
     private Roster roster;
 
-    private InstanceStats instanceStats = new InstanceStats();
+    private volatile InstanceStats instanceStats = new InstanceStats();
 
     private boolean isEverGetMode;
 
@@ -101,6 +101,7 @@ public class Model {
 
     private S3Config s3Config = new S3Config();
     
+    @JsonIgnore
     @JsonView({Run.class, Persistent.class})
     public InstanceStats getInstanceStats() {
         return instanceStats;

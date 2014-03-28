@@ -22,15 +22,15 @@ import org.lantern.state.Model.Run;
  * Tracks statistics for this instance of Lantern.
  */
 public class InstanceStats {
-    private Counter allBytes = Counter.averageOverOneSecond();
-    private Counter requestsGiven = Counter.averageOverOneSecond();
-    private Counter bytesGiven = Counter.averageOverOneSecond();
-    private Counter requestsGotten = Counter.averageOverOneSecond();
-    private Counter bytesGotten = Counter.averageOverOneSecond();
-    private Counter directBytes = Counter.averageOverOneSecond();
+    private volatile Counter allBytes = Counter.averageOverOneSecond();
+    private volatile Counter requestsGiven = Counter.averageOverOneSecond();
+    private volatile Counter bytesGiven = Counter.averageOverOneSecond();
+    private volatile Counter requestsGotten = Counter.averageOverOneSecond();
+    private volatile Counter bytesGotten = Counter.averageOverOneSecond();
+    private volatile Counter directBytes = Counter.averageOverOneSecond();
 
-    private AtomicBoolean usingUPnP = new AtomicBoolean(false);
-    private AtomicBoolean usingNATPMP = new AtomicBoolean(false);
+    private final AtomicBoolean usingUPnP = new AtomicBoolean(false);
+    private final AtomicBoolean usingNATPMP = new AtomicBoolean(false);
 
     private final Set<InetAddress> distinctProxiedClientAddresses = new HashSet<InetAddress>();
 
