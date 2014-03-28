@@ -138,8 +138,9 @@ public class ProxyInfo {
         this.type = type;
     }
 
+    @JsonIgnore
     public boolean isNatTraversed() {
-        return getAddress() == null;
+        return address() == null;
     }
 
     /**
@@ -147,13 +148,11 @@ public class ProxyInfo {
      * 
      * @return
      */
-    @JsonIgnore
-    public InetSocketAddress getAddress() {
-        return useLanAddress ? getLanAddress() : getWanAddress();
+    public InetSocketAddress address() {
+        return useLanAddress ? lanAddress() : wanAddress();
     }
 
-    @JsonIgnore
-    public InetSocketAddress getWanAddress() {
+    public InetSocketAddress wanAddress() {
         if (wanHost == null || wanPort == 0) {
             return null;
         } else {
@@ -191,8 +190,7 @@ public class ProxyInfo {
         this.wanPort = port;
     }
 
-    @JsonIgnore
-    public InetSocketAddress getLanAddress() {
+    public InetSocketAddress lanAddress() {
         if (wanHost == null || wanPort == 0) {
             return null;
         } else {
@@ -221,7 +219,6 @@ public class ProxyInfo {
         this.lanPort = lanPort;
     }
 
-    @JsonIgnore
     public InetSocketAddress getBoundFrom() {
         return boundFrom;
     }
@@ -285,9 +282,9 @@ public class ProxyInfo {
      * 
      * @return
      */
-    public FiveTuple getFiveTuple() {
-        return new FiveTuple(getBoundFrom(), useLanAddress ? getLanAddress()
-                : getWanAddress(), getProtocol());
+    public FiveTuple fiveTuple() {
+        return new FiveTuple(getBoundFrom(), useLanAddress ? lanAddress()
+                : wanAddress(), getProtocol());
     }
 
     @Override
