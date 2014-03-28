@@ -21,15 +21,19 @@ public class S3Config {
 
     public S3Config() {}
 
+    @JsonIgnore
     public String getController() {
         return controller;
     }
+    @JsonIgnore
     public int getMinpoll() {
         return minpoll;
     }
+    @JsonIgnore
     public int getMaxpoll() {
         return maxpoll;
     }
+    @JsonIgnore
     public Collection<FallbackProxy> getFallbacks() {
         return fallbacks;
     }
