@@ -1,5 +1,7 @@
 package org.lantern.proxy;
 
+import io.netty.handler.codec.http.HttpRequest;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
@@ -28,6 +30,15 @@ public class GiveModeActivityTracker extends ActivityTrackerAdapter {
         this.stats = stats;
         this.lookupService = lookupService;
         this.peerFactory = peerFactory;
+    }
+    
+    @Override
+    public void requestReceivedFromClient(FlowContext flowContext,
+            HttpRequest httpRequest) {
+        if (peerFactory != null) {
+            peerFactory.peerSentRequest(flowContext.getClientAddress(),
+                    flowContext.getClientSslSession());
+        }
     }
 
     @Override

@@ -39,4 +39,13 @@ public interface PeerFactory {
      * @return
      */
     Peer peerForSession(SSLSession sslSession);
+    
+    /**
+     * Notify the peerFactory that a peer sent a request.
+     * 
+     * @param peerAddress
+     * @param sslSession
+     */
+    void peerSentRequest(InetSocketAddress peerAddress,
+            SSLSession sslSession);
 }
