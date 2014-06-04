@@ -14,9 +14,10 @@ import org.littleshoot.util.FiveTuple.Protocol;
 public class FallbackProxy extends ProxyInfo {
 
     public FallbackProxy() {
-        super();
-        jid = LanternUtils.newURI("fallback-" + wanHost + "@getlantern.org");
-        type = Type.cloud;
+        // We set the type here because the JSON in the S3 config file doesn't
+        // include anything about the type. Fallbacks are always "cloud".
+        this.type = Type.cloud;
+        this.jid = LanternUtils.newURI("fallback@getlantern.org");
     }
 
     public void setIp(String ip) {
@@ -34,5 +35,4 @@ public class FallbackProxy extends ProxyInfo {
     public void setProtocol(String protocol) {
         this.protocol = Protocol.valueOf(protocol.toUpperCase());
     }
-
 }

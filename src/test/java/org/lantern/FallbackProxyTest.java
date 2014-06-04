@@ -72,8 +72,6 @@ public class FallbackProxyTest {
     public void testFallback() throws Exception {
         //System.setProperty("javax.net.debug", "all");
         //System.setProperty("javax.net.debug", "ssl");
-        Launcher.configureCipherSuites();
-        
         final File temp = new File(SystemUtils.getJavaIoTmpDir(), 
                 String.valueOf(RandomUtils.nextLong()));
         
@@ -212,7 +210,7 @@ public class FallbackProxyTest {
             new CertTrackingSslEngineSource(trustStore, keyStoreManager);
         PeerFactory peerFactory = mock(PeerFactory.class);
         final GiveModeProxy proxy = 
-                new GiveModeProxy(model, sslEngineSource, peerFactory, new GeoIpLookupService());
+                new GiveModeProxy(model, sslEngineSource, peerFactory, new GeoIpLookupService(null));
         
         proxy.start();
         return proxy;

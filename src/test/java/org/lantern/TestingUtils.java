@@ -1,6 +1,6 @@
 package org.lantern;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -55,17 +55,17 @@ import org.lantern.state.FriendsHandler;
 import org.lantern.state.Model;
 import org.lantern.state.ModelUtils;
 import org.lantern.state.Settings;
+import org.lantern.util.DefaultHttpClientFactory;
 import org.lantern.util.HttpClientFactory;
 import org.lastbamboo.common.portmapping.NatPmpService;
 import org.lastbamboo.common.portmapping.PortMapListener;
 import org.lastbamboo.common.portmapping.PortMappingProtocol;
 import org.lastbamboo.common.portmapping.UpnpService;
+import org.littleshoot.commom.xmpp.XmppConnectionRetyStrategyFactory;
 import org.littleshoot.proxy.ChainedProxy;
 import org.littleshoot.proxy.ChainedProxyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Optional;
 
 public class TestingUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestingUtils.class);
@@ -160,12 +160,12 @@ public class TestingUtils {
                 new DefaultFriendsHandler(model, api, null, null, networkTracker, new Messages(new Model()));
         final Roster roster = new Roster(routingTable, model, censored, friendsHandler);
         
-        final GeoIpLookupService geoIpLookupService = new GeoIpLookupService();
+        final GeoIpLookupService geoIpLookupService = new GeoIpLookupService(null);
         
         final PeerFactory peerFactory = 
             new DefaultPeerFactory(geoIpLookupService, model, roster);
         final ProxyTracker proxyTracker = 
-            new DefaultProxyTracker(model, peerFactory, trustStore);
+            new DefaultProxyTracker(geoIpLookupService, model, peerFactory, trustStore, new NetworkTracker<String, URI, ReceivedKScopeAd>());
         final KscopeAdHandler kscopeAdHandler = 
             new DefaultKscopeAdHandler(proxyTracker, trustStore, routingTable, 
                 networkTracker);
@@ -193,8 +193,10 @@ public class TestingUtils {
         };
         
         final ProxySocketFactory proxySocketFactory = new ProxySocketFactory();
-        final LanternXmppUtil xmppUtil = new LanternXmppUtil(socketsUtil, 
-                proxySocketFactory);
+        final XmppConnectionRetyStrategyFactory retryStrategy = 
+                new LanternXmppRetryStrategyFactory(model);
+        final LanternXmppUtil xmppUtil = new LanternXmppUtil(proxySocketFactory, 
+                retryStrategy);
         
         final XmppHandler xmppHandler = new DefaultXmppHandler(model,
             updateTimer, ksm, socketsUtil, xmppUtil, modelUtils,
@@ -232,7 +234,7 @@ public class TestingUtils {
     public static HttpClientFactory newHttClientFactory() {
         final Censored censored = new DefaultCensored();
         final HttpClientFactory factory = 
-                new HttpClientFactory(censored);
+                new DefaultHttpClientFactory(censored);
         return factory;
     }
 
@@ -294,15 +296,9 @@ public class TestingUtils {
         LanternKeyStoreManager ksm = TestingUtils.newKeyStoreManager();
         final LanternTrustStore trustStore = new LanternTrustStore(ksm);
         
-        Optional<String> s3ConfigString = S3ConfigFetcher.fetchLocalConfig(new File(".s3config"));
-        if (!s3ConfigString.isPresent()) {
-            throw new RuntimeException("No S3 configuration found a .s3config!");
-        }
-        Optional<S3Config> s3ConfigOpt = S3ConfigFetcher.parseConfig(s3ConfigString.get());
-        if (!s3ConfigOpt.isPresent()) {
-            throw new RuntimeException("Unable to parse S3 configuration!");
-        }
-        S3Config s3Config = s3ConfigOpt.get();
+        final String s3ConfigString = FileUtils.readFileToString(new File(".s3config"));
+        final S3Config s3Config =
+                JsonUtils.OBJECT_MAPPER.readValue(s3ConfigString, S3Config.class);
         
         final org.lantern.proxy.FallbackProxy fallback = s3Config.getFallbacks().iterator().next();
         trustStore.addCert(fallback.getCert());

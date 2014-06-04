@@ -26,6 +26,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
+import org.lantern.util.DefaultHttpClientFactory;
 import org.lantern.util.HttpClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +40,11 @@ public class HttpClientFactoryTest {
         //System.setProperty("javax.net.debug", "all");
         //System.setProperty("javax.net.debug", "ssl");
         
-        Launcher.configureCipherSuites();
         TestingUtils.doWithGetModeProxy(new Callable<Void>() {
            @Override
             public Void call() throws Exception {
                final HttpClientFactory factory = 
-                       new HttpClientFactory(new AllCensored());
+                       new DefaultHttpClientFactory(new AllCensored());
                
                // Because we are censored, this should use the local proxy
                final HttpClient httpClient = factory.newClient();
@@ -85,7 +85,7 @@ public class HttpClientFactoryTest {
      */
     @Test
     public void testAllInternallyProxiedSites() throws Exception {
-        final HttpClientFactory factory = new HttpClientFactory(new AllCensored());
+        final HttpClientFactory factory = new DefaultHttpClientFactory(new AllCensored());
         final HttpClient client = factory.newClient();
         TestingUtils.assertIsUsingGetModeProxy(client);
 
