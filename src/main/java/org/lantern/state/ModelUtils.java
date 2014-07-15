@@ -17,10 +17,10 @@ public interface ModelUtils {
 
     LanternGoogleOAuth2Credentials newGoogleOauthCreds(String resource);
 
-    boolean isInClosedBeta(String email);
+    //boolean isInClosedBeta(String email);
 
-    void addToClosedBeta(String to);
+    //void addToClosedBeta(String to);
 
-    void syncConnectingStatus(String msg);
+    //void syncConnectingStatus(String msg);
 
 }

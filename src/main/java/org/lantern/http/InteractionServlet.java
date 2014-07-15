@@ -348,6 +348,7 @@ public class InteractionServlet extends HttpServlet {
             break;
         case none:
             break;
+            /*
         case notInvited:
             switch (inter) {
             case RETRY:
@@ -365,6 +366,7 @@ public class InteractionServlet extends HttpServlet {
                 break;
             }
             break;
+            */
         case proxiedSites:
             this.internalState.setCompletedTo(Modal.proxiedSites);
             switch (inter) {
@@ -401,7 +403,7 @@ public class InteractionServlet extends HttpServlet {
             switch (inter) {
             case CANCEL:
                 this.internalState.setModalCompleted(Modal.requestInvite);
-                this.internalState.advanceModal(Modal.notInvited);
+                //this.internalState.advanceModal(Modal.notInvited);
                 break;
             case CONTINUE:
                 applyJson(json);

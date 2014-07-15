@@ -26,10 +26,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.lantern.JsonUtils;
 import org.lantern.LanternConstants;
-import org.lantern.MessageKey;
 import org.lantern.Proxifier.ProxyConfigurationError;
 import org.lantern.ProxyService;
-import org.lantern.Tr;
 import org.lantern.event.Events;
 import org.lantern.event.RefreshTokenEvent;
 import org.lantern.oauth.OauthUtils;
@@ -129,9 +127,10 @@ public class GoogleOauth2CallbackServlet extends HttpServlet {
         // this should do. Make sure we set this before sending the user
         // back to the dashboard. We don't need to post an event because the
         // dashboard is about to get fully reloaded.
-        modelUtils.syncConnectingStatus(Tr.tr(MessageKey.TALK_SERVERS));
+        //modelUtils.syncConnectingStatus(Tr.tr(MessageKey.TALK_SERVERS));
         log.debug("Setting modal to connecting...");
-        this.model.setModal(Modal.connecting);
+        this.model.setModal(Modal.none);
+        Events.syncModal(this.model);
         redirectToDashboard(resp);
 
         int port = this.googleOauth2CallbackServer.getPort();

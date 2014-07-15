@@ -39,6 +39,7 @@ public class PublicIpAndTokenTracker {
      * Resets the state of the tracker (useful when reinitializing system).
      */
     public void reset() {
+        log.debug("Resetting. Public IP: {}", this.hasPublicIp);
         this.hasPublicIp = false;
     }
     

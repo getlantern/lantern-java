@@ -46,23 +46,10 @@ public class ProxifierTest {
             }
             
             @Override
-            public boolean isInClosedBeta(String email) {
-                return false;
-            }
-            
-            @Override
             public boolean isConfigured() {
                 return false;
             }
             
-            @Override
-            public void addToClosedBeta(String to) {}
-
-            @Override
-            public void syncConnectingStatus(String msg) {
-                // TODO Auto-generated method stub
-
-            }
         };
     }
 }

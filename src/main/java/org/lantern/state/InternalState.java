@@ -1,6 +1,7 @@
 package org.lantern.state;
 
 import static org.lantern.Tr.tr;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,8 +39,6 @@ public class InternalState {
 
     private final Model model;
 
-    private boolean notInvited = false;
-
     private final Messages msgs;
 
     public Modal getLastModal() {
@@ -58,6 +57,7 @@ public class InternalState {
     }
 
     public void advanceModal(final Modal backToIfNone) {
+        log.debug("Advancing modal");
         final Modal[] seq;
         if (this.model.getSettings().getMode() == Mode.get) {
             seq = modalSeqGet;
@@ -96,6 +96,7 @@ public class InternalState {
                 this.msgs.info(MessageKey.SETUP, tr(iconLoc));
             }
         }
+        log.debug("Syncing model to {}", next);
         Events.syncModal(this.model, next);
     }
 
@@ -123,14 +124,5 @@ public class InternalState {
     @Subscribe
     public void onReset(final ResetEvent re) {
         modalsCompleted.clear();
-        setNotInvited(false);
     }
-
-	public boolean isNotInvited() {
-		return notInvited;
-	}
-
-	public void setNotInvited(boolean notInvited) {
-		this.notInvited = notInvited;
-	}
 }

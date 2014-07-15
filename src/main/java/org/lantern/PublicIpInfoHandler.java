@@ -61,6 +61,7 @@ public class PublicIpInfoHandler {
         }
         
         final InetAddress address = new PublicIpAddress().getPublicIpAddress();
+        log.debug("Got public IP: {}", address);
         this.model.getConnectivity().setIp(address != null ? address.getHostAddress() : null);
         if (address == null) {
             throw new ConnectException("Could not determine public IP");
