@@ -233,7 +233,7 @@ public class JettyLauncher implements LanternService {
     }
 
 
-    private String apiPath() {
+    public static String apiPath() {
         return "/api/"+StringUtils.substringBeforeLast(LanternConstants.API_VERSION, ".")+"/*";
     }
     

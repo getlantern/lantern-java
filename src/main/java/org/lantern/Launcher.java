@@ -85,6 +85,7 @@ public class Launcher {
     private FriendsHandler friendsHandler;
     private FlashlightServerManager flashlightServerManager;
     
+    
     /**
      * Set a dummy message service while we're not fully wired up.
      */
@@ -114,7 +115,7 @@ public class Launcher {
 
     private Injector injector;
     private SystemTray systemTray;
-    Model model;
+    private Model model;
     private ModelUtils modelUtils;
     private Settings set;
 
@@ -173,16 +174,18 @@ public class Launcher {
      *
      * @param args Any command line arguments.
      */
-    public static void main(final boolean configureLogger, final String... args) {
+    public static void main(final boolean configureLog, final String... args) {
         final Stopwatch earlyWatch = 
             StopwatchManager.getStopwatch("pre-instance-creation", 
                 STOPWATCH_LOG, STOPWATCH_GROUP);
         earlyWatch.start();
         final LanternModule lm = new LanternModule(args);
         final Launcher launcher = new Launcher(lm);
-        if (configureLogger) {
-            launcher.configureDefaultLogger();
+        if (configureLog) {
+            launcher.configureDefaultLog();
         }
+        final LanternChecker checker = new LanternChecker();
+        checker.stopExistingLantern();
         earlyWatch.stop();
         launcher.launch();
     }
@@ -596,25 +599,25 @@ public class Launcher {
         StopwatchManager.logSummaries(STOPWATCH_LOG);
     }
 
-    void configureDefaultLogger() {
+    void configureDefaultLog() {
         if (LanternUtils.isDevMode()) {
             System.out.println("Running from source");
             PropertyConfigurator.configure(LanternClientConstants.LOG4J_PROPS_PATH);
         } else {
             System.out.println("Not on main line...");
-            configureProductionLogger();
+            configureProductionLog();
         }
-        System.err.println("CONFIGURED LOGGER");
+        System.err.println("CONFIGURED LOG");
     }
 
-    private void configureProductionLogger() {
+    private void configureProductionLog() {
         final File logDir = LanternClientConstants.LOG_DIR;
         final File logFile = new File(logDir, "java.log");
         final Properties props = new Properties();
         try {
             final String logPath = logFile.getCanonicalPath();
             props.put("log4j.appender.RollingTextFile.File", logPath);
-            props.put("log4j.rootLogger", "info, RollingTextFile");
+            props.put("log4j.rootLOG", "info, RollingTextFile");
             props.put("log4j.appender.RollingTextFile",
                     "org.apache.log4j.RollingFileAppender");
             props.put("log4j.appender.RollingTextFile.MaxFileSize", "1MB");
@@ -626,7 +629,7 @@ public class Launcher {
                     "%-6r %d{ISO8601} %-5p [%t] %c{2}.%M (%F:%L) - %m%n");
 
             PropertyConfigurator.configure(props);
-            System.out.println("Set logger file to: " + logPath);
+            System.out.println("Set LOG file to: " + logPath);
         } catch (final IOException e) {
             System.out.println("Exception setting log4j props with file: "
                     + logFile);
@@ -700,7 +703,7 @@ public class Launcher {
         }
         if (exit) {
             LOG.info("Exiting Lantern");
-            // Give the logger a second to report the error.
+            // Give the LOG a second to report the error.
             try {Thread.sleep(6000);} catch (final InterruptedException e) {}
             System.exit(1);
         }
@@ -712,9 +715,5 @@ public class Launcher {
             return "";
         }
         return msg;
-    }
-
-    public Injector getInjector() {
-        return injector;
     }
 }
