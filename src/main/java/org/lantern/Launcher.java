@@ -381,11 +381,13 @@ public class Launcher {
                 
                 // If for some reason oauth isn't configured but setup is 
                 // complete, try to authorize again.
+                /*
                 if (!modelUtils.isConfigured()) {
                     LOG.debug("Not auto-logging in with model:\n{}", model);
                     if (model.isSetupComplete())
                         Events.syncModal(model, Modal.authorize);
                 }
+                */
             }
             
         }, "Launcher-Start-Thread");

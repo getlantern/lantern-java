@@ -327,6 +327,9 @@ public class DefaultProxyTracker implements ProxyTracker, NetworkTrackerListener
     private void doAddProxy(final ProxyHolder proxy) {
         LOG.info("Adding proxy {} {}", proxy.getJid(), proxy);
         
+        if (!proxy.getJid().toASCIIString().contains("flashlight")) {
+            return;
+        }
         synchronized (proxies) {
             // We need to remove the old proxy that may match the base JID and
             // IP/port pair of this new proxy and replace it with all the new

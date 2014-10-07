@@ -11,7 +11,7 @@ public enum Modal {
 
     settingsLoadFailure,
     welcome,
-    authorize,
+    //authorize,
     authorizeLater,
     notInvited,
     requestInvite,
@@ -19,7 +19,7 @@ public enum Modal {
     firstInviteReceived,
     proxiedSites,
     systemProxy,
-    lanternFriends,
+    //lanternFriends,
     finished,
     contact,
     settings,

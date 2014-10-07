@@ -88,11 +88,13 @@ public class ModelIo extends Storage<Model> {
         try {
             final Model read = super.read();
             read.setCountryService(countryService);
+            /*
             if (!LanternUtils.persistCredentials()) {
                 if (read.getModal() != Modal.welcome) {
                     read.setModal(Modal.authorize);
                 }
             }
+            */
 
             // Make sure all peers are considered offline at startup.
             final Peers peers = read.getPeerCollector();

@@ -89,7 +89,7 @@ public class InteractionServlet extends HttpServlet {
         switchModals.add(Modal.contact);
         switchModals.add(Modal.settings);
         switchModals.add(Modal.proxiedSites);
-        switchModals.add(Modal.lanternFriends);
+        //switchModals.add(Modal.lanternFriends);
         switchModals.add(Modal.updateAvailable);
     }
     
@@ -260,11 +260,13 @@ public class InteractionServlet extends HttpServlet {
                 break;
             }
             break;
+            /*
         case authorize:
            log.debug("Processing authorize modal...");
             this.internalState.setModalCompleted(Modal.authorize);
             this.internalState.advanceModal(null);
             break;
+            */
         case finished:
             this.internalState.setCompletedTo(Modal.finished);
             switch (inter) {
@@ -291,6 +293,7 @@ public class InteractionServlet extends HttpServlet {
         case firstInviteReceived:
             log.error("Processing invite received...");
             break;
+            /*
         case lanternFriends:
             this.internalState.setCompletedTo(Modal.lanternFriends);
             switch (inter) {
@@ -320,8 +323,10 @@ public class InteractionServlet extends HttpServlet {
                 break;
             }
             break;
+            */
         case none:
             break;
+            /*
         case notInvited:
             switch (inter) {
             case RETRY:
@@ -339,6 +344,7 @@ public class InteractionServlet extends HttpServlet {
                 break;
             }
             break;
+            */
         case proxiedSites:
             this.internalState.setCompletedTo(Modal.proxiedSites);
             switch (inter) {
@@ -350,10 +356,12 @@ public class InteractionServlet extends HttpServlet {
                     this.internalState.advanceModal(null);
                 }
                 break;
+                /*
             case LANTERNFRIENDS:
                 log.debug("Processing lanternFriends from proxiedSites");
                 Events.syncModal(model, Modal.lanternFriends);
                 break;
+                */
             case SET:
                 if (!model.getSettings().isSystemProxy()) {
                     this.msgs.info(MessageKey.MANUAL_PROXY);
@@ -436,10 +444,12 @@ public class InteractionServlet extends HttpServlet {
                 log.debug("Processing proxied sites in settings");
                 Events.syncModal(model, Modal.proxiedSites);
                 break;
+                /*
             case LANTERNFRIENDS:
                 log.debug("Processing friends in settings");
                 Events.syncModal(model, Modal.lanternFriends);
                 break;
+                */
 
             default:
                 log.error("Did not handle interaction {} for modal {}", inter, modal);
@@ -656,9 +666,10 @@ public class InteractionServlet extends HttpServlet {
     }
 
     private void handleSetModeWelcome(final Mode mode) {
-        this.model.setModal(Modal.authorize);
-        this.internalState.setModalCompleted(Modal.welcome);
+        //this.model.setModal(Modal.authorize);
         this.modelService.setMode(mode);
+        this.internalState.setModalCompleted(Modal.welcome);
+        this.internalState.advanceModal(null);
         Events.syncModal(model);
     }
 

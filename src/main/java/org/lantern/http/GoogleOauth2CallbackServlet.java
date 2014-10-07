@@ -130,7 +130,7 @@ public class GoogleOauth2CallbackServlet extends HttpServlet {
             final String error = params.get("error");
             log.error("Got error: {}", error);
             log.debug("Setting modal on model: {}", model);
-            this.model.setModal(Modal.authorize);
+            this.model.setModal(Modal.finished);
             redirectToDashboard(resp);
             return;
         }
@@ -168,7 +168,7 @@ public class GoogleOauth2CallbackServlet extends HttpServlet {
         // Handle states associated with the Google login screen
         // during the setup sequence.
         model.getConnectivity().setGtalkAuthorized(true);
-        internalState.setModalCompleted(Modal.authorize);
+        //internalState.setModalCompleted(Modal.authorize);
         internalState.advanceModal(null);
     }
 
