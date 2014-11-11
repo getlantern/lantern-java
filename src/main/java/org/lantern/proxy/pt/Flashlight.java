@@ -49,6 +49,7 @@ import com.google.common.eventbus.Subscribe;
 public class Flashlight extends BasePluggableTransport {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(Flashlight.class);
+
     private static final File CA_CERT_FILE =
             new File(LanternClientConstants.CONFIG_DIR + File.separator +
                     "pt" + File.separator +
@@ -214,11 +215,14 @@ public class Flashlight extends BasePluggableTransport {
      * @param cmd
      */
     private void addParentPIDIfAvailable(CommandLine cmd) {
-        Integer myPID = ProcessUtil.getMyPID();
-        if (myPID != null) {
+        try {
+            final int myPID = ProcessUtil.getMyPID();
             cmd.addArgument("-parentpid");
-            cmd.addArgument(myPID.toString());
+            cmd.addArgument(String.valueOf(myPID));
+        } catch (IOException e) {
+            LOGGER.error("Could not determine PID!", e);
         }
+
     }
 
     @Override
