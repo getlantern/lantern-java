@@ -513,7 +513,7 @@ public class Roster implements RosterListener, RosterHandler {
         Events.syncRoster(this);
     }
     
-    public void waitForWaddell() {
+    private void waitForWaddell() {
         if (waddellId != null) {
             return;
         }
