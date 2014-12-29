@@ -1,0 +1,7 @@
+Package: Lantern
+Version: 1.5.16
+Section: misc
+Priority: low
+Architecture: all
+Description: "A peer-to-peer and trust-network-based tool for circumventing censors and preventing monitoring."
+Maintainer: admin@getlantenr.org
