@@ -13,7 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<slf4j.version>1.7.2</slf4j.version>
-		<cometd.version>2.5.1</cometd.version>
+		<cometd.version>2.9.1</cometd.version>
 		<github.global.server>github</github.global.server>
 		<rt.path>${java.home}/lib/rt.jar</rt.path>
 		<jce.path>${java.home}/lib/jce.jar</jce.path>
@@ -284,11 +284,11 @@
 			<artifactId>hexdump</artifactId>
 			<version>0.2</version>
 		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>cx.ath.matthew</groupId>
 			<artifactId>${unix.artifactId}</artifactId>
 			<version>0.5</version>
-		</dependency>
+        </dependency>
 		<dependency>
 			<groupId>org.freedesktop.dbus</groupId>
 			<artifactId>dbus-java</artifactId>
@@ -593,7 +593,33 @@
 					</gitDescribe>
 				</configuration>
 			</plugin>
-			
+
+            <plugin>
+                <artifactId>jdeb</artifactId>
+                <groupId>org.vafer</groupId>
+                <version>1.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+                            <dataSet>
+                                <data>
+                                    <src>${project.build.directory}/${project.build.finalName}.jar</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/usr/share/jdeb/lib</prefix>
+                                    </mapper>
+                                </data>
+                            </dataSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
 			<plugin>
 			    <groupId>org.eluder.coveralls</groupId>
 			    <artifactId>coveralls-maven-plugin</artifactId>
