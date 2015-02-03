@@ -90,7 +90,8 @@ log "Running in `pwd`"
 
 
 
-log "Changing permissions on launchd plist file"
+log "Changing owner and permissions on launchd plist file"
+chown $USER $LAUNCHD_PLIST || die "Could not change owner to current user"
 chmod 644 $LAUNCHD_PLIST || die "Could not change permissions"
 
 
