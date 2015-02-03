@@ -122,7 +122,7 @@ public class LanternMulticast {
                                         MulticastMessage.class);
                         final String endpoint = msg.getEndpoint();
                         if (StaticSettings.getNetworkEndpoint().equals(endpoint)) {
-                            log.info("Ignoring messages from ourselves");
+                            log.debug("Ignoring messages from ourselves");
                             continue;
                         }
                         if (msg.isBye()) {
